@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "KsUurSuOx9Vm8rB7HgfVpIUU2ZuchcLZ2HYcUWARrh6e9nZCR0pDyIlbcdXvGKGiwkm14sSXVine1L574QQKgQ==",
+  "dgSpecHash": "qINe5U3vJIs9p40lhvW9uvdIeQ3G/mQmeoZ3ClRTby6l4Z56PfdPdsME/kUBpf/Bjd78SKP61gWb6/2ZDZuu+A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\andre\\Documents\\GitHub\\chat-mayhem\\back-end\\API\\API\\API.csproj",
+  "projectFilePath": "C:\\Users\\andre\\Documents\\GitHub\\chat-mayhem\\back-end\\API\\API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",

@@ -229,11 +229,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\andre\\Documents\\GitHub\\chat-mayhem\\back-end\\API\\API\\API.csproj",
+      "projectUniqueName": "C:\\Users\\andre\\Documents\\GitHub\\chat-mayhem\\back-end\\API\\API.csproj",
       "projectName": "API",
-      "projectPath": "C:\\Users\\andre\\Documents\\GitHub\\chat-mayhem\\back-end\\API\\API\\API.csproj",
+      "projectPath": "C:\\Users\\andre\\Documents\\GitHub\\chat-mayhem\\back-end\\API\\API.csproj",
       "packagesPath": "C:\\Users\\andre\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\andre\\Documents\\GitHub\\chat-mayhem\\back-end\\API\\API\\obj\\",
+      "outputPath": "C:\\Users\\andre\\Documents\\GitHub\\chat-mayhem\\back-end\\API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\andre\\AppData\\Roaming\\NuGet\\NuGet.Config",

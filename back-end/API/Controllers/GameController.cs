@@ -19,10 +19,8 @@ namespace API.Controllers
             {
                 Console.WriteLine("Connection string is null");
             } 
-            else
-            {
-                _gameService = new GameService(new GameAccess(connectionString));
-            }
+
+            _gameService = new GameService(new GameAccess(connectionString ?? ""));
         }
 
         [HttpPost]

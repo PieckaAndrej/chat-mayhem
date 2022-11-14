@@ -11,13 +11,13 @@ using Xunit.Sdk;
 
 namespace Test
 {
-    public class UnitTest1
+    public class GameTest
     {
 
         private readonly ITestOutputHelper _extraOutput;
         private Game _testGame;
 
-        public UnitTest1(ITestOutputHelper extraOutput)
+        public GameTest(ITestOutputHelper extraOutput)
         {
             _extraOutput = extraOutput;
 
@@ -32,16 +32,17 @@ namespace Test
         public void TestCreateGame()
         {
             //Arrange
-            var gameAccess = new GameAccess();
+            var gameAccess = new GameAccess("");
 
             //Act
-            Game editedRows = gameAccess.CreateGame(_testGame);
+            Game game = gameAccess.CreateGame(_testGame);
+            Game resultGame = gameAccess.GetGameById(game.Id);
 
             //Assert
-            Assert.Equal(_testGame.Owner, editedRows.Owner);
-            Assert.Equal(_testGame.PlayerNumber, editedRows.PlayerNumber);
-            Assert.Equal(_testGame.Mode, editedRows.Mode);
-            Assert.Equal(_testGame.TimeLimit, editedRows.TimeLimit);
+            Assert.Equal(_testGame.Owner, resultGame.Owner);
+            Assert.Equal(_testGame.PlayerNumber, resultGame.PlayerNumber);
+            Assert.Equal(_testGame.Mode, resultGame.Mode);
+            Assert.Equal(_testGame.TimeLimit, resultGame.TimeLimit);
         }
 
         [Fact]

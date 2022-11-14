@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Data.DatabaseLayer
 {
-    internal interface IGameAccess
+    public interface IGameAccess
     {
         List<Game> GetGames();
         Game GetGameById(int id);
-        int CreateGame(Game game);
+        Game CreateGame(Game game);
         int UpdateGame(int id, Game game);
         int DeleteGame(int id);
 

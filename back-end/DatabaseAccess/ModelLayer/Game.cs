@@ -10,25 +10,23 @@ namespace Data.ModelLayer
     public class Game
     {
         public int Id { get; set; }
-        public Streamer owner { get; set; }
-        public int playerNumber { get; set; }
-        public object mode { get; set; }
-        public TimeSpan timeLimit { get; set; }
+        public Streamer Owner { get; set; }
+        public int PlayerNumber { get; set; }
+        public GameMode Mode { get; set; }
+        public TimeSpan TimeLimit { get; set; }
 
-        public Game(Streamer owner, int playerNumber, object mode, TimeSpan timeLimit)
+        public Game(Streamer owner, int playerNumber, GameMode mode, TimeSpan timeLimit)
         {
-            this.owner = owner;
-            this.playerNumber = playerNumber;
-            this.mode = mode;
-            this.timeLimit = timeLimit;
+            Owner = owner;
+            PlayerNumber = playerNumber;
+            Mode = mode;
+            TimeLimit = timeLimit;
         }
 
-        public Game(int id, Streamer owner, int playerNumber, object mode, TimeSpan timeLimit)
+        public Game(int id, Streamer owner, int playerNumber, GameMode mode, TimeSpan timeLimit)
             : this(owner, playerNumber, mode, timeLimit)
         {
-            this.Id = id;
+            Id = id;
         }
-
-
     }
 }

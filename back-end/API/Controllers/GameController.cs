@@ -1,4 +1,5 @@
-﻿using API.Services;
+﻿using API.DTOs;
+using API.Services;
 using Data.DatabaseLayer;
 using Data.ModelLayer;
 using Microsoft.AspNetCore.Http;
@@ -24,19 +25,12 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Game> Post(Game inGame)
+        public ActionResult<GameDto> Post(GameDto inGame)
         {
-            Game returnGame;
+            Game game = GameDto.Convert(inGame);
+            game = _gameService.Add(game);
 
-            try
-            {
-                returnGame = _gameService.Add(inGame);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
+            GameDto returnGame = GameDto.Convert(game);
 
             if (returnGame == null)
             {

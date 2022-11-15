@@ -3,6 +3,7 @@ using Data.DatabaseLayer;
 using Data.ModelLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Runtime.InteropServices;
 using Xunit;
@@ -39,7 +40,7 @@ namespace Test
             Game resultGame = gameAccess.GetGameById(game.Id);
 
             //Assert
-            Assert.Equal(_testGame.Owner, resultGame.Owner);
+            Assert.Equal(_testGame.Streamer, resultGame.Streamer);
             Assert.Equal(_testGame.PlayerNumber, resultGame.PlayerNumber);
             Assert.Equal(_testGame.Mode, resultGame.Mode);
             Assert.Equal(_testGame.TimeLimit, resultGame.TimeLimit);
@@ -57,7 +58,7 @@ namespace Test
             var okResult = result.Result as OkObjectResult;
 
             //Arrange
-            Assert.Equal(_testGame.Owner, resultValue?.Owner);
+            Assert.Equal(_testGame.Streamer, resultValue?.Streamer);
             Assert.Equal(_testGame.PlayerNumber, resultValue?.PlayerNumber);
             Assert.Equal(_testGame.Mode, resultValue?.Mode);
             Assert.Equal(_testGame.TimeLimit, resultValue?.TimeLimit);

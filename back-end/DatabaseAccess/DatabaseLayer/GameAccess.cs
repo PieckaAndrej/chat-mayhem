@@ -26,9 +26,8 @@ namespace Data.DatabaseLayer
                 {
                     timeLimit = game.TimeLimit,
                     playerNumber = game.PlayerNumber,
-                    owner = game.Owner,
+                    steamer = game.Streamer,
                     modelId = game.Mode.Id,
-
                 });
 
                 return game;

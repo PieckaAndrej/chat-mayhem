@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Data.ModelLayer
@@ -10,21 +11,22 @@ namespace Data.ModelLayer
     public class Game
     {
         public int Id { get; set; }
-        public Streamer Owner { get; set; }
-        public int PlayerNumber { get; set; }
+        public Streamer Streamer { get; set; }
         public GameMode Mode { get; set; }
         public TimeSpan TimeLimit { get; set; }
+        public QuestionPack QuestionPack { get; set; }
 
-        public Game(Streamer owner, int playerNumber, GameMode mode, TimeSpan timeLimit)
+        public Game(Streamer streamer, GameMode mode, TimeSpan timeLimit, QuestionPack questionPack)
         {
-            Owner = owner;
-            PlayerNumber = playerNumber;
+            Streamer = streamer;
             Mode = mode;
             TimeLimit = timeLimit;
+            QuestionPack = questionPack;
         }
 
-        public Game(int id, Streamer owner, int playerNumber, GameMode mode, TimeSpan timeLimit)
-            : this(owner, playerNumber, mode, timeLimit)
+        public Game(Streamer streamer, GameMode mode, TimeSpan timeLimit,
+            QuestionPack questionPack, int id)
+            : this(streamer, mode, timeLimit, questionPack)
         {
             Id = id;
         }

@@ -13,9 +13,11 @@ namespace Data.ModelLayer
         public int Id { get; set; }
         public Streamer Streamer { get; set; }
         public GameMode Mode { get; set; }
+        [JsonConverter(typeof(TimeSpan))]
         public TimeSpan TimeLimit { get; set; }
         public QuestionPack QuestionPack { get; set; }
 
+        public Game() { }
         public Game(Streamer streamer, GameMode mode, TimeSpan timeLimit, QuestionPack questionPack)
         {
             Streamer = streamer;

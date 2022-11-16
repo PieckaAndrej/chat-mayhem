@@ -1,0 +1,52 @@
+﻿@model WebApp.Models.Game
+
+<h4>Game</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="TimeLimitSeconds" class="control-label"></label>
+                <input asp-for="TimeLimitSeconds" class="form-control" />
+                <span asp-validation-for="TimeLimitSeconds" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StreamerId" class="control-label"></label>
+                <input asp-for="StreamerId" class="form-control" />
+                <span asp-validation-for="StreamerId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlayerNumber" class="control-label"></label>
+                <input asp-for="PlayerNumber" class="form-control" />
+                <span asp-validation-for="PlayerNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ModeId" class="control-label"></label>
+                <input asp-for="ModeId" class="form-control" />
+                <span asp-validation-for="ModeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Id" class="control-label"></label>
+                <input asp-for="Id" class="form-control" />
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QuestionPackId" class="control-label"></label>
+                <input asp-for="QuestionPackId" class="form-control" />
+                <span asp-validation-for="QuestionPackId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

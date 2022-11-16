@@ -14,7 +14,7 @@ namespace Data.ModelLayer
 
         public string name { get; set; }
 
-        public string tag { get; set; }
+        public string tags { get; set; }
 
         public string category { get; set; }
 

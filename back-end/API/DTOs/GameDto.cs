@@ -7,37 +7,38 @@ namespace API.DTOs
     {
         public int Id { get; set; }
         public int StreamerId { get; set; }
-        public int PlayerNumber { get; set; }
         public int ModeId { get; set; }
         public double TimeLimitSeconds { get; set; }
+        public int QuestionPackId { get; set; }  
 
         public GameDto() { }
 
-        public GameDto(int streamer, int playerNumber, int mode, double timeLimit)
+        public GameDto(int streamer, int mode, double timeLimit, int questionPackId)
         {
             StreamerId = streamer;
-            PlayerNumber = playerNumber;
             ModeId = mode;
             TimeLimitSeconds = timeLimit;
+            QuestionPackId = questionPackId;
         }
 
-        public GameDto(int streamer, int playerNumber, int mode, double timeLimit, int id)
-            : this(streamer, playerNumber, mode, timeLimit)
+        public GameDto(int streamer, int mode, double timeLimit, int questionPackId, int id)
+            : this(streamer, mode, timeLimit, questionPackId)
         {
             Id = id;
         }
 
         public static GameDto Convert(Game game)
         {
-            return new GameDto(game.Streamer.Id, game.PlayerNumber, game.Mode.Id, game.TimeLimit.TotalSeconds, game.Id);
+            return new GameDto(game.Streamer.Id, game.Mode.Id, game.TimeLimit.TotalSeconds, game.QuestionPack.Id, game.Id);
         }
 
         public static Game Convert(GameDto gameDto)
         {
             Streamer streamer = ServiceInjector.streamService.Get(gameDto.StreamerId);
             GameMode mode = ServiceInjector.gameModeService.Get(gameDto.ModeId);
+            QuestionPack questionPack = ServiceInjector.questionPackService.Get(gameDto.QuestionPackId);
 
-            return new Game(streamer, gameDto.PlayerNumber, mode, TimeSpan.FromSeconds(gameDto.TimeLimitSeconds), gameDto.Id);
+            return new Game(streamer, mode, TimeSpan.FromSeconds(gameDto.TimeLimitSeconds), questionPack, gameDto.Id);
         }
     }
 }

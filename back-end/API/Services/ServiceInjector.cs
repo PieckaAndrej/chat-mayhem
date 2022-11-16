@@ -6,13 +6,14 @@ namespace API.Services
     public class ServiceInjector
     {
 
-        private static string? con
+        private static string con
         {
             get
             {
                 ConfigurationManager configurationManager = new ConfigurationManager();
 
-                return configurationManager.GetConnectionString("ChatMayhem Connection");
+                return configurationManager.GetConnectionString("ChatMayhem Connection") 
+                    ?? "No connection string";
             }
         }
 
@@ -20,7 +21,7 @@ namespace API.Services
         {
             get
             {
-                return new GameService(new GameAccess(con ?? ""));
+                return new GameService(new GameAccess(con));
             }
         }
 
@@ -28,7 +29,7 @@ namespace API.Services
         {
             get
             {
-                return new StreamerService(new StreamerAccess(con ?? ""));
+                return new StreamerService(new StreamerAccess(con)); 
             }
         }
 
@@ -36,7 +37,15 @@ namespace API.Services
         {
             get
             {
-                return new GameModeService(new GameModeAccess(con ?? ""));
+                return new GameModeService(new GameModeAccess(con));
+            }
+        }
+
+        public static QuestionPackService questionPackService
+        {
+            get
+            {
+                return new QuestionPackService(new QuestionPackAccess(con));
             }
         }
     }

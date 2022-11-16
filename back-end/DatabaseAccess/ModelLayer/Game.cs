@@ -12,20 +12,21 @@ namespace Data.ModelLayer
     {
         public int Id { get; set; }
         public Streamer Streamer { get; set; }
-        public int PlayerNumber { get; set; }
         public GameMode Mode { get; set; }
         public TimeSpan TimeLimit { get; set; }
+        public QuestionPack QuestionPack { get; set; }
 
-        public Game(Streamer streamer, int playerNumber, GameMode mode, TimeSpan timeLimit)
+        public Game(Streamer streamer, GameMode mode, TimeSpan timeLimit, QuestionPack questionPack)
         {
             Streamer = streamer;
-            PlayerNumber = playerNumber;
             Mode = mode;
             TimeLimit = timeLimit;
+            QuestionPack = questionPack;
         }
 
-        public Game(Streamer streamer, int playerNumber, GameMode mode, TimeSpan timeLimit, int id)
-            : this(streamer, playerNumber, mode, timeLimit)
+        public Game(Streamer streamer, GameMode mode, TimeSpan timeLimit,
+            QuestionPack questionPack, int id)
+            : this(streamer, mode, timeLimit, questionPack)
         {
             Id = id;
         }

@@ -1,4 +1,6 @@
-﻿using Data.ModelLayer;
+﻿using Dapper;
+using Data.ModelLayer;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +20,15 @@ namespace Data.DatabaseLayer
 
         public QuestionPack GetQuestionPackById(int id)
         {
-            throw new NotImplementedException();
+            string sql = "SELECT id, author, name, tag, category, \"creationDate\" " +
+                "FROM public.\"QuestionPack\" WHERE id = Id;";
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                var questionPack = connection.QuerySingle<QuestionPack>(sql, new { Id = id });
+
+                return questionPack;
+            }
         }
     }
 }

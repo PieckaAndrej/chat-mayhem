@@ -27,6 +27,7 @@ namespace Data.DatabaseLayer
                     timeLimit = game.TimeLimit,
                     owner = game.Streamer.Id,
                     modelId = game.Mode.Id,
+                    questionPackId = game.QuestionPack.Id
                 });
 
                 return game;

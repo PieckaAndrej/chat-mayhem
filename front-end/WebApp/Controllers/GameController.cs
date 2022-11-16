@@ -13,15 +13,24 @@ namespace WebApp.Controllers
         {
             _client = new RestClient("https://localhost:7200/");
         }
+        
         public IActionResult Index()
         {
-            return View();
+            Games tamkd = new Games();
+            return View(tamkd.games);
         }
 
-        public async Task<IActionResult> CreateGame([FromBody] Game game)
+        public IActionResult Create(int id)
+        {
+            Games tamkd = new Games();
+            return View(tamkd.games[id]);
+        }
+
+        public async Task<IActionResult> CreatePost([FromBody] Game game)
         {
             var request = new RestRequest("api/Game").AddJsonBody(game);
             var response = await _client.ExecutePostAsync<Game>(request);
+            Console.WriteLine("yo");
             if (!response.IsSuccessful)
             {
                 return StatusCode(500, response.Data);

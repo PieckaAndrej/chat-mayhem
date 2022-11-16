@@ -25,7 +25,7 @@ namespace Data.ModelLayer
             this.Id = id;
             this.Author = author;
             this.Name = name;
-            this.Tag = tag;
+            this.Tags = tag;
             this.Category = category;
             this.CreationDate = creationDate;
         }

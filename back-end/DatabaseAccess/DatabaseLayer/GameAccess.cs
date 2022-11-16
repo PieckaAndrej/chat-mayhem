@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Data.ModelLayer;
+using Npgsql;
 using System.Data.SqlClient;
 
 namespace Data.DatabaseLayer
@@ -15,18 +16,16 @@ namespace Data.DatabaseLayer
 
         public Game CreateGame(Game game)
         {
-            string sql = "INSERT INTO public.'Game'" +
-                "('time_limit', 'player_number', owner, 'model_id') " +
-                "OUTPUT INSERTED.id " +
-                "VALUES (@timeLimit, @playerNumber, @owner, @modelId);";
+            string sql = "INSERT INTO public.\"Game\"" +
+                "( \"timeLimit\", owner, \"modelId\", \"questionPackId\") " +
+                "VALUES (@timeLimit, @owner, @modelId, @questionPackId);";
 
-            using (var connection = new SqlConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 game.Id = connection.QuerySingle<int>(sql, new
                 {
                     timeLimit = game.TimeLimit,
-                    playerNumber = game.PlayerNumber,
-                    steamer = game.Streamer,
+                    owner = game.Streamer.Id,
                     modelId = game.Mode.Id,
                 });
 

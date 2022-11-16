@@ -7,6 +7,8 @@
         public int ModeId {  get; set; }
         public int QuestionPackId { get; set; }
 
+        public Game() { }
+
         public Game(double timeLimitSeconds, string streamerId, int modeId, int questionPackId)
         {
             TimeLimitSeconds = timeLimitSeconds;

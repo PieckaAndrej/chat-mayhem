@@ -20,22 +20,20 @@ namespace WebApp.Controllers
             return View(tamkd.games);
         }
 
-        public IActionResult Create(int id)
+        [HttpGet]
+        public IActionResult Create()
         {
-            Games tamkd = new Games();
-            return View(tamkd.games[id]);
+            return View();
         }
 
-        public async Task<IActionResult> CreatePost([FromBody] Game game)
+        [HttpPost]
+        public async Task<IActionResult> Create(Game game)
         {
             var request = new RestRequest("api/Game").AddJsonBody(game);
             var response = await _client.ExecutePostAsync<Game>(request);
             Console.WriteLine("yo");
-            if (!response.IsSuccessful)
-            {
-                return StatusCode(500, response.Data);
-            }
-            return StatusCode(201, response.Data);  
+
+            return RedirectToAction("Index");
         }
     }
 }

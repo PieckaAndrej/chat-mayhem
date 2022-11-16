@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Data.ModelLayer
@@ -14,13 +15,13 @@ namespace Data.ModelLayer
 
         public string Name { get; set; }
 
-        public string Tags { get; set; }
+        public string[] Tags { get; set; }
 
         public string Category { get; set; }
 
         public DateTime CreationDate { get; set; }
 
-        public QuestionPack (int id, string author, string name, string tag, string category, DateTime creationDate)
+        public QuestionPack (int id, string author, string name, string[] tag, string category, DateTime creationDate)
         {
             this.Id = id;
             this.Author = author;

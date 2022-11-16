@@ -22,5 +22,13 @@ namespace Data.ModelLayer
         {
             Id = id;
         }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is GameMode mode &&
+                   Id == mode.Id &&
+                   Description == mode.Description &&
+                   Rules == mode.Rules;
+        }
     }
 }

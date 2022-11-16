@@ -1,48 +1,53 @@
-﻿@model WebApp.Models.Game
-WebApp.Models.GameController
+﻿@model IEnumerable<WebApp.Models.Game>
+
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Index</h1>
 
-<h4>Game</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Index">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="TimeLimitSeconds" class="control-label"></label>
-                <input asp-for="TimeLimitSeconds" class="form-control" />
-                <span asp-validation-for="TimeLimitSeconds" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StreamerId" class="control-label"></label>
-                <input asp-for="StreamerId" class="form-control" />
-                <span asp-validation-for="StreamerId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ModeId" class="control-label"></label>
-                <input asp-for="ModeId" class="form-control" />
-                <span asp-validation-for="ModeId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="QuestionPackId" class="control-label"></label>
-                <input asp-for="QuestionPackId" class="form-control" />
-                <span asp-validation-for="QuestionPackId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" onclick="@CreateGame();" />
-            </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeLimitSeconds)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StreamerId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ModeId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.QuestionPackId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimeLimitSeconds)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StreamerId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ModeId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.QuestionPackId)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
 }
+    </tbody>
+</table>

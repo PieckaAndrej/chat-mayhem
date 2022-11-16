@@ -29,7 +29,6 @@ namespace API.Controllers
         {
             Game game = GameDto.Convert(inGame);
             game = _gameService.Add(game);
-
             GameDto returnGame = GameDto.Convert(game);
 
             if (returnGame == null)

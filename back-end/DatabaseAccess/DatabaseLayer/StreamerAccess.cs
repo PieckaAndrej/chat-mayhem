@@ -21,7 +21,7 @@ namespace Data.DatabaseLayer
 
         public Streamer GetStreamerById(int id)
         {
-            string sql = "SELECT key, id, \"teamId\" FROM public.\"Streamer\" WHERE id = @Id;";
+            string sql = "SELECT id, key as \"OAuth\" FROM public.\"Streamer\" WHERE id = @Id;";
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {

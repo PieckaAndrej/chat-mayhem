@@ -12,6 +12,7 @@ namespace Data.DatabaseLayer
         public GameAccess(string connectionString)
         {
             _connectionString = connectionString;
+            Console.WriteLine(_connectionString);
         }
 
         public Game CreateGame(Game game)
@@ -39,7 +40,7 @@ namespace Data.DatabaseLayer
             throw new NotImplementedException();
         }
 
-        public Game GetGameById(int id)
+        public Game? GetGameById(int id)
         {
             string sql = "SELECT game.owner, game.\"timeLimit\", game.id, " +
                 "streamer.id, streamer.\"key\" as \"OAuth\", " +
@@ -56,7 +57,7 @@ namespace Data.DatabaseLayer
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                var game = connection.Query<Game,Streamer, GameMode, QuestionPack, Game>(sql, ((g, s, m, q) =>
+                var game = connection.Query<Game, Streamer, GameMode, QuestionPack, Game>(sql, ((g, s, m, q) =>
                 {
                     g.Streamer = s;
                     g.Mode = m;

@@ -18,6 +18,7 @@ namespace Data.ModelLayer
         public QuestionPack QuestionPack { get; set; }
 
         public Game() { }
+
         public Game(Streamer streamer, GameMode mode, TimeSpan timeLimit, QuestionPack questionPack)
         {
             Streamer = streamer;
@@ -31,6 +32,28 @@ namespace Data.ModelLayer
             : this(streamer, mode, timeLimit, questionPack)
         {
             Id = id;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (System.Reflection.PropertyInfo property in this.GetType().GetProperties())
+            {
+                sb.Append(property.Name);
+                sb.Append(": ");
+                if (property.GetIndexParameters().Length > 0)
+                {
+                    sb.Append("Indexed Property cannot be used");
+                }
+                else
+                {
+                    sb.Append(property.GetValue(this, null));
+                }
+
+                sb.Append(System.Environment.NewLine);
+            }
+
+            return sb.ToString();
         }
     }
 }

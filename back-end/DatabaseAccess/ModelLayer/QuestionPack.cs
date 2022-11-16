@@ -15,13 +15,13 @@ namespace Data.ModelLayer
 
         public string Name { get; set; }
 
-        public string[] Tags { get; set; }
+        public Array Tags { get; set; }
 
         public string Category { get; set; }
 
         public DateTime CreationDate { get; set; }
 
-        public QuestionPack (int id, string author, string name, string[] tag, string category, DateTime creationDate)
+        public QuestionPack (int id, string author, string name, Array tag, string category, DateTime creationDate)
         {
             this.Id = id;
             this.Author = author;

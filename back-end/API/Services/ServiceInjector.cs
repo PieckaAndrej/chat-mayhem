@@ -10,9 +10,11 @@ namespace API.Services
         {
             get
             {
-                ConfigurationManager configurationManager = new ConfigurationManager();
+                IConfiguration configuration = new ConfigurationBuilder()
+                    .AddJsonFile($"appsettings.json", optional: false)
+                    .Build();
 
-                return configurationManager.GetConnectionString("ChatMayhem Connection") 
+                return configuration.GetConnectionString("ChatMayhem Connection") 
                     ?? "No connection string";
             }
         }
@@ -29,6 +31,7 @@ namespace API.Services
         {
             get
             {
+                Console.WriteLine(con);
                 return new StreamerService(new StreamerAccess(con)); 
             }
         }

@@ -10,7 +10,7 @@ namespace Data.DatabaseLayer
     public interface IGameAccess
     {
         List<Game> GetGames();
-        Game GetGameById(int id);
+        Game? GetGameById(int id);
         Game CreateGame(Game game);
         int UpdateGame(int id, Game game);
         int DeleteGame(int id);

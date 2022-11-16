@@ -21,7 +21,7 @@ namespace Data.DatabaseLayer
 
         public GameMode GetGameModeById(int id)
         {
-            string sql = "SELECT id, rules, description FROM public.\"Mode\" WHERE id = @Id;";
+            string sql = "SELECT id, description, rules FROM public.\"Mode\" WHERE id = @Id;";
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {

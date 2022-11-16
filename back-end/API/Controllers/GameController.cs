@@ -21,13 +21,16 @@ namespace API.Controllers
                 Console.WriteLine("Connection string is null");
             } 
 
-            _gameService = new GameService(new GameAccess(connectionString ?? ""));
+            _gameService = new GameService(new GameAccess(connectionString ?? "No connection string"));
         }
 
         [HttpPost]
         public ActionResult<GameDto> Post(GameDto inGame)
         {
             Game game = GameDto.Convert(inGame);
+
+            Console.WriteLine("hi");
+
             game = _gameService.Add(game);
             GameDto returnGame = GameDto.Convert(game);
 

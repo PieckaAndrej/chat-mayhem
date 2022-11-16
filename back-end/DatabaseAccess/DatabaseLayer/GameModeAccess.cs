@@ -1,6 +1,9 @@
-﻿using Data.ModelLayer;
+﻿using Dapper;
+using Data.ModelLayer;
+using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +21,14 @@ namespace Data.DatabaseLayer
 
         public GameMode GetGameModeById(int id)
         {
-            throw new NotImplementedException();
+            string sql = "SELECT key, id, 'teamId' FROM 'Mode' WHERE id = @Id;";
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                var gameMode = connection.QuerySingle<GameMode>(sql, new { Id = id });
+
+                return gameMode;
+            }
         }
     }
 }

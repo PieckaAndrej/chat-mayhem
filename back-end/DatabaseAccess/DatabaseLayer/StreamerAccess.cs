@@ -1,6 +1,9 @@
-﻿using Data.ModelLayer;
+﻿using Dapper;
+using Data.ModelLayer;
+using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +21,14 @@ namespace Data.DatabaseLayer
 
         public Streamer GetStreamerById(int id)
         {
-            throw new NotImplementedException();
+            string sql = "SELECT * FROM Streamer WHERE id = 1;";
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                var streamer = connection.QuerySingle<Streamer>(sql);
+
+                return streamer;
+            }
         }
     }
 }

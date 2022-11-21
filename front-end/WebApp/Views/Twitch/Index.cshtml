@@ -1,8 +1,7 @@
-﻿@using Microsoft.AspNetCore.Components
-@inject NavigationManager NavigationManager
+﻿@model string
 
 <center>Redirecting...</center>
 
 @{
-    Console.WriteLine(NavigationManager.Uri);
+    Console.WriteLine(Model);
 }

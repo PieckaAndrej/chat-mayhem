@@ -3,22 +3,22 @@ using System.Text;
 
 namespace WebApp.Models
 {
-    public class TwitchValidate
+    public class TwitchToken
     {
-        [JsonProperty("client_id")]
-        public string ClientId { get; set; }
-
-        [JsonProperty("login")]
-        public string Login { get; set; }
-
-        [JsonProperty("scopes")]
-        public List<string> Scopes { get; set; }
-
-        [JsonProperty("user_id")]
-        public string UserId { get; set; }
+        [JsonProperty("access_token")]
+        public string? AccessToken { get; set; }
 
         [JsonProperty("expires_in")]
         public int ExpiresIn { get; set; }
+
+        [JsonProperty("refresh_token")]
+        public string? RefreshToken { get; set; }
+
+        [JsonProperty("scope")]
+        public List<string>? Scope { get; set; }
+
+        [JsonProperty("token_type")]
+        public string? TokenType { get; set; }
 
         public override string ToString()
         {

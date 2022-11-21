@@ -37,7 +37,7 @@ namespace WebApp.Controllers
             TwitchState = Guid.NewGuid().ToString();
 
             string baseUrl = "https://id.twitch.tv/oauth2/authorize?";
-            param.Add("response_type", "token");
+            param.Add("response_type", "code");
             param.Add("client_id", "8hmbxjfogmmj9e14y2ohn2vb0q8zv5");
             param.Add("scope", "chat:read");
             param.Add("redirect_uri", "https://localhost:7026/twitch");

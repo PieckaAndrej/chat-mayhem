@@ -6,17 +6,16 @@ namespace WebApp.Controllers
 {
     public class TwitchController : Controller
     {
-        public IActionResult Index(string access_token, string scope, string state, string token_type)
+        public IActionResult Index(string code, string scope, string state)
         {
-
-            Console.WriteLine(access_token);
-            Console.WriteLine(scope);
-            Console.WriteLine(state);
-
             TwitchService twitchService = new TwitchService();
-            TwitchValidate? validate = twitchService.ValidateToken(access_token);
+            TwitchToken? twitchToken = twitchService.GetTwitchToken(code);
 
-            Console.WriteLine(validate?.login);
+            Console.WriteLine(twitchToken);
+
+            TwitchValidate? validate = twitchService.ValidateToken(twitchToken.AccessToken); 
+
+            Console.WriteLine(validate);
 
             return View();
         }

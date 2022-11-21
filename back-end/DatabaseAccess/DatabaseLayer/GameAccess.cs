@@ -35,9 +35,20 @@ namespace Data.DatabaseLayer
             }
         }
 
-        public int DeleteGame(int id)
+        public Game? DeleteGame(int id)
         {
-            throw new NotImplementedException();
+            Game game = GetGameById(id);
+            string sql = "DELETE FROM public.\"Game\" WHERE id = @id RETURNING id";
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                game.Id = connection.QuerySingle<int>(sql, new
+                {
+                    id = id
+                });
+
+                return game;
+            }
         }
 
         public Game? GetGameById(int id)
@@ -77,9 +88,25 @@ namespace Data.DatabaseLayer
             throw new NotImplementedException();
         }
 
-        public int UpdateGame(int id, Game game)
+        public Game UpdateGame(int id, Game game)
         {
-            throw new NotImplementedException();
+            string sql = "UPDATE public.\"Game\" SET" +
+                "( \"timeLimit\" = @timeLimit, owner = @owner, \"modelId\" = @modelId, \"questionPackId\" = @questionPackId) " +
+                "WHERE id = @id RETURNING id;";
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                game.Id = connection.QuerySingle<int>(sql, new
+                {
+                    timeLimit = game.TimeLimit.TotalSeconds,
+                    owner = game.Streamer.Id,
+                    modelId = game.Mode.Id,
+                    questionPackId = game.QuestionPack.Id,
+                    id = id
+                });
+
+                return game;
+            }
         }
     }
 }

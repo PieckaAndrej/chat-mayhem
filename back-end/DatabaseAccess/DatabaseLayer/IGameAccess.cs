@@ -12,8 +12,8 @@ namespace Data.DatabaseLayer
         List<Game> GetGames();
         Game? GetGameById(int id);
         Game CreateGame(Game game);
-        int UpdateGame(int id, Game game);
-        int DeleteGame(int id);
+        Game UpdateGame(int id, Game game);
+        Game? DeleteGame(int id);
 
     }
 }

@@ -16,8 +16,7 @@ namespace WebApp.Controllers
         
         public IActionResult Index()
         {
-            Games tamkd = new Games();
-            return View(tamkd.games);
+            return View();
         }
 
         [HttpGet]
@@ -31,7 +30,6 @@ namespace WebApp.Controllers
         {
             var request = new RestRequest("api/Game").AddJsonBody(game);
             var response = await _client.ExecutePostAsync<Game>(request);
-            Console.WriteLine("yo");
 
             return RedirectToAction("Index");
         }

@@ -52,7 +52,7 @@ namespace Test
         }
 
         [Fact]
-        public void TestGameController()
+        public void TestPostGameController()
         {
             //Arrange
             var gameController = new GameController(configuration);
@@ -65,6 +65,68 @@ namespace Test
             Assert.Equal(_testGame.Streamer, resultValue?.Streamer);
             Assert.Equal(_testGame.Mode, resultValue?.Mode);
             Assert.Equal(_testGame.TimeLimit, resultValue?.TimeLimit);
+        }
+
+        [Fact]
+        public void TestUpdateGame()
+        {
+            //Arrange
+            var gameAccess = new GameAccess(configuration.GetConnectionString("ChatMayhem Connection") ?? "");
+            int id = 1;
+            _testGame.TimeLimit = TimeSpan.FromSeconds(20);
+
+            //Act
+            Game game = gameAccess.UpdateGame(id, _testGame);
+            Game? resultGame = gameAccess.GetGameById(id);
+
+            //Assert
+            Assert.Equal(_testGame.TimeLimit, resultGame?.TimeLimit);
+        }
+
+        /*[Fact]
+        public void TestPutGameController()
+        {
+            //Arrange
+            var gameController = new GameController(configuration);
+
+            //Act
+            ActionResult<GameDto> result = gameController.Post(GameDto.Convert(_testGame));
+            Game? resultValue = GameDto.Convert(result.Value);
+
+            //Arrange
+            Assert.Equal(_testGame.Streamer, resultValue?.Streamer);
+            Assert.Equal(_testGame.Mode, resultValue?.Mode);
+            Assert.Equal(_testGame.TimeLimit, resultValue?.TimeLimit);
+        }*/
+
+        [Fact]
+        public void TestDeleteGame()
+        {
+            //Arrange
+            var gameAccess = new GameAccess(configuration.GetConnectionString("ChatMayhem Connection") ?? "");
+
+            //Act
+            gameAccess.CreateGame(_testGame);
+            bool deleted = gameAccess.DeleteGame(_testGame.Id);
+
+            //Assert
+            Assert.True(deleted);
+        }
+
+        [Fact]
+        public void TestGetGame()
+        {
+            //Arrange
+            var gameAccess = new GameAccess(configuration.GetConnectionString("ChatMayhem Connection") ?? "");
+
+            //Act
+            gameAccess.CreateGame(_testGame);
+            Game? resultGame = gameAccess.GetGameById(_testGame.Id);
+
+            //Assert
+            Assert.Equal(_testGame.Streamer, resultGame?.Streamer);
+            Assert.Equal(_testGame.Mode, resultGame?.Mode);
+            Assert.Equal(_testGame.TimeLimit, resultGame?.TimeLimit);
         }
     }
 }

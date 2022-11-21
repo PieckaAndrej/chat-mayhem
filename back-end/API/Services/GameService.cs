@@ -27,7 +27,7 @@ namespace API.Services
             return _gameAccess.UpdateGame(id, game);
         }
 
-        public Game? DeleteGame(int id)
+        public bool DeleteGame(int id)
         {
             return _gameAccess.DeleteGame(id);
         }

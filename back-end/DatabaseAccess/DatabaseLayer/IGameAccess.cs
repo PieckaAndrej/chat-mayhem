@@ -13,7 +13,7 @@ namespace Data.DatabaseLayer
         Game? GetGameById(int id);
         Game CreateGame(Game game);
         Game UpdateGame(int id, Game game);
-        Game? DeleteGame(int id);
+        bool DeleteGame(int id);
 
     }
 }

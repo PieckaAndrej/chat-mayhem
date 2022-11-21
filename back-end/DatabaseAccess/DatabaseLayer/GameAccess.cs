@@ -35,19 +35,25 @@ namespace Data.DatabaseLayer
             }
         }
 
-        public Game? DeleteGame(int id)
+        public bool DeleteGame(int id)
         {
-            Game game = GetGameById(id);
-            string sql = "DELETE FROM public.\"Game\" WHERE id = @id RETURNING id";
+            string sql = "DELETE FROM public.\"Game\" WHERE Id = @id";
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                game.Id = connection.QuerySingle<int>(sql, new
+                int rowsAffected = connection.Execute(sql, new
                 {
-                    id = id
+                    Id = id
                 });
 
-                return game;
+                if(rowsAffected != 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
 
@@ -92,7 +98,7 @@ namespace Data.DatabaseLayer
         {
             string sql = "UPDATE public.\"Game\" SET" +
                 "( \"timeLimit\" = @timeLimit, owner = @owner, \"modelId\" = @modelId, \"questionPackId\" = @questionPackId) " +
-                "WHERE id = @id RETURNING id;";
+                "WHERE Id = @id RETURNING id;";
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
@@ -102,7 +108,7 @@ namespace Data.DatabaseLayer
                     owner = game.Streamer.Id,
                     modelId = game.Mode.Id,
                     questionPackId = game.QuestionPack.Id,
-                    id = id
+                    Id = id
                 });
 
                 return game;

@@ -73,18 +73,18 @@ namespace API.Controllers
         }
 
         [HttpDelete]
-        public ActionResult<GameDto> Delete(int id)
+        public ActionResult Delete(int id)
         {
-            Game game = ServiceInjector.gameService.DeleteGame(id);
+            bool deleted = ServiceInjector.gameService.DeleteGame(id);
 
-            GameDto returnGame = GameDto.Convert(game);
-
-            if (returnGame == null)
+            if (deleted == true)
             {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(200);
             }
-
-            return returnGame;
+            else
+            {
+                return new StatusCodeResult(204);
+            }
         }
     }
 }

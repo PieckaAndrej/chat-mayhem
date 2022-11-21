@@ -1,5 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Net;
+using System.Text;
+using System.Web;
 using WebApp.Models;
 
 namespace WebApp.Controllers
@@ -7,9 +12,11 @@ namespace WebApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private string TwitchState;
 
         public HomeController(ILogger<HomeController> logger)
         {
+            TwitchState = Guid.NewGuid().ToString();
             _logger = logger;
         }
 
@@ -21,6 +28,24 @@ namespace WebApp.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        public IActionResult LogIn()
+        {
+            var param = new NameValueCollection();
+
+            TwitchState = Guid.NewGuid().ToString();
+
+            string baseUrl = "https://id.twitch.tv/oauth2/authorize?";
+            param.Add("response_type", "code");
+            param.Add("client_id", "8hmbxjfogmmj9e14y2ohn2vb0q8zv5");
+            param.Add("redirect_uri", "https://localhost:7026/twitch");
+            param.Add("state", TwitchState);
+
+            var url = HttpUtility.ParseQueryString(baseUrl);
+            url.Add(param);
+            
+            return Redirect(HttpUtility.UrlDecode(url.ToString()));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

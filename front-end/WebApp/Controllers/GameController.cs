@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RestSharp;
 using System.Drawing.Text;
+using WebApp.BusinessLogic;
 using WebApp.Models;
 
 namespace WebApp.Controllers
 {
     public class GameController : Controller
     {
-        private readonly RestClient _client;
+        private readonly GameLogic _gameLogic;
 
         public GameController()
         {
-            _client = new RestClient("https://localhost:7200/");
+            _gameLogic = new GameLogic();
         }
         
         public IActionResult Index()
@@ -26,10 +27,9 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Game game)
+        public IActionResult Create(Game game)
         {
-            var request = new RestRequest("api/Game").AddJsonBody(game);
-            var response = await _client.ExecutePostAsync<Game>(request);
+            Game? response = _gameLogic.CreateGame(game);
 
             return RedirectToAction("Index");
         }

@@ -1,13 +1,17 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers
 {
     public class TwitchController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index(String code, String scope, string state)
         {
-            return View();
+
+            Console.WriteLine(code);
+            Console.WriteLine(scope);
+            Console.WriteLine(state);
+            Console.WriteLine("yo");
+            return View("Index", $"code={code}&scope={scope}&state={state}");
         }
     }
 }

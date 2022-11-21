@@ -1,17 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebApp.Models;
+using WebApp.Services;
 
 namespace WebApp.Controllers
 {
     public class TwitchController : Controller
     {
-        public IActionResult Index(String code, String scope, string state)
+        public IActionResult Index(string access_token, string scope, string state, string token_type)
         {
 
-            Console.WriteLine(code);
+            Console.WriteLine(access_token);
             Console.WriteLine(scope);
             Console.WriteLine(state);
-            Console.WriteLine("yo");
-            return View("Index", $"code={code}&scope={scope}&state={state}");
+
+            TwitchService twitchService = new TwitchService();
+            TwitchValidate? validate = twitchService.ValidateToken(access_token);
+
+            Console.WriteLine(validate?.login);
+
+            return View();
         }
     }
 }

@@ -1,23 +1,23 @@
-﻿using Newtonsoft.Json;
-using System.Text;
+﻿using System.Text;
+using System.Text.Json.Serialization;
 
 namespace WebApp.Models
 {
     public class TwitchToken
     {
-        [JsonProperty("access_token")]
+        [JsonPropertyName("access_token")]
         public string? AccessToken { get; set; }
 
-        [JsonProperty("expires_in")]
+        [JsonPropertyName("expires_in")]
         public int ExpiresIn { get; set; }
 
-        [JsonProperty("refresh_token")]
+        [JsonPropertyName("refresh_token")]
         public string? RefreshToken { get; set; }
 
-        [JsonProperty("scope")]
+        [JsonPropertyName("scope")]
         public List<string>? Scope { get; set; }
 
-        [JsonProperty("token_type")]
+        [JsonPropertyName("token_type")]
         public string? TokenType { get; set; }
 
         public override string ToString()

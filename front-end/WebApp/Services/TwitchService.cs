@@ -1,6 +1,7 @@
 ﻿using RestSharp;
 using RestSharp.Authenticators.OAuth2;
 using System.Security.Policy;
+using System.Text.Json;
 using WebApp.Models;
 
 namespace WebApp.Services
@@ -14,11 +15,11 @@ namespace WebApp.Services
 
             RestRequest restRequest = new RestRequest("oauth2/validate");
 
-            var response = restClient.ExecuteGet<TwitchValidate>(restRequest);
+            var response = restClient.ExecuteGet(restRequest);
 
             Console.WriteLine(response.ResponseStatus);
 
-            return response.Data;
+            return JsonSerializer.Deserialize<TwitchValidate>(response.Content);
         }
 
         public TwitchToken? GetTwitchToken(string code)
@@ -32,11 +33,12 @@ namespace WebApp.Services
             restRequest.AddParameter("client_secret", "");
             restRequest.AddParameter("redirect_uri", "https://localhost:7026/twitch");
 
-            var response = restClient.ExecutePost<TwitchToken>(restRequest);
+
+            var response = restClient.ExecutePost(restRequest);
 
             Console.WriteLine(response.ResponseStatus);
 
-            return response.Data;
+            return JsonSerializer.Deserialize<TwitchToken>(response.Content);
         }
     }
 }

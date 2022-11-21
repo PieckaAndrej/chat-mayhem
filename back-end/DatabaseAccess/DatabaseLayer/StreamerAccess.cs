@@ -26,7 +26,6 @@ namespace Data.DatabaseLayer
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 var streamer = connection.QuerySingle<Streamer>(sql, new { Id = id });
-                Console.WriteLine(streamer.OAuth);
                 return streamer;
             }
         }

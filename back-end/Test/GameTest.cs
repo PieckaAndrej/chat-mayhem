@@ -93,7 +93,7 @@ namespace Test
         {
             //Arrange
             var gameAccess = new GameAccess(testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
-            int id = 1;
+            int id = 106;
             _testGame.TimeLimit = TimeSpan.FromSeconds(20);
 
             //Act

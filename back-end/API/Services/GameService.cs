@@ -16,5 +16,20 @@ namespace API.Services
         {
             return _gameAccess.CreateGame(game);
         }
+
+        public Game? GetGameById(int id)
+        {
+            return _gameAccess.GetGameById(id);
+        }
+
+        public Game UpdateGame(int id, Game game)
+        {
+            return _gameAccess.UpdateGame(id, game);
+        }
+
+        public Game? DeleteGame(int id)
+        {
+            return _gameAccess.DeleteGame(id);
+        }
     }
 }

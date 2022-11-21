@@ -4,6 +4,7 @@ using Data.DatabaseLayer;
 using Data.ModelLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Xml.Linq;
 
 namespace API.Controllers
 {
@@ -29,9 +30,53 @@ namespace API.Controllers
         {
             Game game = GameDto.Convert(inGame);
 
-            Console.WriteLine("hi");
+            game = ServiceInjector.gameService.Add(game);
+            GameDto returnGame = GameDto.Convert(game);
 
-            game = _gameService.Add(game);
+            if (returnGame == null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+
+            return returnGame;
+        }
+
+        [HttpPut]
+        public ActionResult<GameDto> Put(GameDto inGame, int id)
+        {
+            Game game = GameDto.Convert(inGame);
+
+            game = ServiceInjector.gameService.UpdateGame(id, game);
+            GameDto returnGame = GameDto.Convert(game);
+
+            if (returnGame == null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+
+            return returnGame;
+        }
+
+        [HttpGet]
+        public ActionResult<GameDto> Get(int id)
+        {
+            Game game = ServiceInjector.gameService.GetGameById(id);
+
+            GameDto returnGame = GameDto.Convert(game);
+
+            if (returnGame == null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+
+            return returnGame;
+        }
+
+        [HttpDelete]
+        public ActionResult<GameDto> Delete(int id)
+        {
+            Game game = ServiceInjector.gameService.DeleteGame(id);
+
             GameDto returnGame = GameDto.Convert(game);
 
             if (returnGame == null)

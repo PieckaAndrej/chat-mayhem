@@ -5,15 +5,19 @@ namespace API.Services
 {
     public class ServiceInjector
     {
+        private static IConfiguration configuration = new ConfigurationBuilder()
+                    .AddJsonFile($"appsettings.json", optional: false)
+                    .Build();
+
+        public ServiceInjector(IConfiguration configuration)
+        {
+            ServiceInjector.configuration = configuration;
+        }
 
         private static string con
         {
             get
             {
-                IConfiguration configuration = new ConfigurationBuilder()
-                    .AddJsonFile($"appsettings.json", optional: false)
-                    .Build();
-
                 return configuration.GetConnectionString("ChatMayhem Connection") 
                     ?? "No connection string";
             }

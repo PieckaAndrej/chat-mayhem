@@ -1,23 +1,23 @@
-﻿using Newtonsoft.Json;
-using System.Text;
+﻿using System.Text;
+using System.Text.Json.Serialization;
 
 namespace WebApp.Models
 {
     public class TwitchValidate
     {
-        [JsonProperty("client_id")]
+        [JsonPropertyName("client_id")]
         public string ClientId { get; set; }
 
-        [JsonProperty("login")]
+        [JsonPropertyName("login")]
         public string Login { get; set; }
 
-        [JsonProperty("scopes")]
+        [JsonPropertyName("scopes")]
         public List<string> Scopes { get; set; }
 
-        [JsonProperty("user_id")]
+        [JsonPropertyName("user_id")]
         public string UserId { get; set; }
 
-        [JsonProperty("expires_in")]
+        [JsonPropertyName("expires_in")]
         public int ExpiresIn { get; set; }
 
         public override string ToString()

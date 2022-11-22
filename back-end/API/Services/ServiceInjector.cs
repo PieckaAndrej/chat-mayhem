@@ -1,33 +1,33 @@
 ﻿using Data.DatabaseLayer;
+using Microsoft.Extensions.Configuration;
+using System.ComponentModel;
 using System.Configuration;
 
 namespace API.Services
 {
     public class ServiceInjector
     {
-        private static IConfiguration configuration = new ConfigurationBuilder()
-                    .AddJsonFile($"appsettings.json", optional: false)
-                    .Build();
-
-        public ServiceInjector(IConfiguration configuration)
-        {
-            ServiceInjector.configuration = configuration;
-        }
-
-        private static string con
+        private static string _con = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json", optional: false)
+                    .Build().GetConnectionString("ChatMayhem Connection")
+                    ?? "No connection string";
+        public static string Con 
         {
             get
             {
-                return configuration.GetConnectionString("ChatMayhem Connection") 
-                    ?? "No connection string";
+                return _con; 
             }
+            set
+            {
+                _con = value;
+            } 
         }
 
         public static GameService gameService
         {
             get
             {
-                return new GameService(new GameAccess(con));
+                return new GameService(new GameAccess(Con));
             }
         }
 
@@ -35,8 +35,8 @@ namespace API.Services
         {
             get
             {
-                Console.WriteLine(con);
-                return new StreamerService(new StreamerAccess(con)); 
+                Console.WriteLine(Con);
+                return new StreamerService(new StreamerAccess(Con)); 
             }
         }
 
@@ -44,7 +44,7 @@ namespace API.Services
         {
             get
             {
-                return new GameModeService(new GameModeAccess(con));
+                return new GameModeService(new GameModeAccess(Con));
             }
         }
 
@@ -52,7 +52,7 @@ namespace API.Services
         {
             get
             {
-                return new QuestionPackService(new QuestionPackAccess(con));
+                return new QuestionPackService(new QuestionPackAccess(Con));
             }
         }
     }

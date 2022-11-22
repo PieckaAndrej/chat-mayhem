@@ -16,7 +16,7 @@ namespace API.Controllers
 
         public GameController(IConfiguration inConfiguration)
         {
-            new ServiceInjector(inConfiguration);
+            ServiceInjector.Con = inConfiguration.GetConnectionString("ChatMayhem Connection") ?? "No connection string";
 
             string? connectionString = inConfiguration.GetConnectionString("ChatMayhem Connection");
             if (connectionString == null)

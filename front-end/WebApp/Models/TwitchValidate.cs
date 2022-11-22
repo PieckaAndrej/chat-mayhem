@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace WebApp.Models
 {
-    public class TwitchValidate
+    public record TwitchValidate
     {
         [JsonPropertyName("client_id")]
         public string ClientId { get; set; }

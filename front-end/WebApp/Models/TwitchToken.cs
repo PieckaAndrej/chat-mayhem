@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace WebApp.Models
 {
-    public class TwitchToken
+    public record TwitchToken
     {
         [JsonPropertyName("access_token")]
         public string? AccessToken { get; set; }

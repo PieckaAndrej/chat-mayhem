@@ -8,6 +8,11 @@ namespace WebApp.Controllers
     {
         public IActionResult Index(string code, string scope, string state)
         {
+            string twitchState = HttpContext.Request.Cookies["twitch_state"] ?? "";
+
+            Console.WriteLine(twitchState);
+            Console.WriteLine(twitchState == state);
+
             TwitchService twitchService = new TwitchService();
             TwitchToken? twitchToken = twitchService.GetTwitchToken(code);
 

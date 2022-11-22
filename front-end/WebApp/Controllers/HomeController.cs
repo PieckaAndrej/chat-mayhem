@@ -12,11 +12,9 @@ namespace WebApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private string TwitchState;
 
         public HomeController(ILogger<HomeController> logger)
         {
-            TwitchState = Guid.NewGuid().ToString();
             _logger = logger;
         }
 
@@ -34,14 +32,16 @@ namespace WebApp.Controllers
         {
             var param = new NameValueCollection();
 
-            TwitchState = Guid.NewGuid().ToString();
+            // GUID string for a state
+            string twitchState = Guid.NewGuid().ToString();
+            HttpContext.Response.Cookies.Append("twitch_state", twitchState);
 
             string baseUrl = "https://id.twitch.tv/oauth2/authorize?";
             param.Add("response_type", "code");
             param.Add("client_id", "8hmbxjfogmmj9e14y2ohn2vb0q8zv5");
             param.Add("scope", "chat:read");
             param.Add("redirect_uri", "https://localhost:7026/twitch");
-            param.Add("state", TwitchState);
+            param.Add("state", twitchState);
 
             var url = HttpUtility.ParseQueryString(baseUrl);
             url.Add(param);

@@ -27,7 +27,7 @@ namespace Test
         public GameTest(ITestOutputHelper extraOutput) { 
             _extraOutput = extraOutput;
 
-            var owner = new Streamer("arst", 1, "abcde");
+            var owner = new Streamer("arst", "1", "abcde");
             var gameMode = new GameMode(1, "Fun game", "No cheating");
             var timeLimit = TimeSpan.FromSeconds(15);
             var questionPack = new QuestionPack(1, "", "", new string[1] ,"",DateTime.Now);

@@ -21,30 +21,35 @@ namespace Data.DatabaseLayer
 
         public Streamer CreateStreamer(Streamer streamer)
         {
-            string sql = "INSERT INTO public.\"Streamer\"( \"accessToken\", id, \"refreshToken\") " +
+            if (GetStreamerById(streamer.Id) == null)
+            {
+                string sql = "INSERT INTO public.\"Streamer\"( \"accessToken\", id, \"refreshToken\") " +
                 "VALUES (@accessToken, @id, @refreshToken) RETURNING id;";
 
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                streamer.Id = connection.QuerySingle<int>(sql, new
+                using (var connection = new NpgsqlConnection(_connectionString))
                 {
-                    accessToken = streamer.AccessToken,
-                    id = streamer.Id,
-                    refreshToken = streamer.RefreshToken
-                });
+                    connection.Execute(sql, new
+                    {
+                        accessToken = streamer.AccessToken,
+                        id = streamer.Id,
+                        refreshToken = streamer.RefreshToken
+                    });
 
-                return streamer;
+                    return streamer;
+                }
             }
+            return streamer;
+            
         }
 
-        public Streamer GetStreamerById(int id)
+        public Streamer GetStreamerById(string id)
         {
             string sql = "SELECT \"accessToken\", id, \"refreshToken\" " +
                 "FROM public.\"Streamer\" WHERE id = @Id;";
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                var streamer = connection.QuerySingle<Streamer>(sql, new { Id = id });
+                var streamer = connection.QuerySingleOrDefault<Streamer>(sql, new { Id = id });
                 return streamer;
             }
         }

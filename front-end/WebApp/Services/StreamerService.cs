@@ -2,6 +2,7 @@
 using RestSharp.Authenticators.OAuth2;
 using System.Text.Json;
 using WebApp.DTOs;
+using WebApp.Models;
 
 namespace WebApp.Services
 {
@@ -10,11 +11,11 @@ namespace WebApp.Services
         public async Task<StreamerDto?> CreateStreamer(StreamerDto streamer)
         {
             RestClient restClient = new RestClient("https://localhost:7200/");
-            RestRequest restRequest = new RestRequest("api/streamer");
+            RestRequest restRequest = new RestRequest("api/streamer").AddJsonBody(streamer);
 
-            var response = await restClient.ExecutePostAsync(restRequest);
+            var response = await restClient.ExecutePostAsync<StreamerDto>(restRequest);
 
-            return JsonSerializer.Deserialize<StreamerDto>(response.Content);
+            return response.Data;
         }
     }
 }

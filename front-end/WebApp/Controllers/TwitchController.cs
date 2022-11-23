@@ -1,26 +1,32 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebApp.BusinessLogic;
 using WebApp.Models;
-using WebApp.Services;
 
 namespace WebApp.Controllers
 {
     public class TwitchController : Controller
     {
-        public IActionResult Index(string code, string scope, string state)
+        private StreamerLogic _streamerLogic;
+
+        public TwitchController()
+        {
+            _streamerLogic = new StreamerLogic();
+        }
+
+        public async Task<IActionResult> Index(string code, string state)
         {
             string twitchState = HttpContext.Request.Cookies["twitch_state"] ?? "";
 
-            Console.WriteLine(twitchState);
-            Console.WriteLine(twitchState == state);
+            if (twitchState != state)
+            {
+                return View("Error");
+            }
 
-            TwitchService twitchService = new TwitchService();
-            TwitchToken? twitchToken = twitchService.GetTwitchToken(code);
+            Streamer? streamer = await _streamerLogic.RegisterCode(code);
 
-            Console.WriteLine(twitchToken);
-
-            TwitchValidate? validate = twitchService.ValidateToken(twitchToken.AccessToken); 
-
-            Console.WriteLine(validate);
+            Console.WriteLine(streamer.Name);
+            Console.WriteLine(streamer.UserId);
+            Console.WriteLine(streamer.AccessToken);
 
             return View();
         }

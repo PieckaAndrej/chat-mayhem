@@ -34,9 +34,9 @@ namespace API.DTOs
 
         public static Game Convert(GameDto gameDto)
         {
-            Streamer streamer = ServiceInjector.streamService.Get(gameDto.StreamerId);
-            GameMode mode = ServiceInjector.gameModeService.Get(gameDto.ModeId);
-            QuestionPack questionPack = ServiceInjector.questionPackService.Get(gameDto.QuestionPackId);
+            Streamer streamer = ServiceInjector.StreamerService.Get(gameDto.StreamerId);
+            GameMode mode = ServiceInjector.GameModeService.Get(gameDto.ModeId);
+            QuestionPack questionPack = ServiceInjector.QuestionPackService.Get(gameDto.QuestionPackId);
 
             return new Game(streamer, mode, TimeSpan.FromSeconds(gameDto.TimeLimitSeconds), questionPack, gameDto.Id);
         }

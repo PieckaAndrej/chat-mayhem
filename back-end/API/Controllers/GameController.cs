@@ -22,9 +22,9 @@ namespace API.Controllers
             if (connectionString == null)
             {
                 Console.WriteLine("Connection string is null");
-            } 
+            }
 
-            _gameService = new GameService(new GameAccess(connectionString ?? "No connection string"));
+            _gameService = ServiceInjector.GameService; 
         }
 
         [HttpPost]
@@ -32,7 +32,7 @@ namespace API.Controllers
         {
             Game game = GameDto.Convert(inGame);
 
-            game = ServiceInjector.gameService.Add(game);
+            game = ServiceInjector.GameService.Add(game);
             GameDto returnGame = GameDto.Convert(game);
 
             if (returnGame == null)
@@ -48,12 +48,12 @@ namespace API.Controllers
         {
             Game game = GameDto.Convert(inGame);
 
-            game = ServiceInjector.gameService.UpdateGame(id, game);
+            game = ServiceInjector.GameService.UpdateGame(id, game);
             GameDto returnGame = GameDto.Convert(game);
 
             if (returnGame == null)
             {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status404NotFound);
             }
 
             return returnGame;
@@ -62,14 +62,14 @@ namespace API.Controllers
         [HttpGet]
         public ActionResult<GameDto> Get(int id)
         {
-            Game game = ServiceInjector.gameService.GetGameById(id);
+            Game? game = ServiceInjector.GameService.GetGameById(id);
+
+            if (game == null)
+            {
+                return new StatusCodeResult(StatusCodes.Status404NotFound);
+            }
 
             GameDto returnGame = GameDto.Convert(game);
-
-            if (returnGame == null)
-            {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
 
             return returnGame;
         }
@@ -77,16 +77,14 @@ namespace API.Controllers
         [HttpDelete]
         public ActionResult Delete(int id)
         {
-            bool deleted = ServiceInjector.gameService.DeleteGame(id);
+            bool deleted = ServiceInjector.GameService.DeleteGame(id);
 
-            if (deleted == true)
+            if (!deleted)
             {
-                return new StatusCodeResult(200);
+                return new StatusCodeResult(StatusCodes.Status400BadRequest);
             }
-            else
-            {
-                return new StatusCodeResult(204);
-            }
+
+            return new StatusCodeResult(StatusCodes.Status200OK);
         }
     }
 }

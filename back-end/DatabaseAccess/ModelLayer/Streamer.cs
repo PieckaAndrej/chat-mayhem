@@ -10,25 +10,23 @@ namespace Data.ModelLayer
 {
     public class Streamer
     {
-
+        public string AccessToken { get; set; }
         public int Id { get; set; }
-        public string OAuth { get; set; }
+        public string RefreshToken { get; set; }
 
-        public Streamer(string OAuth)
+        public Streamer(string accessToken, int id, string refreshToken)
         {
-            this.OAuth = OAuth;
-        }
-
-        public Streamer(int id, string OAuth) : this(OAuth)
-        {
+            AccessToken = accessToken;
             Id = id;
+            RefreshToken = refreshToken;
         }
 
         public override bool Equals(object? obj)
         {
             return obj is Streamer streamer &&
+                   AccessToken == streamer.AccessToken &&
                    Id == streamer.Id &&
-                   OAuth == streamer.OAuth;
+                   RefreshToken == streamer.RefreshToken;
         }
     }
 }

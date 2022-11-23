@@ -10,5 +10,6 @@ namespace Data.DatabaseLayer
     public interface IStreamerAccess
     {
         Streamer GetStreamerById(int id);
+        Streamer CreateStreamer(Streamer streamer);
     }
 }

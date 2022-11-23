@@ -10,6 +10,7 @@ using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
@@ -20,11 +21,12 @@ namespace Test
     {
 
         private readonly ITestOutputHelper _extraOutput;
-        private Game _testGame;
-        private IConfiguration configuration;
-        private IConfiguration testConfiguration;
+        private readonly Game _testGame;
+        private readonly IConfiguration _testConfiguration;
 
-        public GameTest(ITestOutputHelper extraOutput) { 
+        public GameTest(ITestOutputHelper extraOutput)
+        {
+
             _extraOutput = extraOutput;
 
             var owner = new Streamer("asdfg", "21345", "abcde");
@@ -33,33 +35,17 @@ namespace Test
             var questionPack = new QuestionPack(1, "me", "best questions", new string[1] {"m"} ,"questions",DateTime.Parse("2022-11-15"));
             _testGame = new Game(owner, gameMode, timeLimit, questionPack);
 
-            configuration = new ConfigurationBuilder()
-                .AddJsonFile($"appsettings.json", optional: false)
-                .Build();
-
-            testConfiguration = new ConfigurationBuilder()
+            _testConfiguration = new ConfigurationBuilder()
                 .AddJsonFile($"appsettings.Test.json", optional: false)
                 .Build();
-
-            var db = CreateDb.Instance;
-        }
-
-        [Fact]
-        public void TestConnection()
-        {
-            _extraOutput.WriteLine(configuration.GetConnectionString("ChatMayhem Connection"));
-            using (var connection = new NpgsqlConnection(configuration.GetConnectionString("ChatMayhem Connection")))
-            {
-                connection.Open();
-                Assert.Equal(System.Data.ConnectionState.Open, connection.State);
-            }
         }
 
         [Fact]
         public void TestCreateGame()
         {
             //Arrange
-            var gameAccess = new GameAccess(testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
+            _testGame.TimeLimit = TimeSpan.FromSeconds(21);
+            var gameAccess = new GameAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
 
             //Act
             Game game = gameAccess.CreateGame(_testGame);
@@ -75,8 +61,10 @@ namespace Test
         public void TestPostGameController()
         {
             //Arrange
-            _extraOutput.WriteLine(testConfiguration.GetConnectionString("ChatMayhem Connection"));
-            var gameController = new GameController(testConfiguration);
+            _extraOutput.WriteLine(_testConfiguration.GetConnectionString("ChatMayhem Connection"));
+
+            _testGame.TimeLimit = TimeSpan.FromSeconds(22);
+            var gameController = new GameController(_testConfiguration);
 
             //Act
             ActionResult<GameDto> result = gameController.Post(GameDto.Convert(_testGame));
@@ -92,9 +80,9 @@ namespace Test
         public void TestUpdateGame()
         {
             //Arrange
-            var gameAccess = new GameAccess(testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
+            var gameAccess = new GameAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
             int id = 115;
-            _testGame.TimeLimit = TimeSpan.FromSeconds(20);
+            _testGame.TimeLimit = TimeSpan.FromSeconds(23);
 
             //Act
             Game game = gameAccess.UpdateGame(id, _testGame);
@@ -108,7 +96,7 @@ namespace Test
         public void TestPutGameController()
         {
             //Arrange
-            var gameController = new GameController(testConfiguration);
+            var gameController = new GameController(_testConfiguration);
 
             //Act
             ActionResult<GameDto> result = gameController.Post(GameDto.Convert(_testGame));
@@ -124,7 +112,8 @@ namespace Test
         public void TestDeleteGame()
         {
             //Arrange
-            var gameAccess = new GameAccess(testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
+            _testGame.TimeLimit = TimeSpan.FromSeconds(24);
+            var gameAccess = new GameAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
 
             //Act
             gameAccess.CreateGame(_testGame);
@@ -138,7 +127,8 @@ namespace Test
         public void TestGetGame()
         {
             //Arrange
-            var gameAccess = new GameAccess(testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
+            _testGame.TimeLimit = TimeSpan.FromSeconds(25);
+            var gameAccess = new GameAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
 
             //Act
             gameAccess.CreateGame(_testGame);

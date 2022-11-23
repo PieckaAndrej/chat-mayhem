@@ -31,6 +31,14 @@ namespace API.Services
             }
         }
 
+        public static ChatService chatService
+        {
+            get
+            {
+                return new ChatService(new ChatAccess(Con));
+            }
+        }
+
         public static StreamerService streamService
         {
             get

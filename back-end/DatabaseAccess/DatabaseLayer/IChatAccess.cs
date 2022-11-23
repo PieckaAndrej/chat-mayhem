@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Data.DatabaseLayer
 {
-    internal interface IChatAccess
+    public interface IChatAccess
     {
+        string CheckAnswer(string answer);
     }
 }

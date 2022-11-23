@@ -27,10 +27,10 @@ namespace Test
         public GameTest(ITestOutputHelper extraOutput) { 
             _extraOutput = extraOutput;
 
-            var owner = new Streamer("arst", "1", "abcde");
+            var owner = new Streamer("asdfg", "21345", "abcde");
             var gameMode = new GameMode(1, "Fun game", "No cheating");
             var timeLimit = TimeSpan.FromSeconds(15);
-            var questionPack = new QuestionPack(1, "", "", new string[1] ,"",DateTime.Now);
+            var questionPack = new QuestionPack(1, "me", "best questions", new string[1] {"m"} ,"questions",DateTime.Parse("2022-11-15"));
             _testGame = new Game(owner, gameMode, timeLimit, questionPack);
 
             configuration = new ConfigurationBuilder()
@@ -93,7 +93,7 @@ namespace Test
         {
             //Arrange
             var gameAccess = new GameAccess(testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
-            int id = 106;
+            int id = 115;
             _testGame.TimeLimit = TimeSpan.FromSeconds(20);
 
             //Act

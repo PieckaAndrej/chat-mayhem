@@ -60,7 +60,7 @@ namespace Data.DatabaseLayer
         public Game? GetGameById(int id)
         {
             string sql = "SELECT game.owner, game.\"timeLimit\", game.id, " +
-                "streamer.id, streamer.\"key\" as \"OAuth\", " +
+                " streamer.\"accessToken\", streamer.id, streamer.\"refreshToken\", " +
                 "mode.id, mode.description, mode.rules, " +
                 "questionPack.id, questionPack.author, questionPack.\"name\", " +
                 "questionPack.tag, questionPack.category, questionPack.\"creationDate\" " +
@@ -82,7 +82,7 @@ namespace Data.DatabaseLayer
                     return g;
                 }), 
                 new { Id = id },
-                splitOn: "id"
+                splitOn: "accessToken, id, id"
                 ).AsQueryable().SingleOrDefault();
 
                 return game;

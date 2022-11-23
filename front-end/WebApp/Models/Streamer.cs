@@ -4,9 +4,9 @@
     {
         public string Name { get; set; }
         public string AccessToken { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
-        public Streamer(string name, string accessToken, int userId)
+        public Streamer(string name, string accessToken, string userId)
         {
             Name = name;
             AccessToken = accessToken;

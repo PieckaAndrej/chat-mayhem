@@ -16,9 +16,9 @@ namespace API.Services
             _streamerAccess = streamerAccess;
         }
 
-        public Streamer Get(int id)
+        public Streamer Get(string streamerId)
         {
-            return _streamerAccess.GetStreamerById(id);
+            return _streamerAccess.GetStreamerById(streamerId);
         }
 
         public Streamer Add(Streamer streamer)

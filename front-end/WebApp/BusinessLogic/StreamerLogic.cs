@@ -25,17 +25,17 @@ namespace WebApp.BusinessLogic
 
             TwitchToken? twitchToken = await twitchService.GetTwitchToken(code);
 
-            if (twitchToken != null)
+            if (twitchToken.AccessToken != null)
             {
                 StreamerDto? streamerDto = await CreateStreamer(
                     new StreamerDto(twitchToken.AccessToken ?? "", twitchToken.RefreshToken ?? ""));
 
-                if (streamerDto != null)
+                if (streamerDto.AccessToken != null)
                 {
                     TwitchValidate? validate = await twitchService.ValidateToken(
                         streamerDto.AccessToken);
 
-                    if (validate != null)
+                    if (validate.Login != null)
                     {
                         returnStreamer = new Streamer(validate.Login,
                             twitchToken.AccessToken, validate.UserId);

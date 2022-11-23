@@ -6,14 +6,14 @@ namespace API.DTOs
     public class GameDto
     {
         public int Id { get; set; }
-        public int StreamerId { get; set; }
+        public string StreamerId { get; set; }
         public int ModeId { get; set; }
         public double TimeLimitSeconds { get; set; }
         public int QuestionPackId { get; set; }  
 
         public GameDto() { }
 
-        public GameDto(int streamer, int mode, double timeLimit, int questionPackId)
+        public GameDto(string streamer, int mode, double timeLimit, int questionPackId)
         {
             StreamerId = streamer;
             ModeId = mode;
@@ -21,7 +21,7 @@ namespace API.DTOs
             QuestionPackId = questionPackId;
         }
 
-        public GameDto(int streamer, int mode, double timeLimit, int questionPackId, int id)
+        public GameDto(string streamer, int mode, double timeLimit, int questionPackId, int id)
             : this(streamer, mode, timeLimit, questionPackId)
         {
             Id = id;

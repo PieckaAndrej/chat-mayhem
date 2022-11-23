@@ -9,7 +9,7 @@ namespace Data.DatabaseLayer
 {
     public interface IStreamerAccess
     {
-        Streamer GetStreamerById(int id);
+        Streamer GetStreamerById(string streamerId);
         Streamer CreateStreamer(Streamer streamer);
     }
 }

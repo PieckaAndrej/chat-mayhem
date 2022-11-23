@@ -26,7 +26,7 @@ namespace API.DTOs
         {
             TwitchValidate? validation = await ServiceInjector.StreamerService.ValidateToken(streamerDto.AccessToken);
 
-            if (validation == null)
+            if (String.IsNullOrWhiteSpace(validation?.ClientId))
             {
                 return null;
             }

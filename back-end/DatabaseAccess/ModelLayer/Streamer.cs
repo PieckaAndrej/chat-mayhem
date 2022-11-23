@@ -11,10 +11,10 @@ namespace Data.ModelLayer
     public class Streamer
     {
         public string AccessToken { get; set; }
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string RefreshToken { get; set; }
 
-        public Streamer(string accessToken, int id, string refreshToken)
+        public Streamer(string accessToken, string id, string refreshToken)
         {
             AccessToken = accessToken;
             Id = id;

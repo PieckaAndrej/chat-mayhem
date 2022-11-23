@@ -28,7 +28,7 @@ namespace API.Controllers
         [HttpGet]
         public ActionResult<string> GetAnswer(string answer)
         {
-            string viewerAnswer = ServiceInjector.chatService.GetAnswer(answer);
+            string viewerAnswer = ServiceInjector.ChatService.GetAnswer(answer);
 
             if (viewerAnswer.Equals("Invalid answer"))
             {

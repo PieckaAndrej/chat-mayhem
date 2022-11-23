@@ -11,19 +11,20 @@ namespace API.Services
                     .AddJsonFile("appsettings.json", optional: false)
                     .Build().GetConnectionString("ChatMayhem Connection")
                     ?? "No connection string";
-        public static string Con 
+
+        public static string Con
         {
             get
             {
-                return _con; 
+                return _con;
             }
             set
             {
                 _con = value;
-            } 
+            }
         }
 
-        public static GameService gameService
+        public static GameService GameService
         {
             get
             {
@@ -31,7 +32,7 @@ namespace API.Services
             }
         }
 
-        public static ChatService chatService
+        public static ChatService ChatService
         {
             get
             {
@@ -39,16 +40,16 @@ namespace API.Services
             }
         }
 
-        public static StreamerService streamService
+        public static StreamerService StreamerService
         {
             get
             {
                 Console.WriteLine(Con);
-                return new StreamerService(new StreamerAccess(Con)); 
+                return new StreamerService(new StreamerAccess(Con));
             }
         }
 
-        public static GameModeService gameModeService 
+        public static GameModeService GameModeService
         {
             get
             {
@@ -56,7 +57,7 @@ namespace API.Services
             }
         }
 
-        public static QuestionPackService questionPackService
+        public static QuestionPackService QuestionPackService
         {
             get
             {

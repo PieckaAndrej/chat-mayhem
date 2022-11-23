@@ -15,7 +15,7 @@ namespace WebApp.Models
         public List<string> Scopes { get; set; }
 
         [JsonPropertyName("user_id")]
-        public string UserId { get; set; }
+        public int UserId { get; set; }
 
         [JsonPropertyName("expires_in")]
         public int ExpiresIn { get; set; }

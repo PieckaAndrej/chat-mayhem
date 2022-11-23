@@ -14,6 +14,5 @@ namespace Data.DatabaseLayer
         Game CreateGame(Game game);
         Game UpdateGame(int id, Game game);
         bool DeleteGame(int id);
-
     }
 }

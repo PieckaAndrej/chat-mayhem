@@ -28,7 +28,7 @@ namespace WebApp.Controllers
             Console.WriteLine(streamer.UserId);
             Console.WriteLine(streamer.AccessToken);
 
-            return View();
+            return RedirectToAction("Index", "Game");
         }
     }
 }

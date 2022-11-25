@@ -1,4 +1,5 @@
 ﻿using RestSharp;
+using WebApp.Hubs;
 using WebApp.Models;
 
 namespace WebApp.Services
@@ -7,17 +8,17 @@ namespace WebApp.Services
     {
         private readonly RestClient _client;
 
+        private ChatHub chatHub;
+
         public ChatService()
         {
             _client = new RestClient("https://localhost:7200/");
         }
 
-        public async Task<string> CheckViewerAnswer(string answer)
+        public async Task<RestResponse<string>> CheckViewerAnswer(string answer)
         {
             var request = new RestRequest("api/Chat").AddJsonBody(answer);
-            var response = await _client.ExecutePostAsync<string>(request);
-
-            return response.Content;
+            return await _client.ExecutePostAsync<string>(request);
         }
     }
 }

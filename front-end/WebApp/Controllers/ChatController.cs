@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Controller;
 using WebApp.Services;
 
 namespace WebApp.Controllers
@@ -15,5 +16,10 @@ namespace WebApp.Controllers
 
             return View();
         }*/
+
+        public IActionResult Index()
+        {
+            return View();
+        }
     }
 }

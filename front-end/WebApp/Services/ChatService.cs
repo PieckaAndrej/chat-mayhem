@@ -18,7 +18,7 @@ namespace WebApp.Services
 
         public async Task<string> CheckViewerAnswer(string answer)
         {
-            var request = new RestRequest("api/Chat").AddParameter("answer", answer);
+            var request = new RestRequest("api/Chat").AddParameter("sentence", answer);
 
             var response = await _client.ExecuteGetAsync(request);
 

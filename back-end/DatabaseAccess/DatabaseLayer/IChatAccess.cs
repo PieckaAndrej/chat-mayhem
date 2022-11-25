@@ -8,6 +8,6 @@ namespace Data.DatabaseLayer
 {
     public interface IChatAccess
     {
-        string CheckAnswer(string answer);
+        List<string> GetAnswers();
     }
 }

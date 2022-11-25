@@ -15,7 +15,7 @@ namespace WebApp.Services
         public async Task<RestResponse<Game>> CreateGame(Game game)
         {
             var request = new RestRequest("api/Game").AddJsonBody(game);
-            return await _client.ExecutePostAsync<Game>(request);
+            return await _client.ExecuteGetAsync<Game>(request);
         }
     }
 }

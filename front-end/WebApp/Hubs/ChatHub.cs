@@ -5,11 +5,11 @@ namespace WebApp.Hubs
 {
     public class ChatHub : Hub
     {
-        private ChatService? chatService;
+        private ChatService? chatService = new ChatService();
 
         public async Task SendMessage(string message)
         {
-            message = (await chatService.CheckViewerAnswer(message)).Content;
+           message = await chatService.CheckViewerAnswer(message);
            await Clients.All.SendAsync("ReceiveMessage", message);
         }
     }

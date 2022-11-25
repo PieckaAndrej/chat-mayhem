@@ -3,6 +3,8 @@ using API.Services;
 using Data.DatabaseLayer;
 using Data.ModelLayer;
 using Microsoft.AspNetCore.Mvc;
+using RestSharp;
+using System.Text.Json;
 
 namespace API.Controllers
 {
@@ -11,6 +13,8 @@ namespace API.Controllers
     public class ChatController
     {
         private ChatService chatService;
+
+        private readonly RestClient _client;
 
         public ChatController(IConfiguration inConfiguration)
         {
@@ -23,20 +27,28 @@ namespace API.Controllers
             }
 
             chatService = new ChatService(new ChatAccess(connectionString ?? "No connection string"));
+
+            _client = new RestClient("https://www.api.secretpizza.dk/");
         }
 
         [HttpGet]
-        public ActionResult<string> GetAnswer(string answer)
+        public async Task<ActionResult<string>> CheckAnswer(string sentence)
         {
-            string viewerAnswer = ServiceInjector.ChatService.GetAnswer(answer);
+            List<string> viewerAnswers = ServiceInjector.ChatService.GetAnswers();
 
-            if (viewerAnswer.Equals("Invalid answer"))
+            var request = new RestRequest("sentences").AddParameter("sentence", sentence).AddBody(viewerAnswers);
+
+            var response = await _client.ExecuteGetAsync(request);
+
+            int similarityNumber = JsonSerializer.Deserialize<int>(response.Content);
+
+            if (similarityNumber >= 0.2)
             {
-                return "Wrong";
+                return sentence;
             }
             else
             {
-                return viewerAnswer;
+                return "Wrong";
             }
         }
 

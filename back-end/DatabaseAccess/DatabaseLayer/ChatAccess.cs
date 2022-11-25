@@ -21,22 +21,15 @@ namespace Data.DatabaseLayer
             Console.WriteLine(_connectionString);
         }
 
-        public string CheckAnswer(string answer)
+        public List<string> GetAnswers()
         {
-            string sqlString = "SELECT text FROM \"Answer\"";
+            string sqlString = "SELECT answer FROM \"Answer\"";
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                string viewerAnswer = connection.QuerySingle<string>(sqlString);
+                List<string> viewerAnswers = connection.QuerySingle<List<string>>(sqlString);
 
-                if (answer.Equals(viewerAnswer))
-                {
-                    return viewerAnswer;
-                }
-                else
-                {
-                    return "Invalid answer";
-                }
+                return viewerAnswers;   
             }
         }
     }

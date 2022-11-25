@@ -12,9 +12,9 @@ namespace API.Services
             _chatAccess = chatAccess;
         }
 
-        public string GetAnswer(string answer)
+        public List<string> GetAnswers()
         {
-            return _chatAccess.CheckAnswer(answer);
+            return _chatAccess.GetAnswers();
         }
     }
 }

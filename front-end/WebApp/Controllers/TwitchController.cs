@@ -19,7 +19,8 @@ namespace WebApp.Controllers
 
         public async Task<IActionResult> Index(string code, string state)
         {
-            string twitchState = HttpContext.Request.Cookies["twitch_state"] ?? "";
+            string twitchState = TempData["twitch_state"]?.ToString() ?? "";
+            TempData.Remove("twitch_state");
 
             if (twitchState != state)
             {
@@ -41,7 +42,8 @@ namespace WebApp.Controllers
         {
             if (TempData.ContainsKey("code"))
             {
-                string code = TempData["code"].ToString();
+                string code = TempData["code"]?.ToString() ?? "";
+                TempData.Remove("code");
 
                 Streamer? streamer = await _streamerLogic.RegisterCode(code);
 
@@ -50,17 +52,22 @@ namespace WebApp.Controllers
                     return View("Error");
                 }
 
+                TwitchUsers? users = await TwitchService.GetTwitchUsers(streamer.AccessToken);
+
+                if (users?.Data?.Count == 0)
+                {
+                    return View("Error");
+                }
+
+                UsersData userdata = users.Data.First();
+
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, streamer.Name),
+                    new Claim(ClaimTypes.Name, userdata.DisplayName),
                     new Claim(ClaimTypes.NameIdentifier, streamer.UserId),
+                    new Claim("AccessToken", streamer.AccessToken),
+                    new Claim("ProfileImage", userdata.ProfileImageUrl)
                 };
-
-                TwitchUsers? user = await TwitchService.GetTwitchUsers(streamer.AccessToken);
-
-                Console.WriteLine(user);
-
-                Console.WriteLine(user?.Data);
 
                 var claimsIdentity = new ClaimsIdentity(claims, "Login");
 

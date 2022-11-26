@@ -34,7 +34,7 @@ namespace WebApp.Controllers
 
             // GUID string for a state
             string twitchState = Guid.NewGuid().ToString();
-            HttpContext.Response.Cookies.Append("twitch_state", twitchState);
+            TempData["twitch_state"] =  twitchState;
 
             string baseUrl = "https://id.twitch.tv/oauth2/authorize?";
             param.Add("response_type", "code");

@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -32,7 +35,15 @@
                     </ul>
                     @if (Context.User.Identity.IsAuthenticated)
                     {
-                        <a class="navbar btn navbar-text">@Context.User.Identity.Name</a>
+
+                        var identity = (ClaimsIdentity)Context.User.Identity;
+                        Claim? profileClaim = identity.Claims.Where(claim => claim.Type == "ProfileImage").FirstOrDefault();
+                        string? profileUrl = profileClaim?.Value;
+
+                        <a class="navbar btn navbar-text navbar-profile">
+                            @Context.User.Identity.Name
+                            <img src=@profileUrl alt="profile">
+                        </a>
                     }
                 </div>
             </div>

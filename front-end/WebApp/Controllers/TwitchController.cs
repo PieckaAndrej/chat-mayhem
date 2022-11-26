@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WebApp.BusinessLogic;
 using WebApp.Models;
+using WebApp.Services;
 
 namespace WebApp.Controllers
 {
@@ -54,6 +55,12 @@ namespace WebApp.Controllers
                     new Claim(ClaimTypes.Name, streamer.Name),
                     new Claim(ClaimTypes.NameIdentifier, streamer.UserId),
                 };
+
+                TwitchUsers? user = await TwitchService.GetTwitchUsers(streamer.AccessToken);
+
+                Console.WriteLine(user);
+
+                Console.WriteLine(user?.Data);
 
                 var claimsIdentity = new ClaimsIdentity(claims, "Login");
 

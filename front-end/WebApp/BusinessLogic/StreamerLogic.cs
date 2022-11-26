@@ -21,9 +21,8 @@ namespace WebApp.BusinessLogic
         public async Task<Streamer?> RegisterCode(string code)
         {
             Streamer? returnStreamer = null;
-            TwitchService twitchService = new TwitchService();
 
-            TwitchToken? twitchToken = await twitchService.GetTwitchToken(code);
+            TwitchToken? twitchToken = await TwitchService.GetTwitchToken(code);
 
             if (twitchToken?.AccessToken != null)
             {
@@ -32,7 +31,7 @@ namespace WebApp.BusinessLogic
 
                 if (streamerDto?.AccessToken != null)
                 {
-                    TwitchValidate? validate = await twitchService.ValidateToken(
+                    TwitchValidate? validate = await TwitchService.ValidateToken(
                         streamerDto.AccessToken);
 
                     if (validate?.Login != null)

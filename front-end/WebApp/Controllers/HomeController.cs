@@ -28,7 +28,7 @@ namespace WebApp.Controllers
             return View();
         }
 
-        public IActionResult LogIn()
+        public IActionResult Login()
         {
             var param = new NameValueCollection();
 

@@ -1,18 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Oswald&display=swap');
+
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 10px;
+}
+
+.bg-purple {
+    background-color: #B69DF8;
+    color: white;
+}
+
+.navbar {
+    background-color: #6750A4;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.4rem;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    height: calc(100vh - 160px);
+    align-items: center;
+    flex-direction: column;
+}
+
+.login-button {
+    padding: 7px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border: none;
+    font-size: 1.4rem;
+    background-color: #6750A4;
+    color: white;
+    transition: 0.6s;
+    border-radius: 10px;
+    font-family: 'Oswald', sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-button:hover {
+    box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+    color: white;
+}
+
+.login-button:after {
+    content: "";
+    position: absolute;
+    background: linear-gradient(white 10%, transparent 30%);
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    opacity: 0;
+    right: -60px;
+    transition: 0.6s;
+    top: 0px;
+}
+
+.login-button:hover:after {
+    transition: 0.3s;
+    opacity: 0.2;
+}
+
+.login-button-text {
+    color: darkgrey;
 }

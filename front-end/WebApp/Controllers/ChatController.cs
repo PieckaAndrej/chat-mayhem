@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Controller;
 using WebApp.Services;
 
 namespace WebApp.Controllers
 {
+    [Authorize]
     public class ChatController : Controller
     {
         private ChatService? chatService;

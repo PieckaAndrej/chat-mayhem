@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RestSharp;
 using System.Drawing.Text;
 using WebApp.BusinessLogic;
@@ -6,6 +7,7 @@ using WebApp.Models;
 
 namespace WebApp.Controllers
 {
+    [Authorize]
     public class GameController : Controller
     {
         private readonly GameLogic _gameLogic;

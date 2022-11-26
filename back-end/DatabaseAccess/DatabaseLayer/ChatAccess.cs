@@ -27,7 +27,7 @@ namespace Data.DatabaseLayer
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                List<string> viewerAnswers = connection.QuerySingle<List<string>>(sqlString);
+                List<string> viewerAnswers = connection.Query<string>(sqlString).ToList();
 
                 return viewerAnswers;   
             }

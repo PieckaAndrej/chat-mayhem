@@ -36,13 +36,15 @@ namespace API.Controllers
         {
             List<string> viewerAnswers = ServiceInjector.ChatService.GetAnswers();
 
-            var request = new RestRequest("sentences").AddParameter("sentence", sentence).AddBody(viewerAnswers);
+            var request = new RestRequest("sentences");
+
+            request.AddJsonBody(new {sentence = sentence, list = viewerAnswers});
 
             var response = await _client.ExecuteGetAsync(request);
 
-            int similarityNumber = JsonSerializer.Deserialize<int>(response.Content);
+            var similarityNumbers = JsonSerializer.Deserialize<Dictionary<string,double>>(response.Content);
 
-            if (similarityNumber >= 0.2)
+            if (similarityNumbers.Values.Where(i => i>= 0.5).Count() > 0)
             {
                 return sentence;
             }

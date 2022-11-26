@@ -400,3 +400,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 back-end/API/appsettings.Test.json
+front-end/WebApp/appsettings.json

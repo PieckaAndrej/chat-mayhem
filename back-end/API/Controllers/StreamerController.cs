@@ -27,7 +27,6 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<StreamerDto>> Post(StreamerDto inStreamer)
         {
-            Console.WriteLine(inStreamer.RefreshToken);
             Streamer? streamer = await StreamerDto.Convert(inStreamer);
 
             if (streamer == null)

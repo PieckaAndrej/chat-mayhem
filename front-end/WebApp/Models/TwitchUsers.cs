@@ -5,42 +5,42 @@ namespace WebApp.Models
     public record UsersData
     {
         [JsonPropertyName("id")]
-        public string? Id;
+        public string? Id { get; set; }
 
         [JsonPropertyName("login")]
-        public string? Login;
+        public string? Login { get; set; }
 
         [JsonPropertyName("display_name")]
-        public string? DisplayName;
+        public string? DisplayName { get; set; }
 
         [JsonPropertyName("type")]
-        public string? Type;
+        public string? Type { get; set; }
 
         [JsonPropertyName("broadcaster_type")]
-        public string? BroadcasterType;
+        public string? BroadcasterType { get; set; }
 
         [JsonPropertyName("description")]
-        public string? Description;
+        public string? Description { get; set; }
 
         [JsonPropertyName("profile_image_url")]
-        public string? ProfileImageUrl;
+        public string? ProfileImageUrl { get; set; }
 
         [JsonPropertyName("offline_image_url")]
-        public string? OfflineImageUrl;
+        public string? OfflineImageUrl { get; set; }
 
         [JsonPropertyName("view_count")]
-        public int? ViewCount;
+        public int? ViewCount { get; set; }
 
         [JsonPropertyName("email")]
-        public string? Email;
+        public string? Email { get; set; }
 
         [JsonPropertyName("created_at")]
-        public DateTime? CreatedAt;
+        public DateTime? CreatedAt { get; set; }
     }
 
     public record TwitchUsers
     {
         [JsonPropertyName("data")]
-        public UsersData[]? Data;
+        public List<UsersData>? Data { get; set; }
     }
 }

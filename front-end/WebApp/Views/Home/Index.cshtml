@@ -2,15 +2,18 @@
     ViewData["Title"] = "Chat mayhem";
 }
 
-<center>
-    <h1>Chat mayhem</h1>
+<body>
+    <div class="center">
+        <h1>Chat mayhem</h1>
 
-    <p>Is your twitch stream boring? Try out chat mayhem where you can play games with your chat!</p>
+        <p>Is your twitch stream boring? Try out chat mayhem where you can play games with your chat!</p>
 
-    <span>
-        <a class="btn btn-primary" asp-action="LogIn">Log in</a>
-        with Twitch account
-    </span>
-</center>
+        <a class="login-button btn" asp-action="Login">LOG IN</a>
+        <p class="login-button-text">with Twitch account</p>
+    </div>
+    <div class="footer">
+        &copy; 2022 - Chat mayhem - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </div>
+</body>
 
 

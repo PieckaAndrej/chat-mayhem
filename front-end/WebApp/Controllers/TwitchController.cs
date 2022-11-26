@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WebApp.BusinessLogic;
 using WebApp.Models;
 
@@ -22,13 +25,45 @@ namespace WebApp.Controllers
                 return View("Error");
             }
 
-            Streamer? streamer = await _streamerLogic.RegisterCode(code);
+            TempData["code"] = code;
 
-            Console.WriteLine(streamer.Name);
-            Console.WriteLine(streamer.UserId);
-            Console.WriteLine(streamer.AccessToken);
+            return RedirectToAction("Redirect");
+        }
 
-            return RedirectToAction("Index", "Game");
+        public IActionResult Redirect()
+        {
+            return View();
+        }
+
+
+        public async Task<IActionResult> HandleCode()
+        {
+            if (TempData.ContainsKey("code"))
+            {
+                string code = TempData["code"].ToString();  
+
+                Streamer? streamer = await _streamerLogic.RegisterCode(code);
+
+                if (streamer == null)
+                {
+                    return View("Error");
+                }
+
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, streamer.Name),
+                    new Claim(ClaimTypes.NameIdentifier, streamer.UserId),
+                };
+
+                var claimsIdentity = new ClaimsIdentity(claims, "Login");
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity));
+
+                return RedirectToAction("Index", "Game");
+            }
+
+            return View("Error");
         }
     }
 }

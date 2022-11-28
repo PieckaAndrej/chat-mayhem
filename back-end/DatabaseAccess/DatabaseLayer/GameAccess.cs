@@ -12,7 +12,6 @@ namespace Data.DatabaseLayer
         public GameAccess(string connectionString)
         {
             _connectionString = connectionString;
-            Console.WriteLine(_connectionString);
         }
 
         public Game CreateGame(Game game)

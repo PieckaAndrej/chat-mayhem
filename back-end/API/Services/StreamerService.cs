@@ -36,8 +36,6 @@ namespace API.Services
 
             var response = await restClient.ExecuteGetAsync(restRequest);
 
-            Console.WriteLine(response.ResponseStatus);
-
             return JsonSerializer.Deserialize<TwitchValidate>(response.Content);
         }
     }

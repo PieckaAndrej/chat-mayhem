@@ -7,6 +7,7 @@ document.getElementById("sendButton").disabled = true;
 
 connection.on("TurnAnswer", function (message) {
     console.log("sad");
+    document.getElementById(message).style.backgroundColor = "red";
     // We can assign user-supplied strings to an element's textContent because it
     // is not interpreted as markup. If you're assigning in any other way, you 
     // should be aware of possible script injection concerns.

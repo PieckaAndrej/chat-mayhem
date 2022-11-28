@@ -18,12 +18,11 @@ namespace Data.DatabaseLayer
         public ChatAccess(string connectionString)
         {
             _connectionString = connectionString;
-            Console.WriteLine(_connectionString);
         }
 
         public List<string> GetAnswers()
         {
-            string sqlString = "SELECT answer FROM \"Answer\"";
+            string sqlString = "SELECT \"answerText\" FROM \"Answer\"";
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {

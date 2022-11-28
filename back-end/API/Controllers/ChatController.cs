@@ -10,11 +10,12 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ChatController
+    public class ChatController : ControllerBase
     {
         private ChatService chatService;
 
         private readonly RestClient _client;
+        private const double ANSWER_THRESHOLD = 0.5;
 
         public ChatController(IConfiguration inConfiguration)
         {
@@ -42,15 +43,18 @@ namespace API.Controllers
 
             var response = await _client.ExecuteGetAsync(request);
 
-            var similarityNumbers = JsonSerializer.Deserialize<Dictionary<string,double>>(response.Content);
+            var similarityNumbers = JsonSerializer.Deserialize<Dictionary<string, double>>(
+                response.Content);
 
-            if (similarityNumbers.Values.Where(i => i>= 0.5).Count() > 0)
+            KeyValuePair<string, double> pair = similarityNumbers.MaxBy(number => number.Value);
+
+            if (pair.Value >= ANSWER_THRESHOLD)
             {
-                return sentence;
+                return pair.Key;
             }
             else
             {
-                return "Wrong";
+                return NotFound("wrong");
             }
         }
 

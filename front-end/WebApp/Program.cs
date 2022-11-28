@@ -12,6 +12,7 @@ builder.Services.AddSignalR();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
+        options.ExpireTimeSpan = TimeSpan.FromDays(30);
         options.LoginPath = "/Home/Login";
     });
 

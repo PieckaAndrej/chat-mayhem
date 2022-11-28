@@ -1,46 +1,19 @@
 ﻿@page
+<div class="center answer">
+    <h1 class="answer-title">Queres?</h1>
+    <div class="answer-grid">
+        @for (int i = 0; i < 8; i++)
+        {
+            <div id=@i class="answer-item">
+                <p class="answer-id">#@(i + 1)</p>
+                <p>???</p>
+            </div>
+        }
+    </div>
+    <div class="">Answer</div>
+    <input type="text" id="messageInput" />
+    <input type="button" id="sendButton" value="Send Message" />
+</div>
 
-<div class="container">
-    <div class="row">&nbsp;</div>
-    <div class="row">
-        <div class="col-2">Message</div>
-        <div class="col-4"><input type="text" id="messageInput" /></div>
-    </div>
-    <div class="row">&nbsp;</div>
-    <div class="row">
-        <div class="col-6">
-            <input type="button" id="sendButton" value="Send Message" />
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-12">
-        <hr />
-    </div>
-</div>
-<div class="row">
-    <div class="col-6">
-        <ul id="messagesList"></ul>
-
-        <table style="width:100%">
-            <tr>
-                <td>R1</td>
-                <td>R5</td>
-            </tr>
-            <tr>
-                <td>R2</td>
-                <td>R6</td>
-            </tr>
-            <tr>
-                <td>R3</td>
-                <td>R7</td>
-            </tr>
-            <tr>
-                <td>R4</td>
-                <td>R8</td>
-            </tr>
-        </table>
-    </div>
-</div>
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
 <script src="~/js/chat.js"></script>

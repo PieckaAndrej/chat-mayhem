@@ -72,7 +72,10 @@ namespace WebApp.Controllers
                 var claimsIdentity = new ClaimsIdentity(claims, "Login");
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity));
+                    new ClaimsPrincipal(claimsIdentity), new AuthenticationProperties
+                    {
+                        IsPersistent = true
+                    });
 
                 return RedirectToAction("Index", "Game");
             }

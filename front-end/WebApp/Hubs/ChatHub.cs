@@ -9,9 +9,9 @@ namespace WebApp.Hubs
 
         public async Task SendMessage(string message)
         {
-
-            message = await chatService.CheckViewerAnswer(message);
-            await Clients.All.SendAsync("ReceiveMessage", message);
+            //message = await chatService.CheckViewerAnswer(message);
+            Console.WriteLine(message);
+            await Clients.All.SendAsync("TurnAnswer", message);
         }
     }
 }

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Oswald&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Oswald&family=Roboto&display=swap');
 
 html {
     font-size: 14px;
@@ -97,4 +97,48 @@ body {
 
 .login-button-text {
     color: darkgrey;
+}
+
+.answer {
+    font-family: 'Roboto', sans-serif;
+}
+
+.answer-grid {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    grid-row-gap: 20px;
+    grid-column-gap: 50px;
+}
+
+.answer-item {
+    display: flex;
+    justify-content: center;
+    background-color: #B69DF8;
+    color: white;
+    position: relative;
+    text-align: center;
+    height: 100%;
+    width: 300px;
+    padding: 15px;
+    font-size: 1.8rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.answer-item p {
+    margin: 0;
+}
+
+.answer-id {
+    color: #6750A4;
+    padding: 5px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 1.3rem;
+}
+
+.answer-title {
+    color: #6750A4;
+    margin: 20px;
 }

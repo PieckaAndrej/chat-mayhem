@@ -6,16 +6,23 @@ using System.Threading.Tasks;
 
 namespace Data.ModelLayer
 {
-    internal class Answer
+    public class Answer
     {
-        public int userId { get; set; }
+        public int answerCount { get; set; }
 
         public string text { get; set; }
 
-        public Answer(int userId, string text)
+        public int questionId { get; set; }
+
+        public Answer(int answerCount, string text)
         {
-            this.userId = userId;
+            this.answerCount = answerCount;
             this.text = text;
+        }
+
+        public Answer(int answerCount, string text, int questionId) : this(answerCount, text)
+        {
+            this.questionId = questionId;
         }
     }
 }

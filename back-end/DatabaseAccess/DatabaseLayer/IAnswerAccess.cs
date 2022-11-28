@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Data.DatabaseLayer
 {
-    public interface IChatAccess
+    public interface IAnswerAccess
     {
-        List<string> GetAnswers();
+        Answer CreateAnswer(Answer answer);
     }
 }

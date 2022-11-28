@@ -32,6 +32,14 @@ namespace API.Services
             }
         }
 
+        public static AnswerService AnswerService
+        {
+            get
+            {
+                return new AnswerService(new AnswerAccess(Con));
+            }
+        }
+
         public static ChatService ChatService
         {
             get

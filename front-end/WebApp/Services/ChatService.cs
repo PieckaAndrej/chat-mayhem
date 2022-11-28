@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using Microsoft.AspNetCore.Mvc;
+using RestSharp;
 using System.Text.Json;
 using WebApp.Hubs;
 using WebApp.Models;
@@ -16,13 +17,17 @@ namespace WebApp.Services
             _client = new RestClient("https://localhost:7200/");
         }
 
-        public async Task<string> CheckViewerAnswer(string answer)
+        public static async Task<Dictionary<string, double>?> CheckAnswer(string sentence, List<Answer> answers)
         {
-            var request = new RestRequest("api/Chat").AddParameter("sentence", answer);
+            RestClient client = new RestClient("https://www.api.secretpizza.dk/");
+            var request = new RestRequest("sentences");
+            List<string?> stringList = answers.Select(ans => ans.Text).ToList();
 
-            var response = await _client.ExecuteGetAsync(request);
+            request.AddJsonBody(new { sentence = sentence, list = stringList });
 
-            return JsonSerializer.Deserialize<string>(response.Content);
+            var response = await client.ExecuteGetAsync(request);
+
+            return JsonSerializer.Deserialize<Dictionary<string, double>>(response.Content);
         }
     }
 }

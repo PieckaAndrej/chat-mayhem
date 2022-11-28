@@ -44,7 +44,6 @@ namespace API.Services
         {
             get
             {
-                Console.WriteLine(Con);
                 return new StreamerService(new StreamerAccess(Con));
             }
         }

@@ -60,7 +60,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<GameDto> Get(int id)
+        public ActionResult<Game> Get(int id)
         {
             Game? game = ServiceInjector.GameService.GetGameById(id);
 
@@ -69,9 +69,7 @@ namespace API.Controllers
                 return new StatusCodeResult(StatusCodes.Status404NotFound);
             }
 
-            GameDto returnGame = GameDto.Convert(game);
-
-            return returnGame;
+            return game;
         }
 
         [HttpDelete]

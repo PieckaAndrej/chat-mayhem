@@ -1,20 +1,22 @@
-﻿namespace WebApp.Models
+﻿using Data.ModelLayer;
+
+namespace WebApp.Models
 {
     public class Game
     {
-        public double TimeLimitSeconds {  get; set; }
-        public string StreamerId {  get; set; }
-        public int ModeId {  get; set; }
-        public int QuestionPackId { get; set; }
+        public TimeSpan TimeLimit { get; set; }
+        public Streamer Streamer { get; set; }
+        public GameMode Mode { get; set; }
+        public QuestionPack QuestionPack { get; set; }
 
         public Game() { }
 
-        public Game(double timeLimitSeconds, string streamerId, int modeId, int questionPackId)
+        public Game(Streamer streamer, GameMode mode, TimeSpan timeLimit, QuestionPack questionPack)
         {
-            TimeLimitSeconds = timeLimitSeconds;
-            StreamerId = streamerId;
-            ModeId = modeId;
-            QuestionPackId = questionPackId;
+            Streamer = streamer;
+            Mode = mode;
+            TimeLimit = timeLimit;
+            QuestionPack = questionPack;
         }
     }
 }

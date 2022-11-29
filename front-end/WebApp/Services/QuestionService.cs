@@ -1,4 +1,6 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson.Serialization;
+using MongoDB.Driver;
+using System.Linq;
 using WebApp.Models;
 
 namespace WebApp.Services
@@ -29,19 +31,14 @@ namespace WebApp.Services
             return inserted;
         }
 
-        public List<Question> GetAnswers(string questionPrompt, string collection)
+        public List<Answer>  GetAnswers(string questionPrompt, string collection)
         {
-            List<Question> answers = new List<Question>();
 
-            var client = new MongoClient(con);
-
-            var db = client.GetDatabase("ChatMayhem");
-
-            var coll = db.GetCollection<Question>(collection);
-
-            answers = coll.Find(x => x.prompt == questionPrompt).ToList();
-
-            return answers;
+            return BsonSerializer.Deserialize<Question>(new MongoClient(con).GetDatabase("ChatMayhem")
+                .GetCollection<Question>(collection).Find(x => x.prompt == questionPrompt)
+                .Project("{_id: 0,prompt: 1, viewerAnswers: 1}").ToList().FirstOrDefault()).viewerAnswers
+                .GroupBy(answer => answer.answer)
+                .Select(group => new Answer(group.Count(), group.Key)).ToList();
         }
     }
 }

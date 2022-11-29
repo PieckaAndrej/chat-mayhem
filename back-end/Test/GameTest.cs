@@ -67,8 +67,9 @@ namespace Test
             var gameController = new GameController(_testConfiguration);
 
             //Act
-            ActionResult<GameDto> result = gameController.Post(GameDto.Convert(_testGame));
-            Game? resultValue = GameDto.Convert(result.Value);
+            ActionResult<Game> result = gameController.Post(GameDto.Convert(_testGame));
+
+            Game resultValue = result.Value;
 
             //Arrange
             Assert.Equal(_testGame.Streamer, resultValue?.Streamer);

@@ -1,4 +1,6 @@
-﻿using RestSharp;
+﻿using Microsoft.AspNetCore.Mvc;
+using RestSharp;
+using WebApp.DTOs;
 using WebApp.Models;
 using WebApp.Services;
 
@@ -13,11 +15,9 @@ namespace WebApp.BusinessLogic
             _gameService = new GameService();
         }
 
-        public Game? CreateGame(Game game)
+        public async Task<Game?> CreateGame(GameDto game)
         {
-            RestResponse<Game> result = _gameService.CreateGame(game).Result;
-
-            return result.Data;
+            return await _gameService.CreateGame(game);
         }
     }
 }

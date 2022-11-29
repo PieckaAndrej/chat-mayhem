@@ -6,13 +6,13 @@ using WebApp.Models;
 
 namespace WebApp.Services
 {
-    public class ChatService
+    public class AnswerService
     {
         private readonly RestClient _client;
 
-        private ChatHub chatHub;
+        private GameHub chatHub;
 
-        public ChatService()
+        public AnswerService()
         {
             _client = new RestClient("https://localhost:7200/");
         }

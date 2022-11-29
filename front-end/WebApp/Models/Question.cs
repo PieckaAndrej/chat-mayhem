@@ -6,15 +6,15 @@ using WebApp.Models;
 
 namespace WebApp.Models
 {
-    public class Question
+    public class Question<T>
     {
-        public string prompt { get; set; }
-        public List<ViewerAnswer> viewerAnswers { get; set; }
+        public string Prompt { get; set; }
+        public List<T> ViewerAnswers { get; set; }
 
-        public Question(string prompt, List<ViewerAnswer> viewerAnswers)
+        public Question(string prompt, List<T> viewerAnswers)
         {
-            this.prompt = prompt;
-            this.viewerAnswers = viewerAnswers;
+            Prompt = prompt;
+            ViewerAnswers = viewerAnswers;
         }
     }
 }

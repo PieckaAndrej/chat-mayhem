@@ -1,0 +1,27 @@
+﻿@model Game;
+
+<div>
+    <h1>Lobby</h1>
+    <p>Selected question pack:</p>
+    <h3>@Model.QuestionPack.Name</h3>
+    <h3>Players</h3>
+    <div>
+    </div>
+    <button id="startGame">Start</button>
+</div>
+
+
+@section scripts {
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/game.js"></script>
+    <script>
+        //Disable the send button until connection is established.
+        $("startGame").disabled = true;
+
+        let response = await connection.start();
+
+        console.log(response);
+        $("startGame").disabled = false;
+    </script>
+
+}

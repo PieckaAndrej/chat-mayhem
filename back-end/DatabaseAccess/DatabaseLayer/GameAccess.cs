@@ -24,7 +24,7 @@ namespace Data.DatabaseLayer
             {
                 game.Id = connection.QuerySingle<int>(sql, new
                 {
-                    timeLimit = game.TimeLimit.TotalSeconds,
+                    timeLimit = game.TimeLimit,
                     owner = game.Streamer.Id,
                     modelId = game.Mode.Id,
                     questionPackId = game.QuestionPack.Id
@@ -69,7 +69,6 @@ namespace Data.DatabaseLayer
                 "INNER JOIN public.\"QuestionPack\" questionPack on questionPack.id = game.\"questionPackId\" " +
                 "WHERE game.id = @Id;";
 
-            SqlMapper.AddTypeHandler(new TimeSpanTypeHandler());
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
@@ -103,7 +102,7 @@ namespace Data.DatabaseLayer
             {
                 game.Id = connection.QuerySingle<int>(sql, new
                 {
-                    timeLimit = game.TimeLimit.TotalSeconds,
+                    timeLimit = game.TimeLimit,
                     owner = game.Streamer.Id,
                     modelId = game.Mode.Id,
                     questionPackId = game.QuestionPack.Id,

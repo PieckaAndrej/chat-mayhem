@@ -1,4 +1,7 @@
 ﻿using RestSharp;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using WebApp.DTOs;
 using WebApp.Models;
 
 namespace WebApp.Services
@@ -12,10 +15,12 @@ namespace WebApp.Services
             _client = new RestClient("https://localhost:7200/");
         }
 
-        public async Task<RestResponse<Game>> CreateGame(Game game)
+        public async Task<Game?> CreateGame(GameDto game)
         {
             var request = new RestRequest("api/Game").AddJsonBody(game);
-            return await _client.ExecuteGetAsync<Game>(request);
+            var result = await _client.ExecutePostAsync(request);
+
+            return JsonSerializer.Deserialize<Game>(result.Content);
         }
     }
 }

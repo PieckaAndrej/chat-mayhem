@@ -1,0 +1,39 @@
+﻿@page
+<div class="center answer">
+    <h1 class="answer-title">Queres?</h1>
+    <div class="answer-grid">
+        @for (int i = 0; i < 8; i++)
+        {
+            <div id=@i class="answer-item">
+                <p class="answer-id">#@(i + 1)</p>
+                <p>???</p>
+            </div>
+        }
+    </div>
+    <div class="">Answer</div>
+    <input type="text" id="messageInput" />
+    <input type="button" id="sendButton" value="Send Message" />
+</div>
+
+@section scripts{
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/game.js"></script>
+    <script>
+        //Disable the send button until connection is established.
+        document.getElementById("sendButton").disabled = true;
+
+        connection.start().then(function () {
+            document.getElementById("sendButton").disabled = false;
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        document.getElementById("sendButton").addEventListener("click", function (event) {
+            var message = document.getElementById("messageInput").value;
+            connection.invoke("SendMessage", message).catch(function (err) {
+                return console.error(err.toString());
+            });
+            event.preventDefault();
+        });
+    </script>
+}

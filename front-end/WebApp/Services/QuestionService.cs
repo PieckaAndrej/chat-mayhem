@@ -7,19 +7,22 @@ namespace WebApp.Services
 {
     public class QuestionService
     {
-        public static string con = new ConfigurationBuilder()
+        private static readonly string _con = new ConfigurationBuilder()
                                 .AddJsonFile("appsettings.json", optional: false)
                                 .Build().GetSection("ConnectionString").Value;
 
-        public bool InsertAnswers(List<Question> questions, string collection)
+        private const string DATABASE_NAME = "ChatMayhem";
+
+
+        public static bool InsertAnswers(List<Question<ViewerAnswer>> questions, string collection)
         {
             bool inserted = true;
 
-            var client = new MongoClient(con);
+            var client = new MongoClient(_con);
 
-            var db = client.GetDatabase("ChatMayhem");
+            var db = client.GetDatabase(DATABASE_NAME);
 
-            var coll = db.GetCollection<Question>(collection);
+            var coll = db.GetCollection<Question<ViewerAnswer>>(collection);
 
             if (questions == null)
             {
@@ -33,11 +36,10 @@ namespace WebApp.Services
 
         public List<Answer>  GetAnswers(string questionPrompt, string collection)
         {
-
-            return BsonSerializer.Deserialize<Question>(new MongoClient(con).GetDatabase("ChatMayhem")
-                .GetCollection<Question>(collection).Find(x => x.prompt == questionPrompt)
-                .Project("{_id: 0,prompt: 1, viewerAnswers: 1}").ToList().FirstOrDefault()).viewerAnswers
-                .GroupBy(answer => answer.answer)
+            return BsonSerializer.Deserialize<Question<ViewerAnswer>>(new MongoClient(_con).GetDatabase("ChatMayhem")
+                .GetCollection<Question<ViewerAnswer>>(collection).Find(x => x.Prompt == questionPrompt)
+                .Project("{_id: 0,prompt: 1, viewerAnswers: 1}").ToList().FirstOrDefault()).ViewerAnswers
+                .GroupBy(answer => answer.Answer)
                 .Select(group => new Answer(group.Count(), group.Key)).ToList();
         }
     }

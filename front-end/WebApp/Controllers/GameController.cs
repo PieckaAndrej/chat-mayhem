@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RestSharp;
 using System.Drawing.Text;
 using WebApp.BusinessLogic;
+using WebApp.DTOs;
 using WebApp.Models;
 
 namespace WebApp.Controllers
@@ -22,18 +23,17 @@ namespace WebApp.Controllers
             return View();
         }
 
-        [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create(GameDto game)
         {
-            return View();
+            Game? response = await _gameLogic.CreateGame(game);
+
+            return RedirectToAction("Play", new { game = response });
         }
 
-        [HttpPost]
-        public IActionResult Create(Game game)
+        public IActionResult Play(Game game)
         {
-            Game? response = _gameLogic.CreateGame(game);
-
-            return RedirectToAction("Index");
+            Console.WriteLine(game.Streamer.Name);
+            return RedirectToAction("Index", "Lobby", new { game = game });
         }
     }
 }

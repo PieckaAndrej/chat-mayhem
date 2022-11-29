@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,13 +14,13 @@ namespace Data.ModelLayer
         public int Id { get; set; }
         public Streamer Streamer { get; set; }
         public GameMode Mode { get; set; }
-        [JsonConverter(typeof(TimeSpan))]
-        public TimeSpan TimeLimit { get; set; }
+
+        public int TimeLimit { get; set; }
         public QuestionPack QuestionPack { get; set; }
 
         public Game() { }
 
-        public Game(Streamer streamer, GameMode mode, TimeSpan timeLimit, QuestionPack questionPack)
+        public Game(Streamer streamer, GameMode mode, int timeLimit, QuestionPack questionPack)
         {
             Streamer = streamer;
             Mode = mode;
@@ -27,7 +28,7 @@ namespace Data.ModelLayer
             QuestionPack = questionPack;
         }
 
-        public Game(Streamer streamer, GameMode mode, TimeSpan timeLimit,
+        public Game(Streamer streamer, GameMode mode, int timeLimit,
             QuestionPack questionPack, int id)
             : this(streamer, mode, timeLimit, questionPack)
         {

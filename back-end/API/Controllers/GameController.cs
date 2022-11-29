@@ -28,19 +28,18 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<GameDto> Post(GameDto inGame)
+        public ActionResult<Game> Post(GameDto inGame)
         {
             Game game = GameDto.Convert(inGame);
 
             game = ServiceInjector.GameService.Add(game);
-            GameDto returnGame = GameDto.Convert(game);
 
-            if (returnGame == null)
+            if (game == null)
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
-            return returnGame;
+            return game;
         }
 
         [HttpPut]

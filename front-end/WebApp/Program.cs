@@ -39,6 +39,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapHub<GameHub>("/chatHub");
+app.MapHub<GameHub>("/gamehub");
 
 app.Run();

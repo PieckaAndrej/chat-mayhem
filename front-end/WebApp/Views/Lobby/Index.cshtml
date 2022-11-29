@@ -1,4 +1,16 @@
 ﻿@model Game;
+@using System.Security.Claims
+@using System.Text.Json;
+
+@{
+    var identity = (ClaimsIdentity)Context.User.Identity;
+    Claim? idClaim = identity.Claims.Where(claim => claim.Type == ClaimTypes.NameIdentifier).FirstOrDefault();
+    Claim? accessClaim = identity.Claims.Where(claim => claim.Type == "AccessToken").FirstOrDefault();
+    Claim? nameClaim = identity.Claims.Where(claim => claim.Type == ClaimTypes.Name).FirstOrDefault();
+
+    Streamer streamer = new Streamer(nameClaim.Value, accessClaim.Value, idClaim.Value);
+    string json = JsonSerializer.Serialize(streamer);
+}
 
 <div>
     <h1>Lobby</h1>
@@ -16,12 +28,28 @@
     <script src="~/js/game.js"></script>
     <script>
         //Disable the send button until connection is established.
-        $("startGame").disabled = true;
+        document.getElementById("startGame").disabled = true;
 
-        let response = await connection.start();
+        async function connect() {
+            await connection.start();
 
-        console.log(response);
-        $("startGame").disabled = false;
+            document.getElementById("startGame").disabled = false;
+
+            //work around but whatever
+            if ("@User.Identity.IsAuthenticated" === "True") {
+                connection.invoke("CreateGroup", "@json").catch(function (err) {
+                    return console.error(err.toString());
+                });
+            }
+
+            document.getElementById("startGame").addEventListener("click", function (event) {
+                connection.invoke("StartGame").catch(function (err) {
+                    return console.error(err.toString());
+                });
+                event.preventDefault();
+            });
+        };
+
+        connect();
     </script>
-
 }

@@ -1,23 +1,24 @@
 ﻿using Data.ModelLayer;
+using System.Text.Json.Serialization;
+using static MongoDB.Driver.WriteConcern;
 
 namespace WebApp.Models
 {
-    public class Game
+    public record Game
     {
+        [JsonPropertyName("id")]
         public int Id { get; set; }
-        public int TimeLimit { get; set; }
-        public Streamer Streamer { get; set; }
+
+        [JsonPropertyName("streamer")]
+        public object Streamer { get; set; }
+
+        [JsonPropertyName("mode")]
         public GameMode Mode { get; set; }
+
+        [JsonPropertyName("timeLimit")]
+        public int TimeLimit { get; set; }
+
+        [JsonPropertyName("questionPack")]
         public QuestionPack QuestionPack { get; set; }
-
-        public Game() { }
-
-        public Game(Streamer streamer, GameMode mode, int timeLimit, QuestionPack questionPack)
-        {
-            Streamer = streamer;
-            Mode = mode;
-            TimeLimit = timeLimit;
-            QuestionPack = questionPack;
-        }
     }
 }

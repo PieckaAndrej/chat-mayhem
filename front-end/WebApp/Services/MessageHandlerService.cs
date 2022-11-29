@@ -32,9 +32,13 @@ namespace WebApp.Services
             _streamWriter = new StreamWriter(_tcpClient.GetStream())
             { NewLine = "\r\n", AutoFlush = true };
 
-            await _streamWriter.WriteLineAsync($"PASS {Streamer.AccessToken}");
-            await _streamWriter.WriteLineAsync($"NICK {Streamer.Name}");
-            await _streamWriter.WriteLineAsync($"JOIN #{Streamer.Name}");
+            //has to be lower case for some reason, maybe get the login instead of name, because
+            //it might be something else sometimes
+            string streamerName = Streamer.Name.ToLower();
+
+            await _streamWriter.WriteLineAsync($"PASS oauth:{Streamer.AccessToken}");
+            await _streamWriter.WriteLineAsync($"NICK {streamerName}");
+            await _streamWriter.WriteLineAsync($"JOIN #{streamerName}");
 
             return _tcpClient.Connected;
         }
@@ -74,10 +78,11 @@ namespace WebApp.Services
 
                         Console.WriteLine();
                         Console.WriteLine($"{username} said '{message}'");
-                        await _streamWriter.WriteLineAsync($"PRIVMSG #{Streamer.Name} :{message} deez nuts");
                     }
                 }
             }
+            // for debugging
+            Console.WriteLine("Run end");
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol;
 using RestSharp;
 using System.Drawing.Text;
+using System.Text.Json;
 using WebApp.BusinessLogic;
 using WebApp.DTOs;
 using WebApp.Models;
@@ -27,13 +29,15 @@ namespace WebApp.Controllers
         {
             Game? response = await _gameLogic.CreateGame(game);
 
-            return RedirectToAction("Play", new { game = response });
+            TempData["game"] = JsonSerializer.Serialize(response);
+
+            // maybe see the game first and have a button to play it later
+            return RedirectToAction("Play", response);
         }
 
-        public IActionResult Play(Game game)
+        public IActionResult Play()
         {
-            Console.WriteLine(game.Streamer.Name);
-            return RedirectToAction("Index", "Lobby", new { game = game });
+            return RedirectToAction("Index", "Lobby");
         }
     }
 }

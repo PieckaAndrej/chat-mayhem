@@ -7,28 +7,24 @@ using System.Threading.Tasks;
 
 namespace Data.ModelLayer
 {
-    public class QuestionPack
+    public record QuestionPack
     {
+        [JsonPropertyName("id")]
         public int Id { get; set; }
 
+        [JsonPropertyName("author")]
         public string Author { get; set; }
 
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        public Array Tags { get; set; }
+        [JsonPropertyName("tags")]
+        public List<string> Tags { get; set; }
 
+        [JsonPropertyName("category")]
         public string Category { get; set; }
 
+        [JsonPropertyName("creationDate")]
         public DateTime CreationDate { get; set; }
-
-        public QuestionPack (int id, string author, string name, Array tag, string category, DateTime creationDate)
-        {
-            this.Id = id;
-            this.Author = author;
-            this.Name = name;
-            this.Tags = tag;
-            this.Category = category;
-            this.CreationDate = creationDate;
-        }
     }
 }

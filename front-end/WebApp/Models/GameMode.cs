@@ -2,33 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Data.ModelLayer
 {
-    public class GameMode
+    public record GameMode
     {
+        [JsonPropertyName("id")]
         public int Id { get; set; }
+
+        [JsonPropertyName("description")]
         public string Description { get; set; }
+
+        [JsonPropertyName("rules")]
         public string Rules { get; set; }
-
-        public GameMode(string description, string rules)
-        {
-            Description = description;
-            Rules = rules;
-        }
-
-        public GameMode(int id, string description, string rules) : this(description, rules)
-        {
-            Id = id;
-        }
-
-        public override bool Equals(object? obj)
-        {
-            return obj is GameMode mode &&
-                   Id == mode.Id &&
-                   Description == mode.Description &&
-                   Rules == mode.Rules;
-        }
     }
 }

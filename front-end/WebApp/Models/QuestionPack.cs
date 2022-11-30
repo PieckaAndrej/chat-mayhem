@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using WebApp.Models;
 
 namespace Data.ModelLayer
 {
@@ -23,6 +24,9 @@ namespace Data.ModelLayer
 
         [JsonPropertyName("category")]
         public string Category { get; set; }
+
+        [JsonPropertyName("category")]
+        public List<Question<ViewerAnswer>> questions { get; set; }
 
         [JsonPropertyName("creationDate")]
         public DateTime CreationDate { get; set; }

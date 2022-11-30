@@ -11,6 +11,8 @@ namespace WebApp.Services
         private const int PORT = 6667;
         public Streamer Streamer { get; set; }
         private TcpClient _tcpClient;
+        private QuestionService questionService;
+
         public bool IsConnected
         {
             get { return _tcpClient.Connected; }
@@ -47,6 +49,9 @@ namespace WebApp.Services
         {
             if (IsConnected && _streamReader != null && _streamWriter != null)
             {
+                List<ViewerAnswer> viewerAnswers = new List<ViewerAnswer>();
+                Question<ViewerAnswer> question = new Question<ViewerAnswer>();
+
                 IsRunning = true;
                 while (IsRunning)
                 {
@@ -77,9 +82,11 @@ namespace WebApp.Services
                         string message = line.Substring(secondColonPosition + 1);//Everything past the second colon
 
                         Console.WriteLine();
-                        Console.WriteLine($"{username} said '{message}'");
+                        viewerAnswers.Add(new ViewerAnswer(username, message));
                     }
                 }
+                question.ViewerAnswers = viewerAnswers;
+                QuestionService.InsertAnswers(question, Streamer.UserId);
             }
             // for debugging
             Console.WriteLine("Run end");

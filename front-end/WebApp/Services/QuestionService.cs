@@ -14,7 +14,7 @@ namespace WebApp.Services
         private const string DATABASE_NAME = "ChatMayhem";
 
 
-        public static bool InsertAnswers(List<Question<ViewerAnswer>> questions, string collection)
+        public static bool InsertAnswers(Question<ViewerAnswer> question, string collection)
         {
             bool inserted = true;
 
@@ -22,19 +22,33 @@ namespace WebApp.Services
 
             var db = client.GetDatabase(DATABASE_NAME);
 
+            if(!db.ListCollectionNames().ToString().Contains(collection))
+            {
+                CreateCollection(collection);
+            }
+
             var coll = db.GetCollection<Question<ViewerAnswer>>(collection);
 
-            if (questions == null)
+            if (question == null)
             {
                 inserted = false;
             }
 
-            coll.InsertMany(questions);
+            coll.InsertOne(question);
 
             return inserted;
         }
 
-        public List<Answer>  GetAnswers(string questionPrompt, string collection)
+        public static void CreateCollection(string collection)
+        {
+            var client = new MongoClient(_con);
+
+            var db = client.GetDatabase(DATABASE_NAME);
+
+            db.CreateCollection(collection);
+        }
+
+        public static List<Answer> GetAnswers(string questionPrompt, string collection)
         {
             return BsonSerializer.Deserialize<Question<ViewerAnswer>>(new MongoClient(_con).GetDatabase("ChatMayhem")
                 .GetCollection<Question<ViewerAnswer>>(collection).Find(x => x.Prompt == questionPrompt)

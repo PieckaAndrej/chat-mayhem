@@ -62,26 +62,40 @@ namespace Data.DatabaseLayer
                 " streamer.\"accessToken\", streamer.id, streamer.\"refreshToken\", " +
                 "mode.id, mode.description, mode.rules, " +
                 "questionPack.id, questionPack.author, questionPack.\"name\", " +
-                "questionPack.tag, questionPack.category, questionPack.\"creationDate\" " +
+                "questionPack.tag, questionPack.category, questionPack.\"creationDate\", " +
+                "question.id, question.text " +
                 "FROM public.\"Game\" game " +
                 "INNER JOIN public.\"Streamer\" streamer on streamer.id = game.\"owner\" " +
                 "INNER JOIN public.\"Mode\" mode on mode.id = game.\"modelId\" " +
                 "INNER JOIN public.\"QuestionPack\" questionPack on questionPack.id = game.\"questionPackId\" " +
+                "INNER JOIN public.\"Question\" question on question.\"questionPackId\" = questionPack.id " +
                 "WHERE game.id = @Id;";
 
 
+            QuestionPack questionPack = null;
+
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                var game = connection.Query<Game, Streamer, GameMode, QuestionPack, Game>(sql, ((g, s, m, q) =>
+                var game = connection.Query<Game, Streamer, GameMode, QuestionPack, Question, Game>(sql,map: ((g, s, m, qp, q) =>
                 {
+                    if (questionPack != null)
+                    {
+                        qp = questionPack;
+                    }
+                    if (qp.Questions == null)
+                    {
+                        qp.Questions = new List<Question>();
+                    }
                     g.Streamer = s;
                     g.Mode = m;
-                    g.QuestionPack = q;
+                    g.QuestionPack = qp;
+                    questionPack = qp;
+                    g.QuestionPack.Questions.Add(q);
                     return g;
                 }), 
                 new { Id = id },
-                splitOn: "accessToken, id, id"
-                ).AsQueryable().SingleOrDefault();
+                splitOn: "accessToken, id, id, id"
+                ).AsQueryable().FirstOrDefault();
 
                 return game;
             }

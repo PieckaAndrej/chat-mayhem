@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Data.ModelLayer
 {
-    internal class Question
+    public class Question
     {
         public int id { get; set; }
 

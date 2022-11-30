@@ -12,10 +12,19 @@ namespace Data.ModelLayer
 
         public string text { get; set; }
 
+        public List<Answer> answers { get; set; }
+
+        public QuestionPack QuestionPack { get; set; }
+
         public Question(int id, string text)
         {
             this.id = id;
             this.text = text;
+        }
+
+        public Question(int id, string text, List<Answer> answers) : this(id, text)
+        {
+            this.answers = answers;
         }
     }
 }

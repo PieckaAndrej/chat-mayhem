@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Data.DatabaseLayer
 {
-    public interface IAnswerAccess
+    public interface IQuestionAccess
     {
-        List<Answer> CreateAnswer(List<Answer> answers);
+        Question InsertQuestion(Question question);
     }
 }

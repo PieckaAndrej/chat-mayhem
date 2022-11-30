@@ -1,6 +1,9 @@
 ﻿using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
+using RestSharp;
+using System.IO;
 using System.Linq;
+using WebApp.DTOs;
 using WebApp.Models;
 
 namespace WebApp.Services
@@ -69,6 +72,43 @@ namespace WebApp.Services
                                                 ).ToList();
 
             return answers;
+        }
+
+        public async Task<List<AnswerDto>> PostAnswers(string questionPrompt, string collection)
+        {
+            List<Answer> answers = new List<Answer>();
+
+            List<AnswerDto> answersDto = new List<AnswerDto>();
+
+            Question<ViewerAnswer> question = new Question<ViewerAnswer>();
+
+            answers = GetAnswers(questionPrompt, collection);
+
+            RestClient restClient = new RestClient("https://localhost:7200/");
+
+            var client = new MongoClient(_con);
+
+            var db = client.GetDatabase("ChatMayhem");
+
+            var coll = db.GetCollection<Question<ViewerAnswer>>(collection);
+
+            question = BsonSerializer.Deserialize<Question<ViewerAnswer>>(
+                                                   coll.Find(x => x.Prompt == questionPrompt)
+                                                   .Project("{_id: 0,prompt: 1, viewerAnswers: 1}")
+                                                   .ToList().FirstOrDefault());
+
+            foreach (var answer in answers)
+            {
+                AnswerDto answerDto = new AnswerDto(answer.Points, answer.Text, question.QuestionId);
+
+                answersDto.Add(answerDto);
+            }
+
+            RestRequest restRequest = new RestRequest("api/Question").AddJsonBody(answersDto);
+
+            var response = await restClient.ExecutePostAsync<AnswerDto>(restRequest);
+
+            return answersDto;
         }
     }
 }

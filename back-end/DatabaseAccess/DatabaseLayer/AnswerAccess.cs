@@ -18,22 +18,30 @@ namespace Data.DatabaseLayer
             _connectionString = connectionString;
             Console.WriteLine(_connectionString);
         }
-        public Answer CreateAnswer(Answer answer)
+
+        public List<Answer> CreateAnswer(List<Answer> answers)
         {
+            List<Answer> returnAnswers = new List<Answer>();
+
             string sql = "INSERT INTO public.\"Answer\"" +
                 "( \"questionId\", \"answerText\", \"answerCount\") " +
                 "VALUES (@questionId, @answerText, @answerCount);";
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                connection.Execute(sql, new
+                foreach (var answer in answers)
                 {
-                    questionId = answer.questionId,
-                    answerText = answer.text,
-                    answerCount = answer.answerCount
-                }); 
+                    returnAnswers.Add(answer);
 
-                return answer;
+                    connection.Execute(sql, new
+                    {
+                        questionId = answer.questionId,
+                        answerText = answer.text,
+                        answerCount = answer.answerCount
+                    });
+                }
+
+                return returnAnswers;
             }
         }
     }

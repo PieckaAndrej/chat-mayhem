@@ -11,15 +11,18 @@ namespace WebApp.Models
         public string Prompt { get; set; }
         public List<T> ViewerAnswers { get; set; }
 
+        public int QuestionId { get; set; }
+
         public Question()
         {
 
         }
 
-        public Question(string prompt, List<T> viewerAnswers)
+        public Question(string prompt, List<T> viewerAnswers, int questionId)
         {
             Prompt = prompt;
             ViewerAnswers = viewerAnswers;
+            QuestionId = questionId;
         }
     }
 }

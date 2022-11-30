@@ -12,9 +12,9 @@ namespace API.Services
             _answerAccess = answerAccess;
         }
 
-        public Answer CreateAnswer(Answer answer)
+        public List<Answer> CreateAnswer(List<Answer> answers)
         {
-            return _answerAccess.CreateAnswer(answer);
+            return _answerAccess.CreateAnswer(answers);
         }
     }
 }

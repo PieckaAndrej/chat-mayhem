@@ -50,11 +50,25 @@ namespace WebApp.Services
 
         public static List<Answer> GetAnswers(string questionPrompt, string collection)
         {
-            return BsonSerializer.Deserialize<Question<ViewerAnswer>>(new MongoClient(_con).GetDatabase("ChatMayhem")
-                .GetCollection<Question<ViewerAnswer>>(collection).Find(x => x.Prompt == questionPrompt)
-                .Project("{_id: 0,prompt: 1, viewerAnswers: 1}").ToList().FirstOrDefault()).ViewerAnswers
-                .GroupBy(answer => answer.Answer)
-                .Select(group => new Answer(group.Count(), group.Key)).ToList();
+            var client = new MongoClient(_con);
+
+            var db = client.GetDatabase("ChatMayhem");
+
+            var coll = db.GetCollection<Question<ViewerAnswer>>(collection);
+
+            List<ViewerAnswer> viewerAnswers = BsonSerializer.Deserialize<Question<ViewerAnswer>>(
+                                                   coll.Find(x => x.Prompt == questionPrompt)
+                                                   .Project("{_id: 0,prompt: 1, viewerAnswers: 1}")
+                                                   .ToList().FirstOrDefault()
+                                               ).ViewerAnswers;
+
+            List<Answer> answers = viewerAnswers.GroupBy(viewerAnswer => viewerAnswer.Answer)
+                                                .Select(group => new Answer(
+                                                    group.Count(),
+                                                    group.Key)
+                                                ).ToList();
+
+            return answers;
         }
     }
 }

@@ -58,7 +58,7 @@ namespace WebApp.Services
             if (IsConnected && _streamReader != null && _streamWriter != null)
             {
                 List<ViewerAnswer> viewerAnswers = new List<ViewerAnswer>();
-                Question<ViewerAnswer> question = new Question<ViewerAnswer>();
+                Question<ViewerAnswer> question = new Question<ViewerAnswer>("sad",new List<ViewerAnswer>(),1);
 
                 IsRunning = true;
                 while (IsRunning)
@@ -89,12 +89,10 @@ namespace WebApp.Services
                         string username = split[0].Substring(1, exclamationPointPosition - 1);
                         string message = line.Substring(secondColonPosition + 1);//Everything past the second colon
 
-                        Console.WriteLine();
-                        viewerAnswers.Add(new ViewerAnswer(username, message));
+                        question.Prompt = "who?";
+                        await QuestionService.InsertAnswers(new ViewerAnswer(username, message), Streamer.UserId, question);
                     }
                 }
-                //question.ViewerAnswers = viewerAnswers;
-                //QuestionService.InsertAnswers(question, Streamer.UserId);
             }
             // for debugging
             Console.WriteLine("Run end");

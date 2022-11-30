@@ -1,6 +1,9 @@
-﻿using MongoDB.Bson.Serialization;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using RestSharp;
+using System.Collections;
+using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
 using WebApp.DTOs;
@@ -17,29 +20,65 @@ namespace WebApp.Services
         private const string DATABASE_NAME = "ChatMayhem";
 
 
-        public static bool InsertAnswers(Question<ViewerAnswer> question, string collection)
+        public static async Task<long> InsertAnswers(ViewerAnswer viewerAnswer, string collectionName, Question<ViewerAnswer> question)
         {
-            bool inserted = true;
+            long result = 0;
 
             var client = new MongoClient(_con);
 
             var db = client.GetDatabase(DATABASE_NAME);
 
-            if(!db.ListCollectionNames().ToString().Contains(collection))
+            if (!db.ListCollectionNames().ToList().Contains(collectionName))
             {
-                CreateCollection(collection);
+                db.CreateCollection(collectionName);
             }
 
-            var coll = db.GetCollection<Question<ViewerAnswer>>(collection);
+            var collection = db.GetCollection<Question<ViewerAnswer>>(collectionName);
 
-            if (question == null)
+            if (question == null || viewerAnswer == null)
             {
-                inserted = false;
+                return result;
             }
 
-            coll.InsertOne(question);
+            if (collection.Find(q => q.Prompt.Equals(question.Prompt)).CountDocuments() == 0)
+            {
+                var q = new Question<ViewerAnswer>(question.Prompt,new List<ViewerAnswer>(), question.QuestionId);
+                q.ViewerAnswers.Add(viewerAnswer);
+                await collection.InsertOneAsync(q);
+                result = 1;
+            } 
+            else
+            {
+                MongoDB.Driver.FilterDefinition<Question<ViewerAnswer>> filter;
+                MongoDB.Driver.UpdateDefinition<Question<ViewerAnswer>> update;
 
-            return inserted;
+                if (!GetQuestion(question.Prompt,collection).ViewerAnswers
+                                .Select<ViewerAnswer, string>(a => a.Username).ToList()
+                                .Contains(viewerAnswer.Username))
+                {
+                    filter = Builders<Question<ViewerAnswer>>.Filter.Eq(q => q.Prompt, question.Prompt);
+                    update = Builders<Question<ViewerAnswer>>.Update.AddToSet(s => s.ViewerAnswers, viewerAnswer);
+                }
+                else
+                {
+                    filter = Builders<Question<ViewerAnswer>>.Filter.Where(q => q.Prompt == question.Prompt 
+                                            && q.ViewerAnswers.Any(v => v.Username.Equals(viewerAnswer.Username)));
+                    update = Builders<Question<ViewerAnswer>>.Update.Set(s => s.ViewerAnswers[-1], viewerAnswer);
+                }
+                var result1 = await collection.UpdateOneAsync(filter, update);
+                result = result1.ModifiedCount;
+            }
+
+            return result;
+        }
+
+        public static Question<ViewerAnswer> GetQuestion(string questionPrompt, IMongoCollection<Question<ViewerAnswer>> collection)
+        {
+            return BsonSerializer.Deserialize<Question<ViewerAnswer>>(
+                                                   collection.Find(x => x.Prompt == questionPrompt)
+                                                   .Project("{_id: 0, Prompt: 1, ViewerAnswers: 1, QuestionId: 1}")
+                                                   .ToList().FirstOrDefault()
+                                               );
         }
 
         public static void CreateCollection(string collection)
@@ -59,11 +98,7 @@ namespace WebApp.Services
 
             var coll = db.GetCollection<Question<ViewerAnswer>>(collection);
 
-            List<ViewerAnswer> viewerAnswers = BsonSerializer.Deserialize<Question<ViewerAnswer>>(
-                                                   coll.Find(x => x.Prompt == questionPrompt)
-                                                   .Project("{_id: 0,prompt: 1, viewerAnswers: 1}")
-                                                   .ToList().FirstOrDefault()
-                                               ).ViewerAnswers;
+            List<ViewerAnswer> viewerAnswers = GetQuestion(questionPrompt, coll).ViewerAnswers;
 
             List<Answer> answers = viewerAnswers.GroupBy(viewerAnswer => viewerAnswer.Answer)
                                                 .Select(group => new Answer(

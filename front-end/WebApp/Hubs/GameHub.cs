@@ -75,7 +75,7 @@ namespace WebApp.Hubs
             } // TODO show error else
         }
 
-        public void EndListening(string connectionId)
+        public async Task EndListening(string connectionId)
         {
             string groupName = GetGroupName(connectionId);
 

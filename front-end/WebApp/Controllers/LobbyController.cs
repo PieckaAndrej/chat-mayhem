@@ -31,7 +31,7 @@ namespace WebApp.Controllers
                 new Answer(3, "hello"),
             };
 
-            Question<Answer> question = new Question<Answer>("Best hi?", list);
+            Question<Answer> question = new Question<Answer>("Best hi?", list, 1);
             return View(question);
         }
 

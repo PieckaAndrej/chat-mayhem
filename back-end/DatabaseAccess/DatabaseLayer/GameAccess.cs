@@ -100,7 +100,7 @@ namespace Data.DatabaseLayer
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                game.Id = connection.QuerySingle<int>(sql, new
+                connection.Execute(sql, new
                 {
                     timeLimit = game.TimeLimit,
                     owner = game.Streamer.Id,

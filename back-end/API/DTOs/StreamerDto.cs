@@ -7,6 +7,7 @@ namespace API.DTOs
     public class StreamerDto
     {
         public string AccessToken { get; set; }
+        //TODO maybe remove
         public string RefreshToken { get; set; }
 
         public StreamerDto() { }

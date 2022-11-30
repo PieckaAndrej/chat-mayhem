@@ -34,7 +34,7 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            streamer = _streamerService.Add(streamer);
+            streamer = _streamerService.Update(streamer);
 
             return StreamerDto.Convert(streamer);
         }

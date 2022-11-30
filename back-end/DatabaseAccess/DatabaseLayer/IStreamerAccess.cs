@@ -11,5 +11,6 @@ namespace Data.DatabaseLayer
     {
         Streamer GetStreamerById(string streamerId);
         Streamer CreateStreamer(Streamer streamer);
+        Streamer UpdateStreamer(Streamer streamer);
     }
 }

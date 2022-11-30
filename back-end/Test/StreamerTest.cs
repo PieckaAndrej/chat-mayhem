@@ -36,7 +36,7 @@ namespace Test
             var streamerAccess = new StreamerAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
 
             //Act
-            var streamer = streamerAccess.CreateStreamer(_testStreamer);
+            var streamer = streamerAccess.UpdateStreamer(_testStreamer);
             var resultStreamer = streamerAccess.GetStreamerById(streamer.Id);
 
             //Assert
@@ -53,7 +53,7 @@ namespace Test
             var streamerAccess = new StreamerAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
 
             //Act
-            streamerAccess.CreateStreamer(_testStreamer);
+            streamerAccess.UpdateStreamer(_testStreamer);
             var resultStreamer = streamerAccess.GetStreamerById(_testStreamer.Id);
 
             //Assert

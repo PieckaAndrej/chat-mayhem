@@ -20,5 +20,24 @@ namespace WebApp.Controllers
             Game game = JsonSerializer.Deserialize<Game>(json);
             return View(game);
         }
+
+        public IActionResult Game()
+        {
+            List<Answer> list = new List<Answer>()
+            {
+                new Answer(3, "hello"),
+                new Answer(3, "hello"),
+                new Answer(3, "hello"),
+                new Answer(3, "hello"),
+            };
+
+            Question<Answer> question = new Question<Answer>("Best hi?", list);
+            return View(question);
+        }
+
+        public IActionResult Question()
+        {
+            return View();
+        }
     }
 }

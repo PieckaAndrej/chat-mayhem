@@ -1,8 +1,40 @@
 ﻿<div>
-    <h1>Queres?</h1>
+    <h1 id="prompt"></h1>
     <h3>Time remaining</h3>
-    <button>End</button>
+    <h2 id="time"></h2>
+    <button id="end">End</button>
+    <a asp-action="Game" id="redirect"></a>
 </div>
 
-<script src="~/js/signalr/dist/browser/signalr.js"></script>
-<script src="~/js/game.js"></script>
+@section scripts{
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/game.js"></script>
+    <script>
+        const connectionId = localStorage.getItem("id");
+        console.log(connectionId);
+
+        function endListening() {
+            console.log(connectionId);
+            connection.invoke("EndListening", connectionId).catch(function (err) {
+                return console.error(err.toString());
+            });
+            //document.getElementById("redirect").click();
+        }
+
+        async function connect() {
+            await connection.start();
+
+            document.getElementById("time").innerHTML = "100";
+
+            connection.invoke("StartGame", connectionId).catch(function (err) {
+                return console.error(err.toString());
+            });
+
+            document.getElementById("end").addEventListener("click", function (event) {
+                endListening();
+            });
+        };
+
+        connect();
+    </script>
+}

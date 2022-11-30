@@ -9,7 +9,9 @@
     Claim? nameClaim = identity.Claims.Where(claim => claim.Type == ClaimTypes.Name).FirstOrDefault();
 
     Streamer streamer = new Streamer(nameClaim.Value, accessClaim.Value, idClaim.Value);
-    string json = JsonSerializer.Serialize(streamer);
+    string streamerJson = JsonSerializer.Serialize(streamer);
+
+    string packJson = JsonSerializer.Serialize(Model.QuestionPack);
 }
 
 <div>
@@ -19,7 +21,7 @@
     <h3>Players</h3>
     <div>
     </div>
-    <button id="startGame">Start</button>
+    <a id="startGame" class="btn login-button" asp-action="Question">Start</a>
 </div>
 
 
@@ -37,17 +39,16 @@
 
             //work around but whatever
             if ("@User.Identity.IsAuthenticated" === "True") {
-                connection.invoke("CreateGroup", "@json").catch(function (err) {
+                connection.invoke("CreateGroup", "@streamerJson", "@packJson").catch(function (err) {
                     return console.error(err.toString());
                 });
-            }
 
-            document.getElementById("startGame").addEventListener("click", function (event) {
-                connection.invoke("StartGame").catch(function (err) {
+                let id = await connection.invoke("GetConnectionId").catch(function (err) {
                     return console.error(err.toString());
                 });
-                event.preventDefault();
-            });
+
+                localStorage.setItem("id", id);
+            }
         };
 
         connect();

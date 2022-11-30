@@ -25,7 +25,6 @@ namespace Data.ModelLayer
         [JsonPropertyName("category")]
         public string Category { get; set; }
 
-        [JsonPropertyName("category")]
         public List<Question<ViewerAnswer>> questions { get; set; }
 
         [JsonPropertyName("creationDate")]

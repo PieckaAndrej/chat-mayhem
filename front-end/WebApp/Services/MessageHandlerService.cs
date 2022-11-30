@@ -19,7 +19,7 @@ namespace WebApp.Services
         }
         private StreamReader? _streamReader;
         private StreamWriter? _streamWriter;
-        private bool IsRunning { get; set; }
+        public bool IsRunning { get; set; }
 
         public MessageHandlerService(Streamer streamer)
         {
@@ -43,6 +43,14 @@ namespace WebApp.Services
             await _streamWriter.WriteLineAsync($"JOIN #{streamerName}");
 
             return _tcpClient.Connected;
+        }
+
+        public void StopListening()
+        {
+            IsRunning = false;
+            _streamReader?.Dispose();
+            _streamWriter?.Dispose();
+            _tcpClient.Close();
         }
 
         public async Task Listen()
@@ -85,8 +93,8 @@ namespace WebApp.Services
                         viewerAnswers.Add(new ViewerAnswer(username, message));
                     }
                 }
-                question.ViewerAnswers = viewerAnswers;
-                QuestionService.InsertAnswers(question, Streamer.UserId);
+                //question.ViewerAnswers = viewerAnswers;
+                //QuestionService.InsertAnswers(question, Streamer.UserId);
             }
             // for debugging
             Console.WriteLine("Run end");

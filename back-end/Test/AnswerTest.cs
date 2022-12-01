@@ -15,14 +15,14 @@ namespace Test
     public class AnswerTest
     {
         private readonly ITestOutputHelper _extraOutput;
-        private readonly Answer _testAnswer;
+        private readonly List<Answer> _testAnswer;
         private readonly IConfiguration _testConfiguration;
 
         public AnswerTest(ITestOutputHelper extraOutput)
         {
             _extraOutput = extraOutput;
 
-            _testAnswer = new Answer(10, "Shirt", 1);
+            _testAnswer = new List<Answer>() { new Answer(10, "Shirt " + DateTime.Now.ToString() , 1) };
 
             _testConfiguration = new ConfigurationBuilder()
                 .AddJsonFile($"appsettings.Test.json", optional: false)
@@ -39,9 +39,9 @@ namespace Test
             var answer = answerAccess.CreateAnswer(_testAnswer);
 
             //Assert
-            Assert.Equal(_testAnswer.text, answer?.text);
-            Assert.Equal(_testAnswer.questionId, answer?.questionId);
-            Assert.Equal(_testAnswer.answerCount, answer?.answerCount);
+            Assert.Equal(_testAnswer[0].text, answer?[0].text);
+            Assert.Equal(_testAnswer[0].questionId, answer?[0].questionId);
+            Assert.Equal(_testAnswer[0].answerCount, answer?[0].answerCount);
         }
     }
 }

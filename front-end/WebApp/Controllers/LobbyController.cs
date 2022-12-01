@@ -6,6 +6,7 @@ using NuGet.Protocol;
 using System.Text.Json;
 using WebApp.Models;
 using WebApp.Services;
+using WebApp.ViewModel;
 
 namespace WebApp.Controllers
 {
@@ -18,10 +19,16 @@ namespace WebApp.Controllers
             // if you go there without coming from game controller, then you get error
             string json = TempData["game"] as string;
             Game game = JsonSerializer.Deserialize<Game>(json);
-            return View(game);
+
+            var lobbyViewModel = new LobbyViewModel();
+            lobbyViewModel.Game = game;
+            var question = new Question<Answer>("What is your favourite food?", new List<Answer>() { new Answer(), new Answer(), new Answer(), new Answer(), new Answer(), new Answer(), new Answer(), new Answer()}, 1);
+            lobbyViewModel.Question = question;
+
+            return View("Index", lobbyViewModel);
         }
 
-        public IActionResult Game()
+        public IActionResult Game(LobbyViewModel lobbyViewModel)
         {
             List<Answer> list = new List<Answer>()
             {
@@ -32,12 +39,14 @@ namespace WebApp.Controllers
             };
 
             Question<Answer> question = new Question<Answer>("Best hi?", list, 1);
-            return View(question);
+            lobbyViewModel.Question = question;
+            return View("Index", lobbyViewModel);
         }
 
         public IActionResult Question()
         {
-            return View();
+            Console.WriteLine("xd");
+            return View("Index");
         }
     }
 }

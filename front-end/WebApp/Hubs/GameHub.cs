@@ -71,7 +71,8 @@ namespace WebApp.Hubs
 
             if (await handler.Connect())
             {
-                await handler.Listen();
+                var question = await handler.Listen();
+                _questions.Add(groupName,question);
             } // TODO show error else
         }
 
@@ -102,7 +103,15 @@ namespace WebApp.Hubs
             }
             else
             {
-                await Clients.Group(groupName).SendAsync("TurnAnswer", question.ViewerAnswers.IndexOf(answer));
+                Console.WriteLine(answer.Points);
+                double points = answer.Points;
+                Console.WriteLine(points);
+                Console.WriteLine(points/ question.ViewerAnswers.Sum(v => v.Points));
+                Console.WriteLine(points/ question.ViewerAnswers.Sum(v => v.Points) * 100);
+                Console.WriteLine(Convert.ToInt32(points/ question.ViewerAnswers.Sum(v => v.Points) * 100));
+                var retPoint = Convert.ToInt32(points / question.ViewerAnswers.Sum(v => v.Points) * 100);
+                Console.WriteLine(message);
+                await Clients.Group(groupName).SendAsync("TurnAnswer", question.ViewerAnswers.IndexOf(answer), answer.Text, retPoint);
             }
         }
 

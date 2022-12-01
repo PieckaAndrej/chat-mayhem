@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Net.Sockets;
 using WebApp.Models;
@@ -53,16 +54,19 @@ namespace WebApp.Services
             _tcpClient.Close();
         }
 
-        public async Task Listen()
+        public async Task<Question<Answer>> Listen()
         {
+            List<ViewerAnswer> viewerAnswers = new List<ViewerAnswer>();
+            Question<ViewerAnswer> question = new Question<ViewerAnswer>("sad", new List<ViewerAnswer>(), 1);
             if (IsConnected && _streamReader != null && _streamWriter != null)
             {
-                List<ViewerAnswer> viewerAnswers = new List<ViewerAnswer>();
-                Question<ViewerAnswer> question = new Question<ViewerAnswer>("sad",new List<ViewerAnswer>(),1);
 
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
                 IsRunning = true;
-                while (IsRunning)
+                while (IsRunning && stopwatch.Elapsed< TimeSpan.FromSeconds(5))
                 {
+
                     string? line = await _streamReader.ReadLineAsync();
                     Console.WriteLine(line);
 
@@ -96,6 +100,8 @@ namespace WebApp.Services
             }
             // for debugging
             Console.WriteLine("Run end");
+            var queres = new Question<Answer>(question.Prompt, QuestionService.GetAnswers(question.Prompt, Streamer.UserId), question.QuestionId);
+            return queres;
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Test
 
             var owner = new Streamer("asdfg", "21345", "abcde");
             var gameMode = new GameMode(1, "Fun game", "No cheating");
-            var timeLimit = TimeSpan.FromSeconds(15);
+            var timeLimit = 15;
             var questionPack = new QuestionPack(1, "me", "best questions", new string[1] {"m"} ,"questions",DateTime.Parse("2022-11-15"));
             _testGame = new Game(owner, gameMode, timeLimit, questionPack);
 
@@ -44,7 +44,7 @@ namespace Test
         public void TestCreateGame()
         {
             //Arrange
-            _testGame.TimeLimit = TimeSpan.FromSeconds(21);
+            _testGame.TimeLimit = 21;
             var gameAccess = new GameAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
 
             //Act
@@ -63,7 +63,7 @@ namespace Test
             //Arrange
             _extraOutput.WriteLine(_testConfiguration.GetConnectionString("ChatMayhem Connection"));
 
-            _testGame.TimeLimit = TimeSpan.FromSeconds(22);
+            _testGame.TimeLimit = 22;
             var gameController = new GameController(_testConfiguration);
 
             //Act
@@ -83,7 +83,7 @@ namespace Test
             //Arrange
             var gameAccess = new GameAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
             int id = 115;
-            _testGame.TimeLimit = TimeSpan.FromSeconds(23);
+            _testGame.TimeLimit = 23;
 
             //Act
             Game game = gameAccess.UpdateGame(id, _testGame);
@@ -113,7 +113,7 @@ namespace Test
         public void TestDeleteGame()
         {
             //Arrange
-            _testGame.TimeLimit = TimeSpan.FromSeconds(24);
+            _testGame.TimeLimit = 24;
             var gameAccess = new GameAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
 
             //Act
@@ -128,7 +128,7 @@ namespace Test
         public void TestGetGame()
         {
             //Arrange
-            _testGame.TimeLimit = TimeSpan.FromSeconds(25);
+            _testGame.TimeLimit = 25;
             var gameAccess = new GameAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
 
             //Act

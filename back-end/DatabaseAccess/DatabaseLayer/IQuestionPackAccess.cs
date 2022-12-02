@@ -9,6 +9,11 @@ namespace Data.DatabaseLayer
 {
     public interface IQuestionPackAccess
     {
+        QuestionPack CreateQuestionPack(QuestionPack questionPack);
         QuestionPack GetQuestionPackById(int id);
+
+        QuestionPack UpdateQuestionPack(int id, QuestionPack questionPack);
+        
+        Boolean DeleteQuestionPack(int id);
     }
 }

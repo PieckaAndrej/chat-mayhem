@@ -12,9 +12,21 @@ namespace API.Services
             _questionPackAccess = questionPackAccess;
         }
 
-        public QuestionPack Get(int id)
+        public QuestionPack GetQuestionPackById(int id)
         {
             return _questionPackAccess.GetQuestionPackById(id);
+        }
+        public QuestionPack UpdateQuestionPack(int id, QuestionPack questionPack)
+        {
+            return _questionPackAccess.UpdateQuestionPack(id, questionPack);
+        }
+        public QuestionPack CreateQuestionPack(QuestionPack questionPack)
+        {
+            return _questionPackAccess.CreateQuestionPack(questionPack);
+        }
+        public bool DeleteQuestionPack(int id)
+        {
+            return _questionPackAccess.DeleteQuestionPack(id);
         }
     }
 }

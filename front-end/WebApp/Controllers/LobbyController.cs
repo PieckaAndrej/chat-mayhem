@@ -25,7 +25,7 @@ namespace WebApp.Controllers
             var question = new Question<Answer>("What is your favourite food?", new List<Answer>() { new Answer(), new Answer(), new Answer(), new Answer(), new Answer(), new Answer(), new Answer(), new Answer()}, 1);
             lobbyViewModel.Question = question;
 
-            return View("Index", lobbyViewModel);
+            return View("Index1");
         }
 
         public IActionResult Game(LobbyViewModel lobbyViewModel)

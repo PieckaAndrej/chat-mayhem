@@ -10,7 +10,7 @@ namespace WebApp.Models
         public int Id { get; set; }
 
         [JsonPropertyName("streamer")]
-        public object Streamer { get; set; }
+        public Streamer Streamer { get; set; }
 
         [JsonPropertyName("mode")]
         public GameMode Mode { get; set; }

@@ -1,6 +1,6 @@
-using DesktopApplication.ModelLayer;
 using DesktopApplication.ControlLayer;
 using DesktopApplication.GuiLayer;
+using DesktopApplication.ModelLayer;
 
 namespace DesktopApplication
 {
@@ -19,7 +19,7 @@ namespace DesktopApplication
             {
                 try
                 {
-                    _ = answerControl.InsertAnswers(question).Result;
+                    answerControl.InsertAnswers(question);
                     question = null;
                     answerPointsTextBox.Enabled = false;
                     answerTextTextBox.Enabled = false;

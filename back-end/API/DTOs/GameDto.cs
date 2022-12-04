@@ -36,7 +36,7 @@ namespace API.DTOs
         {
             Streamer streamer = ServiceInjector.StreamerService.Get(gameDto.StreamerId);
             GameMode mode = ServiceInjector.GameModeService.Get(gameDto.ModeId);
-            QuestionPack questionPack = ServiceInjector.QuestionPackService.Get(gameDto.QuestionPackId);
+            QuestionPack questionPack = ServiceInjector.QuestionPackService.GetQuestionPackById(gameDto.QuestionPackId);
 
             return new Game(streamer, mode, gameDto.TimeLimitSeconds, questionPack, gameDto.Id);
         }

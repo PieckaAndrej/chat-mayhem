@@ -15,15 +15,17 @@ namespace Test
     public class AnswerTest
     {
         private readonly ITestOutputHelper _extraOutput;
-        private readonly List<Answer> _testAnswer;
+        private readonly Answer _testAnswer;
         private readonly IConfiguration _testConfiguration;
+        private readonly int _questionId;
 
         public AnswerTest(ITestOutputHelper extraOutput)
         {
             _extraOutput = extraOutput;
 
-            _testAnswer = new List<Answer>() { new Answer(10, "Shirt " + DateTime.Now.ToString() , 1) };
+            _testAnswer = new Answer(10, "Shirt " + DateTime.Now.ToString());
 
+            _questionId = 1;
             _testConfiguration = new ConfigurationBuilder()
                 .AddJsonFile($"appsettings.Test.json", optional: false)
                 .Build();
@@ -36,12 +38,12 @@ namespace Test
             var answerAccess = new AnswerAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
 
             //Act
-            var answer = answerAccess.CreateAnswer(_testAnswer);
+            var id = answerAccess.CreateAnswer(_testAnswer, _questionId);
 
             //Assert
-            Assert.Equal(_testAnswer[0].text, answer?[0].text);
-            Assert.Equal(_testAnswer[0].questionId, answer?[0].questionId);
-            Assert.Equal(_testAnswer[0].answerCount, answer?[0].answerCount);
+            //Assert.Equal(_testAnswer.text, answer.text);
+            //Assert.Equal(_testAnswer.answerCount, answer.answerCount);
+            Assert.Equal(1, id);
         }
     }
 }

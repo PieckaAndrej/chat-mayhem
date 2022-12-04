@@ -71,5 +71,13 @@ namespace API.Services
                 return new QuestionPackService(new QuestionPackAccess(Con));
             }
         }
+
+        public static QuestionService QuestionService
+        {
+            get
+            {
+                return new QuestionService(new QuestionAccess(Con));
+            }
+        }
     }
 }

@@ -24,17 +24,42 @@ namespace API.Controllers
             _answerService = ServiceInjector.AnswerService;
         }
 
-        [HttpPost]
-        public ActionResult<List<Answer>> Post(List<Answer> answers)
+        [HttpPut]
+        [Route("answers/{questionId}")]
+        public ActionResult<Question> Put(Question question, int questionId)
         {
-            List<Answer> returnAnswers = ServiceInjector.AnswerService.CreateAnswer(answers);
+            Console.WriteLine("called");
+            if (question.id != questionId)
+            {
+                return UnprocessableEntity($"Passed in question's id ({question.id})" +
+                    $" and the question id which was searched for ({questionId}) not matching.");
+            }
+
+            Question returnQuestion = question;
+
+            if (ServiceInjector.QuestionService.GetQuestionById(question.id) == null)
+            {
+                return NotFound("No question with matching id: " + question.id);
+            }
+            List<Answer>? returnAnswers = ServiceInjector.AnswerService.InsertAnswers(question);
 
             if (returnAnswers == null)
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
-            return returnAnswers;
+            returnQuestion.answers = returnAnswers;
+
+            return returnQuestion;
         }
+
+
+        //[HttpPut]
+        //[Route("answers/{questionId}")]
+        //public ActionResult Putss()
+        //{
+        //    Console.WriteLine("yo");
+        //    return Ok();
+        //}
     }
 }

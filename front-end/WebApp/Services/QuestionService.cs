@@ -109,41 +109,21 @@ namespace WebApp.Services
             return answers;
         }
 
-        public async Task<List<AnswerDto>> PostAnswers(string questionPrompt, string collection)
+        public async Task<Question<Answer>?> InsertAnswers(Question<ViewerAnswer> question, string collectionName)
         {
-            List<Answer> answers = new List<Answer>();
-
-            List<AnswerDto> answersDto = new List<AnswerDto>();
-
-            Question<ViewerAnswer> question = new Question<ViewerAnswer>();
-
-            answers = GetAnswers(questionPrompt, collection);
+            //TODO needs to be tested
+            var answers = GetAnswers(question.Prompt, collectionName);
 
             RestClient restClient = new RestClient("https://localhost:7200/");
 
-            var client = new MongoClient(_con);
+            var restQuestion = new Question<Answer>(question.Prompt, answers, question.QuestionId);
 
-            var db = client.GetDatabase("ChatMayhem");
+            RestRequest restRequest = new RestRequest("api/Question/answers/{id}")
+                .AddUrlSegment("id", question.QuestionId).AddJsonBody(restQuestion);
 
-            var coll = db.GetCollection<Question<ViewerAnswer>>(collection);
+            var response = await restClient.ExecutePutAsync<Question<Answer>>(restRequest);
 
-            question = BsonSerializer.Deserialize<Question<ViewerAnswer>>(
-                                                   coll.Find(x => x.Prompt == questionPrompt)
-                                                   .Project("{_id: 0,prompt: 1, viewerAnswers: 1}")
-                                                   .ToList().FirstOrDefault());
-
-            foreach (var answer in answers)
-            {
-                AnswerDto answerDto = new AnswerDto(answer.Points, answer.Text, question.QuestionId);
-
-                answersDto.Add(answerDto);
-            }
-
-            RestRequest restRequest = new RestRequest("api/Question").AddJsonBody(answersDto);
-
-            var response = await restClient.ExecutePostAsync<AnswerDto>(restRequest);
-
-            return answersDto;
+            return response.Data;
         }
     }
 }

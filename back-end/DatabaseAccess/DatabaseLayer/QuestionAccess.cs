@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Data.DatabaseLayer
 {
-    internal class QuestionAccess : IQuestionAccess
+    public class QuestionAccess : IQuestionAccess
     {
         private readonly string _connectionString;
 
@@ -18,22 +18,75 @@ namespace Data.DatabaseLayer
         {
             _connectionString = connectionString;
         }
-        public Question InsertQuestion(Question question)
+
+        public Question? GetQuestionById(int? id)
         {
-            string sql = "INSERT INTO public.\"Question\"" +
-                "(\"questionPackId\", \"text\") " +
-                "VALUES (@questionPackId, @text) RETURNING id;";
+            string sql = "SELECT question.\"questionPackId\", question.\"text\", question.id, " +
+                    "answer.\"answerCount\", answer.\"answerText\" AS text " +
+                    "FROM public.\"Question\" question " +
+                    "LEFT JOIN public.\"Answer\" answer ON question.id = answer.\"questionId\" " +
+                    "WHERE question.id = @Id";
 
-            using (var connection = new NpgsqlConnection(_connectionString))
+            Question tempQuestion = null;
+
+            using(var conncetion = new NpgsqlConnection(_connectionString))
             {
-                question.id = connection.QuerySingle<int>(sql, new
-                {
-                    questionPackId = question.QuestionPack.Id,
-                    text = question.text
-                });
-
+                var question = conncetion.Query<Question, Answer, Question>(sql, map: (q, a) =>
+                { 
+                    if (q.answers == null)
+                    {
+                        q.answers = new List<Answer>();
+                    }
+                    if (tempQuestion != null)
+                    {
+                        q = tempQuestion;
+                    }
+                    q.answers.Add(a);
+                    tempQuestion = q;
+                    return q;
+                },
+                new { Id = id },
+                splitOn: "answerCount"
+                ).AsQueryable().FirstOrDefault();
                 return question;
             }
         }
+
+        //public int UpdateQuestion(Question question)
+        //{
+        //    string sql = "UPDATE public.\"Question\" SET " +
+        //        "\"text\" = @text, \"questionPackId\" = @questionPackId " +
+        //        "WHERE Id = @id;";
+
+        //    using (var connection = new NpgsqlConnection(_connectionString))
+        //    {
+        //        var rowsChnaged = connection.Execute(sql, new
+        //        {
+                    
+        //            Id = question.id
+        //        });
+
+        //        return rowsChnaged;
+        //    }
+        //}
+
+
+        //public Question InsertQuestion(Question question)
+        //{
+        //    string sql = "INSERT INTO public.\"Question\"" +
+        //        "\"questionPackId\", \"text\" " +
+        //        "VALUES (@questionPackId, @text) RETURNING id;";
+
+        //    using (var connection = new NpgsqlConnection(_connectionString))
+        //    {
+        //        question.id = connection.QuerySingle<int>(sql, new
+        //        {
+        //            questionPackId = question.QuestionPack.Id,
+        //            text = question.text
+        //        });
+
+        //        return question;
+        //    }
+        //}
     }
 }

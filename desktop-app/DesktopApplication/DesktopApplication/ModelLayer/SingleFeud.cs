@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.ModelLayer
+namespace DesktopApplication.ModelLayer
 {
     internal class SingleFeud : GameMode
     {

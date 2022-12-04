@@ -108,9 +108,9 @@ namespace Data.DatabaseLayer
 
         public Game UpdateGame(int id, Game game)
         {
-            string sql = "UPDATE public.\"Game\" SET" +
+            string sql = "UPDATE public.\"Game\" SET " +
                 "\"timeLimit\" = @timeLimit, owner = @owner, \"modelId\" = @modelId, \"questionPackId\" = @questionPackId " +
-                "WHERE Id = @id RETURNING id;";
+                "WHERE Id = @id;";
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {

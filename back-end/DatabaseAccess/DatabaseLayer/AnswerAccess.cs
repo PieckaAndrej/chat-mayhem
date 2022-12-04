@@ -16,32 +16,59 @@ namespace Data.DatabaseLayer
         public AnswerAccess(string connectionString)
         {
             _connectionString = connectionString;
-            Console.WriteLine(_connectionString);
         }
 
-        public List<Answer> CreateAnswer(List<Answer> answers)
+        public List<Answer> GetAnswersQuestionById(int? questionId)
         {
-            List<Answer> returnAnswers = new List<Answer>();
+            string sql = "SELECT \"answerCount\", \"answerText\" AS text  " +
+                "FROM public.\"Answer\" " +
+                "WHERE \"questionId\" = @questionId";
 
-            string sql = "INSERT INTO public.\"Answer\"" +
-                "( \"questionId\", \"answerText\", \"answerCount\") " +
+            using(var connection = new NpgsqlConnection(_connectionString))
+            {
+                var answerList = connection.Query<Answer>(sql, new
+                {
+                    questionId = questionId
+                }).AsQueryable().ToList();
+
+                return answerList;
+            }
+        }
+
+        public int CreateAnswer(Answer answer, int? questionId)
+        {
+            string sql = "INSERT INTO public.\"Answer\" " +
+                "(\"questionId\", \"answerText\", \"answerCount\") " +
                 "VALUES (@questionId, @answerText, @answerCount);";
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                foreach (var answer in answers)
+                var rowsAffected = connection.Execute(sql, new
                 {
-                    returnAnswers.Add(answer);
+                    questionId = questionId,
+                    answerText = answer.text.ToLower(),
+                    answerCount = answer.answerCount
+                });
 
-                    connection.Execute(sql, new
-                    {
-                        questionId = answer.questionId,
-                        answerText = answer.text,
-                        answerCount = answer.answerCount
-                    });
-                }
+                return rowsAffected;
+            }
+        }
 
-                return returnAnswers;
+        public int UpdatePoints(Answer answer, int oldPoints, int? questionId)
+        {
+            string sql = "UPDATE public.\"Answer\"" +
+                "SET \"answerCount\" = @answerCount " +
+                "WHERE \"answerText\" = @answerText AND \"questionId\" = @questionId"; 
+
+            using(var connection = new NpgsqlConnection(_connectionString))
+            {
+                var rowsAffected = connection.Execute(sql, new
+                {
+                    answerCount = answer.answerCount + oldPoints,
+                    answerText = answer.text.ToLower(),
+                    questionId = questionId
+                });
+                return rowsAffected;
             }
         }
     }

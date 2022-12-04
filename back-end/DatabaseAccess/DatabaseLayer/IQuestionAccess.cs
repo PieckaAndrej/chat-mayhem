@@ -9,6 +9,8 @@ namespace Data.DatabaseLayer
 {
     public interface IQuestionAccess
     {
-        Question InsertQuestion(Question question);
+        //Question InsertQuestion(Question question);
+        Question? GetQuestionById(int? id);
+        //int UpdateQuestion(Question question);
     }
 }

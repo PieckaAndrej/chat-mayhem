@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Data.ModelLayer
+namespace DesktopApplication.ModelLayer
 {
     public class QuestionPack
     {

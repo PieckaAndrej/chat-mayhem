@@ -14,7 +14,7 @@ namespace WebApp.Models
         public string Prompt { get; set; }
         [JsonPropertyName("answers")]
         public List<T> Answers { get; set; }
-
+        [JsonPropertyName("id")]
         public int QuestionId { get; set; }
 
         public Question()

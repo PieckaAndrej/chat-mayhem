@@ -9,7 +9,6 @@ namespace Data.ModelLayer
 {
     public class Question
     {
-        [JsonIgnore]
         public int? id { get; set; }
 
         public string? text { get; set; }

@@ -29,9 +29,9 @@ namespace Data.DatabaseLayer
 
             Question tempQuestion = null;
 
-            using(var conncetion = new NpgsqlConnection(_connectionString))
+            using(var connection = new NpgsqlConnection(_connectionString))
             {
-                var question = conncetion.Query<Question, Answer, Question>(sql, map: (q, a) =>
+                var question = connection.Query<Question, Answer, Question>(sql, map: (q, a) =>
                 { 
                     if (q.answers == null)
                     {
@@ -52,6 +52,20 @@ namespace Data.DatabaseLayer
             }
         }
 
+        public List<Question>? GetQuestions()
+        {
+            string sql = "SELECT * FROM public.\"Question\" ORDER BY id ASC";
+
+            List<Question>? questions = new List<Question>();
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                questions = connection.Query<Question>(sql).ToList();
+
+                return questions;
+            }
+        }
+
         //public int UpdateQuestion(Question question)
         //{
         //    string sql = "UPDATE public.\"Question\" SET " +
@@ -62,7 +76,7 @@ namespace Data.DatabaseLayer
         //    {
         //        var rowsChnaged = connection.Execute(sql, new
         //        {
-                    
+
         //            Id = question.id
         //        });
 

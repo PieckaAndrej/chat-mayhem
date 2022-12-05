@@ -1,6 +1,6 @@
 ﻿namespace DesktopApplication
 {
-    partial class Form1
+    partial class InsertQuestions
     {
         /// <summary>
         ///  Required designer variable.
@@ -39,15 +39,16 @@
             this.addQuestionButton = new System.Windows.Forms.Button();
             this.questionPromptLabel = new System.Windows.Forms.Label();
             this.questionPromptTextBox = new System.Windows.Forms.TextBox();
+            this.backButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // answerPointsTextBox
             // 
+            this.answerPointsTextBox.Enabled = false;
             this.answerPointsTextBox.Location = new System.Drawing.Point(526, 124);
             this.answerPointsTextBox.Name = "answerPointsTextBox";
             this.answerPointsTextBox.Size = new System.Drawing.Size(131, 27);
             this.answerPointsTextBox.TabIndex = 0;
-            this.answerPointsTextBox.Enabled = false;
             // 
             // questionIdTextBox
             // 
@@ -58,31 +59,31 @@
             // 
             // answerTextTextBox
             // 
+            this.answerTextTextBox.Enabled = false;
             this.answerTextTextBox.Location = new System.Drawing.Point(526, 88);
             this.answerTextTextBox.Name = "answerTextTextBox";
             this.answerTextTextBox.Size = new System.Drawing.Size(131, 27);
             this.answerTextTextBox.TabIndex = 2;
-            this.answerTextTextBox.Enabled = false;
             // 
             // answerPointsLabel
             // 
             this.answerPointsLabel.AutoSize = true;
+            this.answerPointsLabel.Enabled = false;
             this.answerPointsLabel.Location = new System.Drawing.Point(417, 127);
             this.answerPointsLabel.Name = "answerPointsLabel";
             this.answerPointsLabel.Size = new System.Drawing.Size(103, 20);
             this.answerPointsLabel.TabIndex = 3;
             this.answerPointsLabel.Text = "Answer Points:";
-            this.answerPointsLabel.Enabled = false;
             // 
             // AnswerTextLabel
             // 
             this.AnswerTextLabel.AutoSize = true;
+            this.AnswerTextLabel.Enabled = false;
             this.AnswerTextLabel.Location = new System.Drawing.Point(429, 91);
             this.AnswerTextLabel.Name = "AnswerTextLabel";
             this.AnswerTextLabel.Size = new System.Drawing.Size(91, 20);
             this.AnswerTextLabel.TabIndex = 4;
             this.AnswerTextLabel.Text = "Answer Text:";
-            this.AnswerTextLabel.Enabled = false;
             // 
             // questionIdLabel
             // 
@@ -95,6 +96,7 @@
             // 
             // addAnswerButton
             // 
+            this.addAnswerButton.Enabled = false;
             this.addAnswerButton.Location = new System.Drawing.Point(511, 181);
             this.addAnswerButton.Name = "addAnswerButton";
             this.addAnswerButton.Size = new System.Drawing.Size(101, 29);
@@ -102,10 +104,10 @@
             this.addAnswerButton.Text = "Add Answer";
             this.addAnswerButton.UseVisualStyleBackColor = true;
             this.addAnswerButton.Click += new System.EventHandler(this.addAnswersButton_Click);
-            this.addAnswerButton.Enabled = false;
             // 
             // insertQuestionButton
             // 
+            this.insertQuestionButton.Enabled = false;
             this.insertQuestionButton.Location = new System.Drawing.Point(502, 224);
             this.insertQuestionButton.Name = "insertQuestionButton";
             this.insertQuestionButton.Size = new System.Drawing.Size(118, 29);
@@ -113,7 +115,6 @@
             this.insertQuestionButton.Text = "Insert Question";
             this.insertQuestionButton.UseVisualStyleBackColor = true;
             this.insertQuestionButton.Click += new System.EventHandler(this.insertQuestionButton_Click);
-            this.insertQuestionButton.Enabled = false;
             // 
             // addQuestionButton
             // 
@@ -141,11 +142,24 @@
             this.questionPromptTextBox.Size = new System.Drawing.Size(132, 27);
             this.questionPromptTextBox.TabIndex = 9;
             // 
-            // Form1
+            // backButton
+            // 
+            this.backButton.BackColor = System.Drawing.Color.Tomato;
+            this.backButton.Location = new System.Drawing.Point(626, 385);
+            this.backButton.Name = "backButton";
+            this.backButton.Size = new System.Drawing.Size(148, 43);
+            this.backButton.TabIndex = 11;
+            this.backButton.Text = "Back to main menu";
+            this.backButton.UseVisualStyleBackColor = false;
+            this.backButton.Click += new System.EventHandler(this.backButton_Click);
+            // 
+            // InsertQuestions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.backButton);
             this.Controls.Add(this.questionPromptLabel);
             this.Controls.Add(this.questionPromptTextBox);
             this.Controls.Add(this.addQuestionButton);
@@ -157,8 +171,8 @@
             this.Controls.Add(this.answerTextTextBox);
             this.Controls.Add(this.questionIdTextBox);
             this.Controls.Add(this.answerPointsTextBox);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Name = "InsertQuestions";
+            this.Text = "InsertQuestions";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -177,5 +191,6 @@
         private Button addQuestionButton;
         private Label questionPromptLabel;
         private TextBox questionPromptTextBox;
+        private Button backButton;
     }
 }

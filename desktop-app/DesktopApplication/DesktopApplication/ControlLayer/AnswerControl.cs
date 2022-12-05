@@ -22,5 +22,10 @@ namespace DesktopApplication.ControlLayer
             Question returnQuestion = await _answerAccess.InsertAnswers(question);
             return returnQuestion;
         }
+
+        public async Task<List<Question>> GetQuestions()
+        {
+            return await _answerAccess.GetQuestions();
+        }
     }
 }

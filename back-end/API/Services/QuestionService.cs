@@ -16,5 +16,10 @@ namespace API.Services
         {
             return _questionAccess.GetQuestionById(id);
         }
+
+        public List<Question>? GetQuestions()
+        {
+            return _questionAccess.GetQuestions();
+        }
     }
 }

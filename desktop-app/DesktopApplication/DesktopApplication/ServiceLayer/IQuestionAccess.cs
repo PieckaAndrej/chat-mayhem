@@ -10,5 +10,7 @@ namespace DesktopApplication.ServiceLayer
     public interface IQuestionAccess
     {
         Task<Question?> InsertAnswers(Question question);
+
+        Task<List<Question>> GetQuestions();
     }
 }

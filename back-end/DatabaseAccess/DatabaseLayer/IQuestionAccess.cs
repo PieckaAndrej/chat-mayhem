@@ -12,5 +12,7 @@ namespace Data.DatabaseLayer
         //Question InsertQuestion(Question question);
         Question? GetQuestionById(int? id);
         //int UpdateQuestion(Question question);
+
+        List<Question>? GetQuestions();
     }
 }

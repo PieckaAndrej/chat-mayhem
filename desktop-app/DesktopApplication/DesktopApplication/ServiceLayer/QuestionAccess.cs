@@ -1,6 +1,5 @@
 ﻿using DesktopApplication.ModelLayer;
 using Newtonsoft.Json;
-using PersonServiceClientDesktop.Servicelayer;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -25,6 +24,14 @@ namespace DesktopApplication.ServiceLayer
             request.AddUrlSegment("id", question.id);
             request.AddJsonBody(question);
             var response = await _restClient.ExecutePutAsync<Question>(request);
+
+            return response.Data;
+        }
+
+        public async Task<List<Question>> GetQuestions()
+        {
+            var request = new RestRequest("api/Question");
+            var response = await _restClient.ExecuteGetAsync<List<Question>>(request);
 
             return response.Data;
         }

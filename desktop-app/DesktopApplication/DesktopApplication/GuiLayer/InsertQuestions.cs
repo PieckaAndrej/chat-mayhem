@@ -4,11 +4,11 @@ using DesktopApplication.ModelLayer;
 
 namespace DesktopApplication
 {
-    public partial class Form1 : Form
+    public partial class InsertQuestions : Form
     {
         private AnswerControl answerControl = new AnswerControl();
         private Question? question = null;
-        public Form1()
+        public InsertQuestions()
         {
             InitializeComponent();
         }
@@ -66,6 +66,13 @@ namespace DesktopApplication
             AnswerTextLabel.Enabled = true;
             insertQuestionButton.Enabled = true;
             addAnswerButton.Enabled = true;
+        }
+
+        private void backButton_Click(object sender, EventArgs e)
+        {
+            Form main = new MainMenu();
+            main.Show();
+            this.Hide();
         }
     }
 }

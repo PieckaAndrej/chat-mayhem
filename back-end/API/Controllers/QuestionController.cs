@@ -45,7 +45,7 @@ namespace API.Controllers
 
             if (returnAnswers == null)
             {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                
             }
 
             returnQuestion.answers = returnAnswers;
@@ -53,6 +53,20 @@ namespace API.Controllers
             return returnQuestion;
         }
 
+        [HttpGet]
+        public ActionResult<List<Question>> GetPrompts()
+        {
+            List<Question> questions = ServiceInjector.QuestionService.GetQuestions();
+
+            if (questions == null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+            else
+            {
+                return Ok(questions);
+            }
+        }
 
         //[HttpPut]
         //[Route("answers/{questionId}")]

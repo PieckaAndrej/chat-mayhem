@@ -1,29 +1,71 @@
-using Data.ModelLayer;
 using DesktopApplication.ControlLayer;
+using DesktopApplication.GuiLayer;
+using DesktopApplication.ModelLayer;
 
 namespace DesktopApplication
 {
     public partial class Form1 : Form
     {
-        private List<Answer> answers = new List<Answer>();
         private AnswerControl answerControl = new AnswerControl();
+        private Question? question = null;
         public Form1()
         {
             InitializeComponent();
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void insertQuestionButton_Click(object sender, EventArgs e)
         {
-            answerControl.CreateAnswers(answers);
-            answers.Clear();
+            if (question != null)
+            {
+                try
+                {
+                    answerControl.InsertAnswers(question);
+                    question = null;
+                    answerPointsTextBox.Enabled = false;
+                    answerTextTextBox.Enabled = false;
+                    answerPointsLabel.Enabled = true;
+                    AnswerTextLabel.Enabled = true;
+                    insertQuestionButton.Enabled = false;
+                    addAnswerButton.Enabled = false;
+                }
+                catch (Exception exception)
+                {
+                    var popup = new PopupForm(exception.Message);
+                }
+            }
         }
 
-        private void button3_Click_1(object sender, EventArgs e)
+        private void addAnswersButton_Click(object sender, EventArgs e)
         {
-            answers.Add(new Answer(Int32.Parse(textBox1.Text), textBox6.Text, Int32.Parse(textBox5.Text)));
-            textBox1.Clear();
-            textBox6.Clear();
-            textBox5.Clear();
+            if (question != null && question.answers != null)
+            {
+                question.answers.Add(new Answer(Int32.Parse(answerPointsTextBox.Text), answerTextTextBox.Text));
+                answerPointsTextBox.Clear();
+                answerTextTextBox.Clear();
+            }
+        }
+
+        private void AddQuestion_Click(object sender, EventArgs e)
+        {
+            if (question != null)
+            {
+                var popup = new PopupForm("By doing this you will delete the current " +
+                    "question without adding it to the database.");
+                DialogResult dialogResult = popup.ShowDialog();
+                if (dialogResult == DialogResult.Cancel)
+                {
+                    return;
+                }
+            }
+            question = new Question(Int32.Parse(questionIdTextBox.Text), questionPromptTextBox.Text, new List<Answer>());
+            questionIdTextBox.Clear();
+            questionPromptTextBox.Clear();
+            answerPointsTextBox.Enabled = true;
+            answerTextTextBox.Enabled = true;
+            answerPointsLabel.Enabled = true;
+            AnswerTextLabel.Enabled = true;
+            insertQuestionButton.Enabled = true;
+            addAnswerButton.Enabled = true;
         }
     }
 }

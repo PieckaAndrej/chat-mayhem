@@ -28,97 +28,135 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.answerPointsTextBox = new System.Windows.Forms.TextBox();
+            this.questionIdTextBox = new System.Windows.Forms.TextBox();
+            this.answerTextTextBox = new System.Windows.Forms.TextBox();
+            this.answerPointsLabel = new System.Windows.Forms.Label();
+            this.AnswerTextLabel = new System.Windows.Forms.Label();
+            this.questionIdLabel = new System.Windows.Forms.Label();
+            this.addAnswerButton = new System.Windows.Forms.Button();
+            this.insertQuestionButton = new System.Windows.Forms.Button();
+            this.addQuestionButton = new System.Windows.Forms.Button();
+            this.questionPromptLabel = new System.Windows.Forms.Label();
+            this.questionPromptTextBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // textBox1
+            // answerPointsTextBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(81, 85);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(132, 27);
-            this.textBox1.TabIndex = 0;
+            this.answerPointsTextBox.Location = new System.Drawing.Point(526, 124);
+            this.answerPointsTextBox.Name = "answerPointsTextBox";
+            this.answerPointsTextBox.Size = new System.Drawing.Size(131, 27);
+            this.answerPointsTextBox.TabIndex = 0;
+            this.answerPointsTextBox.Enabled = false;
             // 
-            // textBox5
+            // questionIdTextBox
             // 
-            this.textBox5.Location = new System.Drawing.Point(90, 190);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(132, 27);
-            this.textBox5.TabIndex = 1;
+            this.questionIdTextBox.Location = new System.Drawing.Point(142, 88);
+            this.questionIdTextBox.Name = "questionIdTextBox";
+            this.questionIdTextBox.Size = new System.Drawing.Size(132, 27);
+            this.questionIdTextBox.TabIndex = 1;
             // 
-            // textBox6
+            // answerTextTextBox
             // 
-            this.textBox6.Location = new System.Drawing.Point(81, 136);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(132, 27);
-            this.textBox6.TabIndex = 2;
+            this.answerTextTextBox.Location = new System.Drawing.Point(526, 88);
+            this.answerTextTextBox.Name = "answerTextTextBox";
+            this.answerTextTextBox.Size = new System.Drawing.Size(131, 27);
+            this.answerTextTextBox.TabIndex = 2;
+            this.answerTextTextBox.Enabled = false;
             // 
-            // label4
+            // answerPointsLabel
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(25, 92);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(46, 20);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "count";
+            this.answerPointsLabel.AutoSize = true;
+            this.answerPointsLabel.Location = new System.Drawing.Point(417, 127);
+            this.answerPointsLabel.Name = "answerPointsLabel";
+            this.answerPointsLabel.Size = new System.Drawing.Size(103, 20);
+            this.answerPointsLabel.TabIndex = 3;
+            this.answerPointsLabel.Text = "Answer Points:";
+            this.answerPointsLabel.Enabled = false;
             // 
-            // label5
+            // AnswerTextLabel
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(25, 139);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(59, 20);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "prompt";
+            this.AnswerTextLabel.AutoSize = true;
+            this.AnswerTextLabel.Location = new System.Drawing.Point(429, 91);
+            this.AnswerTextLabel.Name = "AnswerTextLabel";
+            this.AnswerTextLabel.Size = new System.Drawing.Size(91, 20);
+            this.AnswerTextLabel.TabIndex = 4;
+            this.AnswerTextLabel.Text = "Answer Text:";
+            this.AnswerTextLabel.Enabled = false;
             // 
-            // label6
+            // questionIdLabel
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(5, 193);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(79, 20);
-            this.label6.TabIndex = 5;
-            this.label6.Text = "questionId";
+            this.questionIdLabel.AutoSize = true;
+            this.questionIdLabel.Location = new System.Drawing.Point(44, 91);
+            this.questionIdLabel.Name = "questionIdLabel";
+            this.questionIdLabel.Size = new System.Drawing.Size(88, 20);
+            this.questionIdLabel.TabIndex = 5;
+            this.questionIdLabel.Text = "Question Id:";
             // 
-            // button3
+            // addAnswerButton
             // 
-            this.button3.Location = new System.Drawing.Point(111, 251);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(102, 29);
-            this.button3.TabIndex = 6;
-            this.button3.Text = "SaveAnswer";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click_1);
+            this.addAnswerButton.Location = new System.Drawing.Point(511, 181);
+            this.addAnswerButton.Name = "addAnswerButton";
+            this.addAnswerButton.Size = new System.Drawing.Size(101, 29);
+            this.addAnswerButton.TabIndex = 6;
+            this.addAnswerButton.Text = "Add Answer";
+            this.addAnswerButton.UseVisualStyleBackColor = true;
+            this.addAnswerButton.Click += new System.EventHandler(this.addAnswersButton_Click);
+            this.addAnswerButton.Enabled = false;
             // 
-            // button4
+            // insertQuestionButton
             // 
-            this.button4.Location = new System.Drawing.Point(100, 305);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(113, 29);
-            this.button4.TabIndex = 7;
-            this.button4.Text = "InsertAnswers";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.insertQuestionButton.Location = new System.Drawing.Point(502, 224);
+            this.insertQuestionButton.Name = "insertQuestionButton";
+            this.insertQuestionButton.Size = new System.Drawing.Size(118, 29);
+            this.insertQuestionButton.TabIndex = 7;
+            this.insertQuestionButton.Text = "Insert Question";
+            this.insertQuestionButton.UseVisualStyleBackColor = true;
+            this.insertQuestionButton.Click += new System.EventHandler(this.insertQuestionButton_Click);
+            this.insertQuestionButton.Enabled = false;
+            // 
+            // addQuestionButton
+            // 
+            this.addQuestionButton.Location = new System.Drawing.Point(12, 181);
+            this.addQuestionButton.Name = "addQuestionButton";
+            this.addQuestionButton.Size = new System.Drawing.Size(120, 29);
+            this.addQuestionButton.TabIndex = 8;
+            this.addQuestionButton.Text = "Add Question";
+            this.addQuestionButton.UseVisualStyleBackColor = true;
+            this.addQuestionButton.Click += new System.EventHandler(this.AddQuestion_Click);
+            // 
+            // questionPromptLabel
+            // 
+            this.questionPromptLabel.AutoSize = true;
+            this.questionPromptLabel.Location = new System.Drawing.Point(12, 127);
+            this.questionPromptLabel.Name = "questionPromptLabel";
+            this.questionPromptLabel.Size = new System.Drawing.Size(124, 20);
+            this.questionPromptLabel.TabIndex = 10;
+            this.questionPromptLabel.Text = "Question Prompt:";
+            // 
+            // questionPromptTextBox
+            // 
+            this.questionPromptTextBox.Location = new System.Drawing.Point(142, 124);
+            this.questionPromptTextBox.Name = "questionPromptTextBox";
+            this.questionPromptTextBox.Size = new System.Drawing.Size(132, 27);
+            this.questionPromptTextBox.TabIndex = 9;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.textBox6);
-            this.Controls.Add(this.textBox5);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.questionPromptLabel);
+            this.Controls.Add(this.questionPromptTextBox);
+            this.Controls.Add(this.addQuestionButton);
+            this.Controls.Add(this.insertQuestionButton);
+            this.Controls.Add(this.addAnswerButton);
+            this.Controls.Add(this.questionIdLabel);
+            this.Controls.Add(this.AnswerTextLabel);
+            this.Controls.Add(this.answerPointsLabel);
+            this.Controls.Add(this.answerTextTextBox);
+            this.Controls.Add(this.questionIdTextBox);
+            this.Controls.Add(this.answerPointsTextBox);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
@@ -128,13 +166,16 @@
 
         #endregion
 
-        private TextBox textBox1;
-        private TextBox textBox5;
-        private TextBox textBox6;
-        private Label label4;
-        private Label label5;
-        private Label label6;
-        private Button button3;
-        private Button button4;
+        private TextBox answerPointsTextBox;
+        private TextBox questionIdTextBox;
+        private TextBox answerTextTextBox;
+        private Label answerPointsLabel;
+        private Label AnswerTextLabel;
+        private Label questionIdLabel;
+        private Button addAnswerButton;
+        private Button insertQuestionButton;
+        private Button addQuestionButton;
+        private Label questionPromptLabel;
+        private TextBox questionPromptTextBox;
     }
 }

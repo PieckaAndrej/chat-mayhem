@@ -1,4 +1,4 @@
-﻿using Data.ModelLayer;
+﻿using DesktopApplication.ModelLayer;
 using DesktopApplication.ServiceLayer;
 using System;
 using System.Collections.Generic;
@@ -10,17 +10,17 @@ namespace DesktopApplication.ControlLayer
 {
     public class AnswerControl
     {
-        readonly IAnswerAccess _answerAccess;
+        readonly IQuestionAccess _answerAccess;
 
         public AnswerControl()
         {
-            _answerAccess = new AnswerAccess();
+            _answerAccess = new QuestionAccess();
         }
 
-        public async Task<int> CreateAnswers(List<Answer> answers)
+        public async Task<Question?> InsertAnswers(Question question)
         {
-            int answersInserted = await _answerAccess.CreateAnswers(answers);
-            return answersInserted;
+            Question returnQuestion = await _answerAccess.InsertAnswers(question);
+            return returnQuestion;
         }
     }
 }

@@ -12,17 +12,11 @@ namespace Data.ModelLayer
 
         public string text { get; set; }
 
-        public int questionId { get; set; }
 
         public Answer(int answerCount, string text)
         {
             this.answerCount = answerCount;
             this.text = text;
-        }
-
-        public Answer(int answerCount, string text, int questionId) : this(answerCount, text)
-        {
-            this.questionId = questionId;
         }
     }
 }

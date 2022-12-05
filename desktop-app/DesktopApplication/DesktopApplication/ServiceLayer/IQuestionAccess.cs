@@ -1,4 +1,4 @@
-﻿using Data.ModelLayer;
+﻿using DesktopApplication.ModelLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace DesktopApplication.ServiceLayer
 {
-    public interface IAnswerAccess
+    public interface IQuestionAccess
     {
-        Task<int> CreateAnswers(List<Answer> answers);
+        Task<Question?> InsertAnswers(Question question);
     }
 }

@@ -9,6 +9,8 @@ namespace Data.DatabaseLayer
 {
     public interface IAnswerAccess
     {
-        List<Answer> CreateAnswer(List<Answer> answers);
+        int CreateAnswer(Answer answer, int? questionId);
+        int UpdatePoints(Answer answer, int oldPoints, int? questionId);
+        List<Answer> GetAnswersQuestionById(int? questionId);
     }
 }

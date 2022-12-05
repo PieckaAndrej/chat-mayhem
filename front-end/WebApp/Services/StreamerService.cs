@@ -17,5 +17,17 @@ namespace WebApp.Services
 
             return response.Data;
         }
+
+        public static async Task<string?> RefreshToken(string streamerId, string accessToken)
+        {
+            RestClient restClient = new RestClient("https://localhost:7200/");
+            RestRequest restRequest = new RestRequest("api/streamer/token");
+            restRequest.AddParameter("streamerId", streamerId);
+            restRequest.AddParameter("token", accessToken);
+
+            var response = await restClient.ExecutePostAsync(restRequest);
+
+            return null;
+        }
     }
 }

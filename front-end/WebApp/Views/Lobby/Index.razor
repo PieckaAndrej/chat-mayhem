@@ -1,31 +1,92 @@
 ﻿@using Microsoft.AspNetCore.SignalR.Client
+@using System.Text.Json;
+@using System.Security.Claims;
+@using WebApp.Models;
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager Navigation
 @implements IAsyncDisposable
+@inject IJSRuntime JsRuntime;
 
-<PageTitle>Index</PageTitle>
+@switch (gameState)
+{
+    case GAME_STATE.LOBBY:
+        <Lobby Game="StartGame" TimeLimit="@(game?.TimeLimit ?? 0)"></Lobby>
+        break;
+    case GAME_STATE.LISTENING:
+        <Listening EndListening="EndListening" Votes="Votes"></Listening>
+        break;
+    case GAME_STATE.ANSWERING:
+        <Answering Question="@currentQuestion" Answer="Answer"></Answering>
+        break;
+}
 
-<button @onclick="Send" >Send</button>
 
 @code {
     private HubConnection? hubConnection;
-    private List<string> messages = new List<string>();
-    private string? userInput;
-    private string? messageInput;
+    private HubConnection? hubConnectionListener;
+    private Game? game;
+    private ClaimsPrincipal? user;
+    private enum GAME_STATE { LOBBY, LISTENING, ANSWERING };
+    private GAME_STATE gameState = GAME_STATE.LOBBY;
+    private int Votes = 0;
+    private Question<Answer> currentQuestion;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            string json = await JsRuntime.InvokeAsync<string>("ReadCookie.ReadCookie", "game");
+            game = JsonSerializer.Deserialize<Game>(json);
+
+            await hubConnection.InvokeAsync("CreateGroup", hubConnection.ConnectionId, game);
+
+            hubConnection.On("Answered", () =>
+            {
+                Votes++;
+                StateHasChanged();
+            });
+
+            StateHasChanged();
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
+
         hubConnection = new HubConnectionBuilder()
             .WithUrl(Navigation.ToAbsoluteUri("/gamehub"))
             .Build();
 
         await hubConnection.StartAsync();
 
-        Console.WriteLine(IsConnected);
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        user = authState.User;
     }
 
-    public void Send()
+    public async Task Answer(string message)
     {
-        Console.WriteLine("hi");
+        await hubConnection.InvokeAsync("SendMessage", hubConnection.ConnectionId, message);
+    }
+
+    public async Task GetCurrentQuestion()
+    {
+        currentQuestion = await hubConnection.InvokeAsync<Question<Answer>>("GetCurrentQuestion", 
+            hubConnection.ConnectionId);
+    }
+
+    public async Task StartGame()
+    {
+        _ = hubConnection.InvokeAsync("StartGame", hubConnection.ConnectionId);
+
+        gameState = GAME_STATE.LISTENING;
+
+        StateHasChanged();
+    }
+
+    public async Task EndListening()
+    {
+        await hubConnection.InvokeAsync("EndListening", hubConnection.ConnectionId);
+        await GetCurrentQuestion();
     }
 
     public bool IsConnected =>

@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using Data.ModelLayer;
+using RestSharp;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using WebApp.DTOs;

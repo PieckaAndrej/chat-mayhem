@@ -49,6 +49,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.MapBlazorHub();
 app.MapHub<GameHub>("/gamehub");
 
 app.Run();

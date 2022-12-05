@@ -20,9 +20,10 @@ namespace WebApp.Services
         private const string DATABASE_NAME = "ChatMayhem";
 
 
-        public static async Task<long> InsertAnswers(ViewerAnswer viewerAnswer, string collectionName, Question<ViewerAnswer> question)
+        public static async Task<int> InsertAnswers(ViewerAnswer viewerAnswer, 
+            string collectionName, Question<ViewerAnswer> question)
         {
-            long result = 0;
+            int result = 0;
 
             var client = new MongoClient(_con);
 
@@ -43,7 +44,7 @@ namespace WebApp.Services
             if (collection.Find(q => q.Prompt.Equals(question.Prompt)).CountDocuments() == 0)
             {
                 var q = new Question<ViewerAnswer>(question.Prompt,new List<ViewerAnswer>(), question.QuestionId);
-                q.ViewerAnswers.Add(viewerAnswer);
+                q.Answers.Add(viewerAnswer);
                 await collection.InsertOneAsync(q);
                 result = 1;
             } 
@@ -52,33 +53,38 @@ namespace WebApp.Services
                 MongoDB.Driver.FilterDefinition<Question<ViewerAnswer>> filter;
                 MongoDB.Driver.UpdateDefinition<Question<ViewerAnswer>> update;
 
-                if (!GetQuestion(question.Prompt,collection).ViewerAnswers
+                if (!GetQuestion(question.Prompt,collection).Answers
                                 .Select<ViewerAnswer, string>(a => a.Username).ToList()
                                 .Contains(viewerAnswer.Username))
                 {
                     filter = Builders<Question<ViewerAnswer>>.Filter.Eq(q => q.Prompt, question.Prompt);
-                    update = Builders<Question<ViewerAnswer>>.Update.AddToSet(s => s.ViewerAnswers, viewerAnswer);
+                    update = Builders<Question<ViewerAnswer>>.Update.AddToSet(s => s.Answers, viewerAnswer);
+                    result = 1;
                 }
                 else
                 {
                     filter = Builders<Question<ViewerAnswer>>.Filter.Where(q => q.Prompt == question.Prompt 
-                                            && q.ViewerAnswers.Any(v => v.Username.Equals(viewerAnswer.Username)));
-                    update = Builders<Question<ViewerAnswer>>.Update.Set(s => s.ViewerAnswers[-1], viewerAnswer);
+                                            && q.Answers.Any(v => v.Username.Equals(viewerAnswer.Username)));
+                    update = Builders<Question<ViewerAnswer>>.Update.Set(s => s.Answers[-1], viewerAnswer);
                 }
-                var result1 = await collection.UpdateOneAsync(filter, update);
-                result = result1.ModifiedCount;
+                await collection.UpdateOneAsync(filter, update);
             }
 
             return result;
         }
 
-        public static Question<ViewerAnswer> GetQuestion(string questionPrompt, IMongoCollection<Question<ViewerAnswer>> collection)
+        public static Question<ViewerAnswer>? GetQuestion(string questionPrompt, IMongoCollection<Question<ViewerAnswer>> collection)
         {
-            return BsonSerializer.Deserialize<Question<ViewerAnswer>>(
-                                                   collection.Find(x => x.Prompt == questionPrompt)
-                                                   .Project("{_id: 0, Prompt: 1, ViewerAnswers: 1, QuestionId: 1}")
-                                                   .ToList().FirstOrDefault()
-                                               );
+            var question = collection.Find(x => x.Prompt == questionPrompt)
+                .Project("{_id: 0, Prompt: 1, Answers: 1, QuestionId: 1}")
+                .ToList().FirstOrDefault();
+
+            if (question == null)
+            {
+                return null;
+            }
+
+            return BsonSerializer.Deserialize<Question<ViewerAnswer>>(question);
         }
 
         public static void CreateCollection(string collection)
@@ -98,7 +104,14 @@ namespace WebApp.Services
 
             var coll = db.GetCollection<Question<ViewerAnswer>>(collection);
 
-            List<ViewerAnswer> viewerAnswers = GetQuestion(questionPrompt, coll).ViewerAnswers;
+            var question = GetQuestion(questionPrompt, coll);
+
+            if (question == null)
+            {
+                return new List<Answer>();
+            }
+
+            List<ViewerAnswer> viewerAnswers = question.Answers;
 
             List<Answer> answers = viewerAnswers.GroupBy(viewerAnswer => viewerAnswer.Answer)
                                                 .Select(group => new Answer(
@@ -106,10 +119,13 @@ namespace WebApp.Services
                                                     group.Key)
                                                 ).ToList();
 
+            answers.Sort((answer1, answer2) => 
+                answer1.Points > answer2.Points ? 1 : answer1.Points == answer2.Points ? 0 : -1);
+
             return answers;
         }
 
-        public async Task<List<AnswerDto>> PostAnswers(string questionPrompt, string collection)
+        public async Task<List<AnswerDto>> PostAnswers(string questionPrompt, string collectionName)
         {
             List<Answer> answers = new List<Answer>();
 
@@ -117,7 +133,7 @@ namespace WebApp.Services
 
             Question<ViewerAnswer> question = new Question<ViewerAnswer>();
 
-            answers = GetAnswers(questionPrompt, collection);
+            answers = GetAnswers(questionPrompt, collectionName);
 
             RestClient restClient = new RestClient("https://localhost:7200/");
 
@@ -125,12 +141,9 @@ namespace WebApp.Services
 
             var db = client.GetDatabase("ChatMayhem");
 
-            var coll = db.GetCollection<Question<ViewerAnswer>>(collection);
+            var collection = db.GetCollection<Question<ViewerAnswer>>(collectionName);
 
-            question = BsonSerializer.Deserialize<Question<ViewerAnswer>>(
-                                                   coll.Find(x => x.Prompt == questionPrompt)
-                                                   .Project("{_id: 0,prompt: 1, viewerAnswers: 1}")
-                                                   .ToList().FirstOrDefault());
+            question = GetQuestion(questionPrompt, collection);
 
             foreach (var answer in answers)
             {

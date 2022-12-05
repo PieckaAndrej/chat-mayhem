@@ -44,12 +44,22 @@ namespace Data.DatabaseLayer
                 "INNER JOIN public.\"Question\" question on question.\"questionPackId\" = questionPack.id " +
                 "WHERE questionPack.id = @Id;";
 
+            QuestionPack tempQuestionPack = null;
             using (var connection = new NpgsqlConnection(_connectionString))
             {
 
                 var questionPack = connection.Query<QuestionPack, Question, QuestionPack>(sql, map: (qp, q) =>
                 {
-                    qp.Questions = new List<Question>() { q };
+                    if (qp.Questions == null)
+                    {
+                        qp.Questions = new List<Question>();
+                    }
+                    if (tempQuestionPack != null)
+                    {
+                        qp = tempQuestionPack;
+                    }
+                    qp.Questions.Add(q);
+                    tempQuestionPack = qp;
 
                     return qp;
                 },

@@ -22,5 +22,10 @@ namespace API.DTOs
             Category = category;
             CreationDate = creationDate;
         }
+        public static QuestionPackDto Convert(QuestionPack questionPack)
+        {
+            return new QuestionPackDto(questionPack.Id, questionPack.Author, questionPack.Name, questionPack.Tags, questionPack.Category, questionPack.CreationDate);
+        }
+
     }
 }

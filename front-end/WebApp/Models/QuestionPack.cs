@@ -14,18 +14,19 @@ namespace Data.ModelLayer
         public int Id { get; set; }
 
         [JsonPropertyName("author")]
-        public string Author { get; set; }
+        public string? Author { get; set; }
 
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [JsonPropertyName("tags")]
-        public List<string> Tags { get; set; }
+        public List<string>? Tags { get; set; }
 
         [JsonPropertyName("category")]
-        public string Category { get; set; }
+        public string? Category { get; set; }
 
-        public List<Question<ViewerAnswer>> questions { get; set; }
+        [JsonPropertyName("questions")]
+        public List<Question<ViewerAnswer>>? Questions { get; set; }
 
         [JsonPropertyName("creationDate")]
         public DateTime CreationDate { get; set; }

@@ -30,6 +30,20 @@ namespace WebApp.Services
 
         public async Task<bool> Connect()
         {
+            // Validate if the token is still valid
+            TwitchValidate? validate = await TwitchService.ValidateToken(Streamer.AccessToken);
+
+            if (validate?.UserId == null)
+            {
+                string? access = await StreamerService.RefreshToken(
+                    Streamer.UserId, Streamer.AccessToken);
+
+                if (!String.IsNullOrEmpty(access))
+                {
+                    Streamer.AccessToken = access;
+                }
+            }
+
             await _tcpClient.ConnectAsync(IP, PORT);
             _streamReader = new StreamReader(_tcpClient.GetStream());
             _streamWriter = new StreamWriter(_tcpClient.GetStream())
@@ -54,19 +68,13 @@ namespace WebApp.Services
             _tcpClient.Close();
         }
 
-        public async Task<Question<Answer>> Listen()
+        public async Task Listen(Func<string, string, string, Task> function)
         {
-            List<ViewerAnswer> viewerAnswers = new List<ViewerAnswer>();
-            Question<ViewerAnswer> question = new Question<ViewerAnswer>("sad", new List<ViewerAnswer>(), 1);
             if (IsConnected && _streamReader != null && _streamWriter != null)
             {
-
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
                 IsRunning = true;
-                while (IsRunning && stopwatch.Elapsed< TimeSpan.FromSeconds(5))
+                while (IsRunning)
                 {
-
                     string? line = await _streamReader.ReadLineAsync();
                     Console.WriteLine(line);
 
@@ -93,15 +101,13 @@ namespace WebApp.Services
                         string username = split[0].Substring(1, exclamationPointPosition - 1);
                         string message = line.Substring(secondColonPosition + 1);//Everything past the second colon
 
-                        question.Prompt = "who?";
-                        await QuestionService.InsertAnswers(new ViewerAnswer(username, message), Streamer.UserId, question);
+                        await function(username, message, Streamer.UserId);
+                        //await QuestionService.InsertAnswers(new ViewerAnswer(username, message), Streamer.UserId, question);
                     }
                 }
             }
             // for debugging
             Console.WriteLine("Run end");
-            var queres = new Question<Answer>(question.Prompt, QuestionService.GetAnswers(question.Prompt, Streamer.UserId), question.QuestionId);
-            return queres;
         }
     }
 }

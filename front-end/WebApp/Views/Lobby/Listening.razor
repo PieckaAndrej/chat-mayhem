@@ -1,0 +1,13 @@
+﻿
+<h3>ChatListening</h3>
+<button @onclick="End">End</button>
+<p>@Votes</p>
+
+@code {
+    [Parameter]
+    public EventCallback EndListening { get; set; }
+    [Parameter]
+    public int Votes { get; set; }
+
+    public async Task End() => await EndListening.InvokeAsync();
+}

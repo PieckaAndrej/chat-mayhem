@@ -7,7 +7,7 @@ namespace WebApp.BusinessLogic
     {
         public static double ANSWER_THRESHOLD = 0.62;
 
-        public async Task<Answer?> CheckAnswer(string answer, List<Answer> answers)
+        public static async Task<Answer?> CheckAnswer(string answer, List<Answer> answers)
         {
             Dictionary<string, double>? similarity = await AnswerService.CheckAnswer(answer, answers);
 

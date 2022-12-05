@@ -1,15 +1,19 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using WebApp.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WebApp.Models
 {
     public class Question<T>
     {
+        [JsonPropertyName("text")]
         public string Prompt { get; set; }
-        public List<T> ViewerAnswers { get; set; }
+        [JsonPropertyName("answers")]
+        public List<T> Answers { get; set; }
 
         public int QuestionId { get; set; }
 
@@ -18,10 +22,10 @@ namespace WebApp.Models
 
         }
 
-        public Question(string prompt, List<T> viewerAnswers, int questionId)
+        public Question(string prompt, List<T> answers, int questionId)
         {
             Prompt = prompt;
-            ViewerAnswers = viewerAnswers;
+            Answers = answers;
             QuestionId = questionId;
         }
     }

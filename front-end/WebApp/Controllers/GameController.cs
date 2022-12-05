@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol;
 using RestSharp;
 using System.Drawing.Text;
+using System.Security.Claims;
 using System.Text.Json;
 using WebApp.BusinessLogic;
 using WebApp.DTOs;
@@ -29,7 +30,17 @@ namespace WebApp.Controllers
         {
             Game? response = await _gameLogic.CreateGame(game);
 
-            TempData["game"] = JsonSerializer.Serialize(response);
+            ClaimsIdentity? identity = (ClaimsIdentity)HttpContext.User.Identity;
+
+            Claim? idClaim = identity.Claims.SingleOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
+            Claim? accessClaim = identity.Claims.SingleOrDefault(claim => claim.Type == "AccessToken");
+            Claim? nameClaim = identity.Claims.SingleOrDefault(claim => claim.Type == ClaimTypes.Name);
+
+            Streamer streamer = new Streamer(nameClaim.Value, accessClaim.Value, idClaim.Value);
+
+            response.Streamer = streamer;
+
+            Response.Cookies.Append("game", JsonSerializer.Serialize(response));
 
             // maybe see the game first and have a button to play it later
             return RedirectToAction("Play", response);

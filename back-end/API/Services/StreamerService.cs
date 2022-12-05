@@ -42,5 +42,24 @@ namespace API.Services
 
             return JsonSerializer.Deserialize<TwitchValidate>(response.Content);
         }
+
+        public async Task<TwitchRefresh?> RefreshToken(string refreshToken)
+        {
+            string? clientSecret = new ConfigurationBuilder()
+                                .AddJsonFile("appsettings.json", optional: false)
+                                .Build().GetSection("ClientSecret").Value;
+
+            RestClient restClient = new RestClient("https://id.twitch.tv/");
+
+            RestRequest restRequest = new RestRequest("oauth2/token");
+            restRequest.AddParameter("client_id", "8hmbxjfogmmj9e14y2ohn2vb0q8zv5");
+            restRequest.AddParameter("client_secret", clientSecret);
+            restRequest.AddParameter("grant_type", "refresh_token");
+            restRequest.AddParameter("refresh_token", refreshToken);
+
+            var response = await restClient.ExecutePostAsync<TwitchRefresh>(restRequest);
+
+            return response.Data;
+        }
     }
 }

@@ -21,22 +21,6 @@ namespace DesktopApplication.GuiLayer
         public GenerateStatistics()
         {
             InitializeComponent();
-
-            List<string> prompts = new List<string>();
-
-            questions = new List<Question>();
-
-            questions = _answerControl.GetQuestions().Result;
-
-            foreach (Question question in questions)
-            {
-                prompts.Add(question.text);
-            }
-
-            foreach (String prompt in prompts)
-            {
-                dropdownList.Items.Add(prompt);
-            }
         }
 
         private void backButton_Click(object sender, EventArgs e)
@@ -87,9 +71,18 @@ namespace DesktopApplication.GuiLayer
             }
         }
 
-        private async void addQuestionsButton_Click(object sender, EventArgs e)
+        private void addQuestionsButton_Click(object sender, EventArgs e)
         {
-            questions = await _answerControl.GetQuestions();
+            _answerControl = new AnswerControl();
+
+            questions = new List<Question>();
+
+            questions = _answerControl.GetQuestions().Result;
+
+            foreach (Question question in questions)
+            {
+                dropdownList.Items.Add(question.text);
+            }
         }
     }
 }

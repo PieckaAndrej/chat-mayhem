@@ -22,12 +22,12 @@ namespace WebApp.Services
         {
             RestClient restClient = new RestClient("https://localhost:7200/");
             RestRequest restRequest = new RestRequest("api/streamer/token");
-            restRequest.AddParameter("streamerId", streamerId);
-            restRequest.AddParameter("token", accessToken);
+            restRequest.AddQueryParameter("streamerId", streamerId);
+            restRequest.AddQueryParameter("token", accessToken);
 
-            var response = await restClient.ExecutePostAsync(restRequest);
+            var response = await restClient.ExecutePostAsync<string>(restRequest);
 
-            return null;
+            return response.Data;
         }
     }
 }

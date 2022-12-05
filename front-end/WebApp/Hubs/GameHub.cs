@@ -126,28 +126,28 @@ namespace WebApp.Hubs
             await group.SendAsync("Answered");
         }
 
-        public async Task SendMessage(string connectionId, string message)
+        public async Task<int> SendMessage(string connectionId, string message)
         {
             Lobby? lobby = _lobbies.SingleOrDefault(
                 lobby => lobby.Players.Contains(connectionId));
 
             if (lobby == null)
             {
-                return;
+                return -2;
             }
 
             List<Answer> answers = lobby.Answers[lobby.currentQuestionIndex].Answers.ToList();
 
             Answer? answer = await AnswerLogic.CheckAnswer(message, answers);
 
-            if (answer == null)
+            int returnIndex = -1;
+
+            if (answer != null)
             {
-                Console.WriteLine("wrong");
+                returnIndex = answers.IndexOf(answer);
             }
-            else
-            {
-                await Clients.Group(lobby.GroupName).SendAsync("TurnAnswer", answer, answers.IndexOf(answer));
-            }
+
+            return returnIndex;
         }
     }
 }

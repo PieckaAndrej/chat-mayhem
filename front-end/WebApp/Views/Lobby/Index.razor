@@ -16,7 +16,7 @@
         <Listening EndListening="EndListening" Votes="Votes"></Listening>
         break;
     case GAME_STATE.ANSWERING:
-        <Answering Question="@currentQuestion" Answer="Answer"></Answering>
+        <Answering Question="@currentQuestion" Answer="Answer" FlippedAnswers="@flippedAnswers"></Answering>
         break;
 }
 
@@ -30,11 +30,18 @@
     private GAME_STATE gameState = GAME_STATE.LOBBY;
     private int Votes = 0;
     private Question<Answer> currentQuestion;
+    private bool[] flippedAnswers;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            hubConnection = new HubConnectionBuilder()
+                .WithUrl(Navigation.ToAbsoluteUri("/gamehub"))
+                .Build();
+
+            await hubConnection.StartAsync();
+
             string json = await JsRuntime.InvokeAsync<string>("ReadCookie.ReadCookie", "game");
             game = JsonSerializer.Deserialize<Game>(json);
 
@@ -50,28 +57,24 @@
         }
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-
-        hubConnection = new HubConnectionBuilder()
-            .WithUrl(Navigation.ToAbsoluteUri("/gamehub"))
-            .Build();
-
-        await hubConnection.StartAsync();
-
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        user = authState.User;
-    }
-
     public async Task Answer(string message)
     {
-        await hubConnection.InvokeAsync("SendMessage", hubConnection.ConnectionId, message);
+        int answerIndex = await hubConnection.InvokeAsync<int>("SendMessage", hubConnection.ConnectionId, message);
+
+        if (answerIndex >= 0)
+        {
+            flippedAnswers[answerIndex] = true;
+
+            StateHasChanged();
+        } //else bad answer
     }
 
     public async Task GetCurrentQuestion()
     {
         currentQuestion = await hubConnection.InvokeAsync<Question<Answer>>("GetCurrentQuestion", 
             hubConnection.ConnectionId);
+
+        flippedAnswers = new bool[currentQuestion.Answers.Count];
     }
 
     public async Task StartGame()
@@ -87,6 +90,10 @@
     {
         await hubConnection.InvokeAsync("EndListening", hubConnection.ConnectionId);
         await GetCurrentQuestion();
+
+        gameState = GAME_STATE.ANSWERING;
+
+        StateHasChanged();
     }
 
     public bool IsConnected =>

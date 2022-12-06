@@ -12,5 +12,7 @@ namespace DesktopApplication.ServiceLayer
         Task<Question?> InsertAnswers(Question question);
 
         Task<List<Question>> GetQuestions();
+
+        Task<Question> GetQuestionById(int id);
     }
 }

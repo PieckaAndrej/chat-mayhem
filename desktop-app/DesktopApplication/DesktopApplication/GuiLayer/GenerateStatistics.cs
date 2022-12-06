@@ -18,9 +18,17 @@ namespace DesktopApplication.GuiLayer
 
         private List<Question> questions;
 
+        private List<Answer> answers;
+
         public GenerateStatistics()
         {
             InitializeComponent();
+
+            _answerControl = new AnswerControl();
+
+            questions = new List<Question>();
+
+            answers = new List<Answer>();
         }
 
         private void backButton_Click(object sender, EventArgs e)
@@ -30,11 +38,9 @@ namespace DesktopApplication.GuiLayer
             this.Hide();
         }
 
-        private void generateStatisticsButton_Click(object sender, EventArgs e)
+        private async void generateStatisticsButton_Click(object sender, EventArgs e)
         {
-            int totalCount = 0;
-
-            string prompt = dropdownList.SelectedValue.ToString();
+            string prompt = dropdownList.Text;
 
             Question question = null;
 
@@ -53,31 +59,21 @@ namespace DesktopApplication.GuiLayer
                 }
             }
 
-            List<Answer> answers = question.answers;
+            question = await _answerControl.GetQuestionById(question.id);
+
+            answers = question.answers;
 
             answers.OrderBy(a => a.answerCount).ToList();
 
-            List<string> sortedTexts = new List<string>();
-
             foreach(Answer answer in answers)
             {
-                sortedTexts.Add(answer.text);
-                totalCount += answer.answerCount;
-            }
-
-            foreach(string text in sortedTexts)
-            {
-                AnswerList.Items.Add(text);
+                AnswerList.Items.Add(answer.text + " " + answer.answerCount);
             }
         }
 
-        private void addQuestionsButton_Click(object sender, EventArgs e)
+        private async void addQuestionsButton_Click(object sender, EventArgs e)
         {
-            _answerControl = new AnswerControl();
-
-            questions = new List<Question>();
-
-            questions = _answerControl.GetQuestions().Result;
+            questions = await _answerControl.GetQuestions();
 
             foreach (Question question in questions)
             {

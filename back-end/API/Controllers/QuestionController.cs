@@ -54,7 +54,23 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Question>> GetPrompts()
+        [Route("{questionId}")]
+        public ActionResult<Question> GetQuestionById(int questionId)
+        {
+            Question question = ServiceInjector.QuestionService.GetQuestionById(questionId);
+
+            if (question == null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+            else
+            {
+                return Ok(question);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult<List<Question>> GetQuestions()
         {
             List<Question> questions = ServiceInjector.QuestionService.GetQuestions();
 
@@ -67,6 +83,7 @@ namespace API.Controllers
                 return Ok(questions);
             }
         }
+
 
         //[HttpPut]
         //[Route("answers/{questionId}")]

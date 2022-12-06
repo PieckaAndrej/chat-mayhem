@@ -35,5 +35,14 @@ namespace DesktopApplication.ServiceLayer
 
             return response.Data;
         }
+
+        public async Task<Question> GetQuestionById(int id)
+        {
+            var request = new RestRequest("api/Question/{id}");
+            request.AddUrlSegment("id", id);
+            var response = await _restClient.ExecuteGetAsync<Question>(request);
+
+            return response.Data;
+        }
     }
 }

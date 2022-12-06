@@ -25,7 +25,12 @@ namespace DesktopApplication.ControlLayer
 
         public async Task<List<Question>> GetQuestions()
         {
-            return await _answerAccess.GetQuestions().ConfigureAwait(false);
+            return await _answerAccess.GetQuestions();
+        }
+
+        public async Task<Question> GetQuestionById(int id)
+        {
+            return await _answerAccess.GetQuestionById(id);
         }
     }
 }

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using WebApp.Models;
 
-namespace Data.ModelLayer
+namespace WebApp.Models
 {
-    public record QuestionPack
+    public class QuestionPack
     {
         [JsonPropertyName("id")]
         public int Id { get; set; }
@@ -30,5 +30,7 @@ namespace Data.ModelLayer
 
         [JsonPropertyName("creationDate")]
         public DateTime CreationDate { get; set; }
+        
+
     }
 }

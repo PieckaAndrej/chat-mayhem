@@ -1,0 +1,76 @@
+﻿@using RestSharp;
+@using WebApp.BusinessLogic;
+@using WebApp.Models;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+
+<h4>QuestionPack</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label">Name</label>
+            <input @oninput="(e) => questionPack.Name = e.Value.ToString()" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">Category</label>
+            <input @oninput="(e) => questionPack.Category = e.Value.ToString()" class="form-control" />
+        </div>
+        @foreach (Question<ViewerAnswer> question in questionPack.Questions)
+        {
+            <div class="form-group">
+                <label class="control-label">Question #@(question.QuestionId + 1)</label>
+                <input class="form-control" value="@question.Prompt" @oninput="((e) => (HandleChangeQuestion(e, question.QuestionId)))" />
+            </div>
+        }
+
+        <button @onclick="AddQuestion" class="btn btn-outline-primary">Add Question</button>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" @onclick="CreateQuestionPack"/>
+        </div>
+    </div>
+</div>
+
+
+<div>
+    <a @onclick="GoBack" class="btn btn-link">Back to List</a>
+</div>
+
+@code {
+    private Models.QuestionPack questionPack;
+
+    protected override async Task OnInitializedAsync()
+    {
+        questionPack = new Models.QuestionPack();
+        questionPack.Questions = new List<Question<ViewerAnswer>>();
+        var auth = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        questionPack.Author = auth.User.Identity.Name;
+    }
+
+    public Task HandleChangeQuestion(ChangeEventArgs e, int questionId)
+    {
+        questionPack.Questions[questionId].Prompt = e.Value.ToString();
+        return Task.CompletedTask;
+    }
+
+    public void GoBack()
+    {
+        Navigation.NavigateTo("/QuestionPack/Index", true);
+    }
+
+    public async Task CreateQuestionPack()
+    {
+        questionPack.CreationDate = DateTime.Now;
+
+        Console.WriteLine("create question");
+
+        QuestionPackLogic logic = new QuestionPackLogic();
+        //logic.
+    }
+
+    public void AddQuestion()
+    {
+        questionPack.Questions.Add(new Question<ViewerAnswer>("", null, questionPack.Questions.Count));
+    }
+}

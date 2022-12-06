@@ -33,7 +33,7 @@ namespace WebApp.Controllers
         // GET: QuestionPackController/Create
         public ActionResult Create()
         {
-            return View();
+            return View("Create");
         }
 
         // POST: QuestionPackController/Create

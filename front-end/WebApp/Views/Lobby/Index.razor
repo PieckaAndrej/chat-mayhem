@@ -26,9 +26,7 @@
 
 @code {
     private HubConnection? hubConnection;
-    private HubConnection? hubConnectionListener;
     private Game? game;
-    private ClaimsPrincipal? user;
     private enum GAME_STATE { LOBBY, LISTENING, ANSWERING, FINISHED };
     private GAME_STATE gameState = GAME_STATE.LOBBY;
     private int Votes = 0;

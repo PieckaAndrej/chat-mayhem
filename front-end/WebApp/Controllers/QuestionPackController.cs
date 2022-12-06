@@ -1,14 +1,27 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebApp.BusinessLogic;
+using WebApp.Models;
 
 namespace WebApp.Controllers
 {
+    [Authorize]
     public class QuestionPackController : Controller
     {
-        // GET: QuestionPackController
-        public ActionResult Index()
+        private QuestionPackLogic _questionPackLogic;
+
+        public QuestionPackController()
         {
-            return View();
+            _questionPackLogic = new QuestionPackLogic();
+        }
+
+        // GET: QuestionPackController
+        public async Task<IActionResult> Index()
+        {
+            List<QuestionPack>? questionPacks = await _questionPackLogic.GetAllQuestionPacks();
+
+            return View(questionPacks);
         }
 
         // GET: QuestionPackController/Details/5
@@ -26,8 +39,9 @@ namespace WebApp.Controllers
         // POST: QuestionPackController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(QuestionPack questionPack)
         {
+            Console.WriteLine(questionPack);
             try
             {
                 return RedirectToAction(nameof(Index));

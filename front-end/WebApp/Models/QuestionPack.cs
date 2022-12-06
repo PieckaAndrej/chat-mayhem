@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace WebApp.Models
 {
-    public class QuestionPack
+    public record QuestionPack
     {
         [JsonPropertyName("id")]
         public int Id { get; set; }
@@ -30,7 +30,5 @@ namespace WebApp.Models
 
         [JsonPropertyName("creationDate")]
         public DateTime CreationDate { get; set; }
-        
-
     }
 }

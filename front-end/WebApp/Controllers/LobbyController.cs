@@ -18,7 +18,6 @@ namespace WebApp.Controllers
             return View("Index");
         }
 
-        [HttpPost]
         public void Refresh()
         {
             Console.WriteLine("refresh");

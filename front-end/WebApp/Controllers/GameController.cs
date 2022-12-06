@@ -21,8 +21,13 @@ namespace WebApp.Controllers
             _gameLogic = new GameLogic();
         }
         
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            QuestionPackLogic questionPackLogic = new QuestionPackLogic();
+            List<QuestionPack>? questionPacks = await questionPackLogic.GetAllQuestionPacks();
+
+            ViewData["QuestionPacks"] = questionPacks;
+
             return View();
         }
 

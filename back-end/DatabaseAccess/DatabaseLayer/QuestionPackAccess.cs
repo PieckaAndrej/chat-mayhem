@@ -23,7 +23,7 @@ namespace Data.DatabaseLayer
                     "VALUES (@id, @author, @name, @tag, @category, @creationDate) RETURNING id;";
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                connection.Execute(sql, new
+                questionPack.Id = connection.Execute(sql, new
                 {
                     id = questionPack.Id,
                     author = questionPack.Author,
@@ -35,6 +35,7 @@ namespace Data.DatabaseLayer
                 return questionPack;
             }
         }
+
         public QuestionPack GetQuestionPackById(int id)
         {
             string sql = "SELECT questionPack.id, questionPack.author, questionPack.name," +
@@ -78,7 +79,7 @@ namespace Data.DatabaseLayer
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                connection.Execute(sql, new
+                questionPack.Id = connection.Execute(sql, new
                 {
                     author = questionPack.Author,
                     name = questionPack.Name,
@@ -110,6 +111,42 @@ namespace Data.DatabaseLayer
                 {
                     return false;
                 }
+            }
+        }
+
+        public List<QuestionPack> GetAllQuestionPacks() 
+        {
+            string sql = "SELECT questionPack.id, questionPack.author, questionPack.name," +
+                " questionPack.tag, questionPack.category, questionPack.\"creationDate\", " +
+                "question.id, question.text " +
+                "FROM public.\"QuestionPack\" questionPack " +
+                "INNER JOIN public.\"Question\" question on question.\"questionPackId\" = questionPack.id;";
+
+            Dictionary<int, QuestionPack> tempQuestionPack = new Dictionary<int, QuestionPack>();
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+
+                connection.Query<QuestionPack, Question, QuestionPack>(sql, map: (qp, q) =>
+                {
+                    QuestionPack questionPack;
+
+                    if (!tempQuestionPack.TryGetValue(qp.Id, out questionPack))
+                    {
+                        tempQuestionPack.Add(qp.Id, questionPack = qp);
+                    }
+
+                    if (questionPack.Questions == null)
+                    {
+                        questionPack.Questions = new List<Question>();
+                    }
+                    questionPack.Questions.Add(q);
+
+                    return questionPack;
+                },
+                splitOn: "id"
+                ).AsQueryable();
+
+                return tempQuestionPack.Values.AsList();
             }
         }
 

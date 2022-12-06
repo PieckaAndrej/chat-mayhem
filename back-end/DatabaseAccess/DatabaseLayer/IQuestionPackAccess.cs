@@ -11,9 +11,8 @@ namespace Data.DatabaseLayer
     {
         QuestionPack CreateQuestionPack(QuestionPack questionPack);
         QuestionPack GetQuestionPackById(int id);
-
         QuestionPack UpdateQuestionPack(int id, QuestionPack questionPack);
-        
-        Boolean DeleteQuestionPack(int id);
+        bool DeleteQuestionPack(int id);
+        List<QuestionPack> GetAllQuestionPacks();
     }
 }

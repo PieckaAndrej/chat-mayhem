@@ -7,6 +7,8 @@
     var identity = (ClaimsIdentity)Context.User.Identity;
     Claim? idClaim = identity.Claims.Where(claim => claim.Type == ClaimTypes.NameIdentifier).FirstOrDefault();
     string? streamerId = idClaim?.Value;
+
+    IEnumerable<QuestionPack> questionPacks = ViewData["QuestionPacks"] as IEnumerable<QuestionPack>;
 }
 
 
@@ -34,7 +36,12 @@
         </div>
         <div class="form-group">
             <label asp-for="QuestionPackId" class="control-label">Question Pack</label>
-            <input asp-for="QuestionPackId" class="form-control" />
+            <select asp-for="QuestionPackId" class="form-select" aria-label="Default select example">
+                @foreach (QuestionPack questionPack in questionPacks)
+                {
+                    <option value="@questionPack.Id">@questionPack.Name</option>
+                }
+            </select>
             <span asp-validation-for="QuestionPackId" class="text-danger"></span>
         </div>
         <input type="submit" value="Save" class="btn login-button" />

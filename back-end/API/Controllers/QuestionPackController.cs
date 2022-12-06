@@ -25,5 +25,11 @@ namespace API.Controllers
             _questionPackService = ServiceInjector.QuestionPackService;
         }
 
+        [HttpGet]
+        public ActionResult<List<QuestionPack>> GetAll()
+        {
+            return _questionPackService.GetAllQuestionPacks();
+        }
+
     }
 }

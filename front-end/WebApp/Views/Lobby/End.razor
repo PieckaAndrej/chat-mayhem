@@ -1,0 +1,31 @@
+﻿@using WebApp.Models;
+<h3>End</h3>
+
+<h1>Results</h1>
+@for (int i = 0; i < players.Count; i++)
+{
+    <span>
+        @(i + 1).
+        @players[i].Name
+    </span>
+}
+
+@code {
+    [Parameter]
+    public List<Player> Players
+    {
+        get
+        {
+            return players;
+        }
+        set
+        {
+            value.Sort((p1, p2) => p1.Points > p2.Points ? 1 :
+                            p1.Points == p2.Points ? 0 : -1);
+            players = value;
+        }
+    }
+    private List<Player> players;
+
+
+}

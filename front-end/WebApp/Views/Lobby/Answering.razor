@@ -14,9 +14,20 @@
             </div>
         }
     </div>
-    <input type="text" value="@Text" @onchange="this.OnChange" />
+    <input type="text" value="@Text" @oninput="this.OnChange" @onkeypress="PressKey"/>
     <button @onclick="CheckAnswer">Send</button>
 </div>
+
+@foreach (Player player in Players)
+{
+    <span>
+        @player.Name
+        Wrong: 
+        @player.WrongAnswers
+        Points: 
+        @player.Points
+    </span>
+}
 
 
 @code {
@@ -26,11 +37,21 @@
     public EventCallback<string> Answer { get; set; }
     [Parameter]
     public bool[] FlippedAnswers { get; set; }
+    [Parameter]
+    public List<Player> Players { get; set; }
     public string Text { get; set; }
 
     public void OnChange(ChangeEventArgs e)
     {
         Text = e.Value.ToString();
+    }
+
+    public async Task PressKey(KeyboardEventArgs keyboardEventArgs)
+    {
+        if (keyboardEventArgs.Key == "Enter")
+        {
+            await CheckAnswer();
+        }
     }
 
     public async Task CheckAnswer()

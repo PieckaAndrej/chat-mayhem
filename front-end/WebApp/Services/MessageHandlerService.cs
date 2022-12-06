@@ -25,7 +25,6 @@ namespace WebApp.Services
         public MessageHandlerService(Streamer streamer)
         {
             Streamer = streamer;
-            _tcpClient = new TcpClient();
         }
 
         public async Task<bool> Connect()
@@ -44,6 +43,7 @@ namespace WebApp.Services
                 }
             }
 
+            _tcpClient = new TcpClient();
             await _tcpClient.ConnectAsync(IP, PORT);
             _streamReader = new StreamReader(_tcpClient.GetStream());
             _streamWriter = new StreamWriter(_tcpClient.GetStream())
@@ -75,7 +75,7 @@ namespace WebApp.Services
                 IsRunning = true;
                 while (IsRunning)
                 {
-                    string? line = await _streamReader.ReadLineAsync();
+                    string line = await _streamReader.ReadLineAsync() ?? "";
                     Console.WriteLine(line);
 
                     string[] split = line.Split(" ");

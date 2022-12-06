@@ -7,6 +7,10 @@
     <p>Time limit</p>
     <p>@TimeLimit</p>
     <h2>Players</h2>
+    @foreach (Player player in Players)
+    {
+        <p>@player.Name</p>
+    }
     <button @onclick="Start">Start</button>
 </div>
 
@@ -15,6 +19,8 @@
     public EventCallback Game { get; set; }
     [Parameter]
     public int TimeLimit { get; set; }
+    [Parameter]
+    public List<Player> Players { get; set; }
 
     public async Task Start() => await Game.InvokeAsync();
 }

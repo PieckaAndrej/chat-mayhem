@@ -1,5 +1,6 @@
 ﻿
 <h3>ChatListening</h3>
+<p>@Prompt</p>
 <button @onclick="End">End</button>
 <p>@Votes</p>
 
@@ -8,6 +9,8 @@
     public EventCallback EndListening { get; set; }
     [Parameter]
     public int Votes { get; set; }
+    [Parameter]
+    public string Prompt { get; set; }
 
     public async Task End() => await EndListening.InvokeAsync();
 }

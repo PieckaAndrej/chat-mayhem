@@ -51,7 +51,7 @@ body {
 .center {
     display: flex;
     justify-content: center;
-    height: calc(100vh - 160px);
+    height: calc(100vh - 170px);
     align-items: center;
     flex-direction: column;
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.SignalR;
+using MongoDB.Driver.Core.Connections;
 using System.Security.Claims;
 using System.Security.Policy;
 using System.Text.Json;
@@ -29,32 +30,32 @@ namespace WebApp.Hubs
 
                 _lobbies.Add(lobby);
 
-                await JoinGroup(connectionId, groupName);
+                _ = JoinGroup(connectionId, groupName, streamer.Name);
             }
         }
 
         public Question<Answer> GetCurrentQuestion(string connectionId)
         {
-            Lobby? lobby = _lobbies.SingleOrDefault(lobby => lobby.Players.Contains(connectionId));
+            Lobby? lobby = GetLobbyById(connectionId);
 
             return lobby.Answers[lobby.currentQuestionIndex];
         }
 
-        public async Task JoinGroup(string connectionId, string groupName)
+        public async Task JoinGroup(string connectionId, string groupName, string playerName)
         {
             Lobby? lobby = _lobbies.SingleOrDefault(lobby => lobby.GroupName == groupName);
 
             if (lobby != null)
             {
                 await Groups.AddToGroupAsync(connectionId, groupName);
-                lobby.Players.Add(connectionId);
+                Player player = new Player(playerName, connectionId);
+                lobby.Players.Add(player);
             }
         }
 
-        public async Task StartGame(string connectionId)
+        public async Task StartListening(string connectionId)
         {
-            Lobby? lobby = _lobbies.SingleOrDefault(
-                lobby => lobby.Players.Contains(connectionId));
+            Lobby? lobby = GetLobbyById(connectionId);
 
             if (lobby == null)
             {
@@ -79,21 +80,16 @@ namespace WebApp.Hubs
             {
                 _ = handler.Listen(async (username, message, streamerId) =>
                 {
-                    int inserted = await QuestionService.InsertAnswers(
+                    await QuestionService.InsertAnswers(
                         new ViewerAnswer(username, message), streamerId, currentQuestion);
-
-                    if (inserted == 1)
-                    {
-                        _ = Clients.Group(lobby.GroupName).SendAsync("Answered");
-                    }
                 });
             } // TODO show error else
         }
 
         public void EndListening(string connectionId)
         {
-            MessageHandlerService? handler = _lobbies.SingleOrDefault(
-                lobby => lobby.Players.Contains(connectionId))?.MessageHandler;
+            Lobby? lobby = GetLobbyById(connectionId);
+            MessageHandlerService? handler = lobby?.MessageHandler;
 
             if (handler == null)
             {
@@ -101,9 +97,6 @@ namespace WebApp.Hubs
             }
 
             handler.StopListening();
-
-            Lobby? lobby = _lobbies.SingleOrDefault(
-                lobby => lobby.Players.Contains(connectionId));
 
             Question<ViewerAnswer>? currentQuestion = lobby.GetCurrentQuestion();
 
@@ -119,17 +112,29 @@ namespace WebApp.Hubs
 
         public async Task SendAnswered(string connectionId)
         {
-            Lobby? lobby = _lobbies.SingleOrDefault(
-                lobby => lobby.Players.Contains(connectionId));
+            Lobby? lobby = GetLobbyById(connectionId);
 
             var group = Clients.Group(lobby.GroupName);
             await group.SendAsync("Answered");
         }
 
+        public List<Player> GetPlayers(string connectionId)
+        {
+            Lobby? lobby = GetLobbyById(connectionId);
+
+            return lobby.Players;
+        }
+
+        public async Task SendUpdatedPlayer(string connectionId)
+        {
+            Lobby? lobby = GetLobbyById(connectionId);
+
+            await Clients.Group(lobby.GroupName).SendAsync("PlayersUpdated", GetPlayers(connectionId));
+        }
+
         public async Task<int> SendMessage(string connectionId, string message)
         {
-            Lobby? lobby = _lobbies.SingleOrDefault(
-                lobby => lobby.Players.Contains(connectionId));
+            Lobby? lobby = GetLobbyById(connectionId);
 
             if (lobby == null)
             {
@@ -145,9 +150,31 @@ namespace WebApp.Hubs
             if (answer != null)
             {
                 returnIndex = answers.IndexOf(answer);
+                lobby.Players.SingleOrDefault(player => player.ConnectionId == connectionId)
+                    .Points += answer.Points;
+            }
+            else
+            {
+                lobby.Players.SingleOrDefault(player => player.ConnectionId == connectionId)
+                    .WrongAnswers++;
             }
 
+            _ = SendUpdatedPlayer(connectionId);
+
             return returnIndex;
+        }
+
+        public bool GoToNextQuestion(string connectionId)
+        {
+            Lobby? lobby = GetLobbyById(connectionId);
+
+            return lobby.NextQuestion();
+        }
+
+        private Lobby? GetLobbyById(string connectionId)
+        {
+            return _lobbies.SingleOrDefault(
+                lobby => lobby.Players.Any(player => player.ConnectionId == connectionId));
         }
     }
 }

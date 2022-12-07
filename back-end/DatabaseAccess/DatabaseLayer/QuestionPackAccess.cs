@@ -3,6 +3,7 @@ using Data.ModelLayer;
 using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
@@ -118,8 +119,8 @@ namespace Data.DatabaseLayer
 
         public List<QuestionPack> GetAllQuestionPacks() 
         {
-            string sql = "SELECT questionPack.id, questionPack.author, questionPack.name," +
-                " questionPack.tag, questionPack.category, questionPack.\"creationDate\", questionPack.\"xmin\", " +
+            string sql = "SELECT questionPack.id, questionPack.author, questionPack.name, " +
+                "questionPack.category, questionPack.\"creationDate\", questionPack.\"xmin\", questionPack.tag, " +
                 "question.id, question.text " +
                 "FROM public.\"QuestionPack\" questionPack " +
                 "INNER JOIN public.\"Question\" question on question.\"questionPackId\" = questionPack.id;";
@@ -127,10 +128,12 @@ namespace Data.DatabaseLayer
             Dictionary<int, QuestionPack> tempQuestionPack = new Dictionary<int, QuestionPack>();
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-
-                connection.Query<QuestionPack, Question, QuestionPack>(sql, map: (qp, q) =>
+                SqlMapper.AddTypeHandler(new GenericArrayHandler<int>());
+                connection.Query<QuestionPack, string[], Question, QuestionPack>(sql, map: (qp, t, q) =>
                 {
                     QuestionPack questionPack;
+
+                    qp.Tags = t;
 
                     if (!tempQuestionPack.TryGetValue(qp.Id, out questionPack))
                     {
@@ -142,10 +145,10 @@ namespace Data.DatabaseLayer
                         questionPack.Questions = new List<Question>();
                     }
                     questionPack.Questions.Add(q);
-
+                    
                     return questionPack;
                 },
-                splitOn: "id"
+                splitOn: "tag, id"
                 ).AsQueryable();
 
                 return tempQuestionPack.Values.AsList();
@@ -164,18 +167,18 @@ namespace Data.DatabaseLayer
         public async Task<QuestionPack> InsertAsync(QuestionPack questionPack)
         {
             const string Sql = @"
-                INSERT INTO QuestionPack ( id, author, name, tag, category, creationDate )
-                VALUES ( @id, @author, @name, @tag, @category, @creationDate )
-                SELECT @Id = Id, @xmin = xmin
-                FROM QuestionPack WHERE Id = SCOPE_IDENTITY()";
+                INSERT INTO public.""QuestionPack"" (author, name, tag, category, ""creationDate"" )
+                VALUES (@author, @name, @tags, @category, @creationDate )
+                RETURNING id, xmin";
 
             var @params = new DynamicParameters(questionPack)
-                .Output(questionPack, q => q.xmin)
                 .Output(questionPack, q => q.Id);
+            @params.Add("xmin", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.ExecuteAsync(Sql, @params);
+                questionPack.xmin = Convert.ToInt32(@params.Get<UInt32>("xmin"));
             }
             
             return questionPack;

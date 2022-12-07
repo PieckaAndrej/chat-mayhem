@@ -39,7 +39,8 @@ namespace DesktopApplication.ControlLayer
 
         public async Task<QuestionPack?> InsertQuestionPack(QuestionPack questionPack)
         {
-            return await _answerPackAccess.InsertQuestionPack(questionPack);
+            QuestionPack qPack = await _answerPackAccess.InsertQuestionPack(questionPack);
+            return questionPack;
         }
     }
 }

@@ -51,7 +51,7 @@
             // 
             this.addQuestion.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(65)))), ((int)(((byte)(165)))));
             this.addQuestion.ForeColor = System.Drawing.Color.White;
-            this.addQuestion.Location = new System.Drawing.Point(226, 290);
+            this.addQuestion.Location = new System.Drawing.Point(226, 289);
             this.addQuestion.Name = "addQuestion";
             this.addQuestion.Size = new System.Drawing.Size(113, 34);
             this.addQuestion.TabIndex = 0;
@@ -159,7 +159,7 @@
             // 
             this.insertQuestionPackButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(65)))), ((int)(((byte)(165)))));
             this.insertQuestionPackButton.ForeColor = System.Drawing.Color.White;
-            this.insertQuestionPackButton.Location = new System.Drawing.Point(107, 353);
+            this.insertQuestionPackButton.Location = new System.Drawing.Point(95, 348);
             this.insertQuestionPackButton.Name = "insertQuestionPackButton";
             this.insertQuestionPackButton.Size = new System.Drawing.Size(189, 42);
             this.insertQuestionPackButton.TabIndex = 11;
@@ -180,15 +180,16 @@
             // 
             // addQuestionTextBox
             // 
-            this.addQuestionTextBox.Location = new System.Drawing.Point(95, 290);
+            this.addQuestionTextBox.Location = new System.Drawing.Point(95, 272);
+            this.addQuestionTextBox.Multiline = true;
             this.addQuestionTextBox.Name = "addQuestionTextBox";
-            this.addQuestionTextBox.Size = new System.Drawing.Size(125, 27);
+            this.addQuestionTextBox.Size = new System.Drawing.Size(125, 70);
             this.addQuestionTextBox.TabIndex = 14;
             // 
             // questionLabel
             // 
             this.questionLabel.AutoSize = true;
-            this.questionLabel.Location = new System.Drawing.Point(21, 293);
+            this.questionLabel.Location = new System.Drawing.Point(21, 296);
             this.questionLabel.Name = "questionLabel";
             this.questionLabel.Size = new System.Drawing.Size(68, 20);
             this.questionLabel.TabIndex = 15;

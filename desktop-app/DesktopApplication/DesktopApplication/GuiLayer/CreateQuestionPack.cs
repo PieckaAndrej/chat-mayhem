@@ -26,8 +26,6 @@ namespace DesktopApplication.GuiLayer
 
             questions = new List<Question>();
 
-            questionPack = new QuestionPack();
-
             answerControl = new AnswerControl();
         }
 
@@ -47,13 +45,8 @@ namespace DesktopApplication.GuiLayer
         }
 
         private async void insertQuestionPackButton_Click(object sender, EventArgs e)
-        {
-            questionPack.Questions = questions;
-            questionPack.Author = authorTextBox.Text;
-            questionPack.Category = categoryTextBox.Text;
-            questionPack.Name = nameTextBox.Text;
-            questionPack.CreationDate = DateTime.Now;
-            questionPack.Tags = null;
+        { 
+            questionPack = new QuestionPack(questions, authorTextBox.Text, nameTextBox.Text, new List<string>(), categoryTextBox.Text, DateTime.Now);
             nameLabel.Text = nameTextBox.Text;
             await answerControl.InsertQuestionPack(questionPack);
             authorTextBox.Clear();

@@ -18,15 +18,16 @@ namespace DesktopApplication.ModelLayer
 
         public string Name { get; set; }
 
-        public Array Tags { get; set; }
+        public List<string> Tags { get; set; }
 
         public string Category { get; set; }
 
         public DateTime CreationDate { get; set; }
         public List<Question> Questions { get; set; }
 
-        public QuestionPack (string author, string name, Array tag, string category, DateTime creationDate)
+        public QuestionPack (List<Question> questions, string author, string name, List<string> tag, string category, DateTime creationDate)
         {
+            Questions = questions;
             Author = author;
             Name = name;
             Tags = tag;
@@ -34,9 +35,10 @@ namespace DesktopApplication.ModelLayer
             CreationDate = creationDate;
         }
 
-        public QuestionPack(int id, string author, string name, Array tag, string category, DateTime creationDate) : this(author, name, tag, category, creationDate)
+        public QuestionPack(int id, uint rowVersion, List<Question> questions, string author, string name, List<string> tag, string category, DateTime creationDate) : this(questions, author, name, tag, category, creationDate)
         {
             Id = id;
+            RowVersion = rowVersion;
         }
 
         public QuestionPack()

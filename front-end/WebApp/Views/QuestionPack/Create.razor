@@ -1,32 +1,38 @@
-﻿@using RestSharp;
-@using WebApp.BusinessLogic;
+﻿@using WebApp.BusinessLogic;
 @using WebApp.Models;
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager Navigation
 
 <h4>QuestionPack</h4>
-<hr />
 <div class="row">
     <div class="col-md-4">
         <div class="form-group">
             <label class="control-label">Name</label>
-            <input @oninput="(e) => questionPack.Name = e.Value.ToString()" class="form-control" />
+            <input @oninput="(e) => questionPack.Name = e.Value.ToString()" value="@questionPack.Name" class="form-control" />
         </div>
         <div class="form-group">
             <label class="control-label">Category</label>
-            <input @oninput="(e) => questionPack.Category = e.Value.ToString()" class="form-control" />
+            <input @oninput="(e) => questionPack.Category = e.Value.ToString()" value="@questionPack.Category" class="form-control" />
         </div>
+        @{
+            int i = 0;
+        }
         @foreach (Question<ViewerAnswer> question in questionPack.Questions)
         {
+            question.QuestionId = i;
             <div class="form-group">
                 <label class="control-label">Question #@(question.QuestionId + 1)</label>
-                <input class="form-control" value="@question.Prompt" @oninput="((e) => (HandleChangeQuestion(e, question.QuestionId)))" />
+                <span>
+                    <input class="form-control" value="@question.Prompt" @oninput="((e) => (HandleChangeQuestion(e, question.QuestionId)))" />
+                    <button @onclick="(() => RemoveQuestion(question.QuestionId))" class="btn btn-outline-primary">Delete</button>
+                </span>
             </div>
+            i++;
         }
 
         <button @onclick="AddQuestion" class="btn btn-outline-primary">Add Question</button>
         <div class="form-group">
-            <input type="submit" value="Create" class="btn btn-primary" @onclick="CreateQuestionPack"/>
+            <input type="submit" value="Create" class="btn btn-primary" @onclick="CreateQuestionPack" />
         </div>
     </div>
 </div>
@@ -67,6 +73,15 @@
 
         QuestionPackLogic logic = new QuestionPackLogic();
         //logic.
+    }
+
+    public void RemoveQuestion(int index)
+    {
+        try
+        {
+            questionPack.Questions.RemoveAt(index);
+        }
+        catch (ArgumentOutOfRangeException) { }
     }
 
     public void AddQuestion()

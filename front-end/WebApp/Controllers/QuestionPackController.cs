@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 using WebApp.BusinessLogic;
 using WebApp.Models;
 
@@ -19,7 +20,8 @@ namespace WebApp.Controllers
         // GET: QuestionPackController
         public async Task<IActionResult> Index()
         {
-            List<QuestionPack>? questionPacks = await _questionPackLogic.GetAllQuestionPacks();
+            List<QuestionPack>? questionPacks = await _questionPackLogic
+                .GetAllQuestionPacks();
 
             return View(questionPacks);
         }
@@ -53,16 +55,25 @@ namespace WebApp.Controllers
         }
 
         // GET: QuestionPackController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            List<QuestionPack>? questionPacks = await _questionPackLogic
+                .GetAllQuestionPacks();
+
+            QuestionPack? questionPack = questionPacks.SingleOrDefault(
+                questionPack => questionPack.Id == id);
+
+            return View(questionPack);
         }
 
         // POST: QuestionPackController/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit()
         {
+            string json = Request.Cookies.SingleOrDefault(cookie => cookie.Key == "EditQuestionPack").Value;
+            QuestionPack questionPack = JsonSerializer.Deserialize<QuestionPack>(json);
+
+            Console.WriteLine(questionPack);
             try
             {
                 return RedirectToAction(nameof(Index));

@@ -1,0 +1,96 @@
+﻿@using System.Text.Json;
+@using WebApp.BusinessLogic;
+@using WebApp.Models;
+@inject IJSRuntime JsRuntime
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+
+<h3>Edit</h3>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label">Name</label>
+            <input @oninput="(e) => QuestionPack.Name = e.Value.ToString()" value="@QuestionPack.Name" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">Category</label>
+            <input @oninput="(e) => QuestionPack.Category = e.Value.ToString()" value="@QuestionPack.Category" class="form-control" />
+        </div>
+        @{
+            int i = 0;
+        }
+        @if (QuestionPack != null)
+        {
+            @foreach (Question<ViewerAnswer> question in QuestionPack.Questions)
+            {
+                question.QuestionId = i;
+                <div class="form-group">
+                    <label class="control-label">Question #@(question.QuestionId + 1)</label>
+                    <span>
+                        <input class="form-control" value="@question.Prompt" @oninput="((e) => (HandleChangeQuestion(e, question.QuestionId)))" />
+                        <button @onclick="(() => RemoveQuestion(question.QuestionId))" class="btn btn-outline-primary">Delete</button>
+                    </span>
+                </div>
+                i++;
+            }
+        }
+
+        <button @onclick="AddQuestion" class="btn btn-outline-primary">Add Question</button>
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary" @onclick="SaveQuestionPack" />
+        </div>
+    </div>
+</div>
+
+
+<div>
+    <a @onclick="GoBack" class="btn btn-link">Back to List</a>
+</div>
+
+@code {
+    [Parameter]
+    public Models.QuestionPack QuestionPack { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstFrame)
+    {
+        if (firstFrame)
+        {
+            if (QuestionPack.Questions == null)
+            {
+                QuestionPack.Questions = new List<Question<ViewerAnswer>>();
+            }
+
+        }
+    }
+
+    public Task HandleChangeQuestion(ChangeEventArgs e, int questionId)
+    {
+        QuestionPack.Questions[questionId].Prompt = e.Value.ToString();
+        return Task.CompletedTask;
+    }
+
+    public async Task SaveQuestionPack()
+    {
+        Console.WriteLine(QuestionPack);
+    }
+
+    public void GoBack()
+    {
+        Navigation.NavigateTo("/QuestionPack/Index", true);
+    }
+
+    public void RemoveQuestion(int index)
+    {
+        try
+        {
+            QuestionPack.Questions.RemoveAt(index);
+        }
+        catch (ArgumentOutOfRangeException) { }
+    }
+
+    public void AddQuestion()
+    {
+        QuestionPack.Questions.Add(new Question<ViewerAnswer>("", null, QuestionPack.Questions.Count));
+    }
+}

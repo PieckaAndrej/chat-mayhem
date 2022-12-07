@@ -87,8 +87,8 @@ namespace Data.DatabaseLayer
 
         public Question InsertQuestion(Question question, int questionPackId)
         {
-            string sql = "INSERT INTO public.\"Question\"" +
-                "\"questionPackId\", \"text\" " +
+            string sql = "INSERT INTO public.\"Question\" " +
+                "(\"questionPackId\", \"text\") " +
                 "VALUES (@questionPackId, @text) RETURNING id;";
 
             using (var connection = new NpgsqlConnection(_connectionString))

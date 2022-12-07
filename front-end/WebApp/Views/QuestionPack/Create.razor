@@ -49,6 +49,7 @@
     {
         questionPack = new Models.QuestionPack();
         questionPack.Questions = new List<Question<ViewerAnswer>>();
+        questionPack.Tags = new List<string>();
         var auth = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
         questionPack.Author = auth.User.Identity.Name;
@@ -68,8 +69,6 @@
     public async Task CreateQuestionPack()
     {
         questionPack.CreationDate = DateTime.Now;
-
-        Console.WriteLine("create question");
 
         QuestionPackLogic logic = new QuestionPackLogic();
         await logic.InsertQuestionPack(questionPack);

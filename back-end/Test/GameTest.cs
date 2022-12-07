@@ -32,7 +32,7 @@ namespace Test
             var owner = new Streamer("asdfg", "21345", "abcde");
             var gameMode = new GameMode(1, "Fun game", "No cheating");
             var timeLimit = 15;
-            var questionPack = new QuestionPack(1, "me", "best questions", new string[1] {"m"} ,"questions",DateTime.Parse("2022-11-15"));
+            var questionPack = new QuestionPack("me", "best questions", new string[1] {"m"} ,"questions",DateTime.Parse("2022-11-15"));
             _testGame = new Game(owner, gameMode, timeLimit, questionPack);
 
             _testConfiguration = new ConfigurationBuilder()

@@ -28,7 +28,6 @@ namespace API.Controllers
         [Route("answers/{questionId}")]
         public ActionResult<Question> Put(Question question, int questionId)
         {
-            Console.WriteLine("called");
             if (question.id != questionId)
             {
                 return UnprocessableEntity($"Passed in question's id ({question.id})" +

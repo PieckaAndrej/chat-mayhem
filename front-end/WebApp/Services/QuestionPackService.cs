@@ -20,6 +20,7 @@ namespace WebApp.Services
             RestClient restClient = new RestClient("https://localhost:7200/");
             RestRequest restRequest = new RestRequest("api/QuestionPack");
 
+            restRequest.AddJsonBody(questionPack);
             var response = await restClient.ExecutePostAsync<QuestionPack>(restRequest);
 
             return response.Data;

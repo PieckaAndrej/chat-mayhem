@@ -22,7 +22,7 @@ namespace Test
         {
             _extraOutput = extraOutput;
 
-            _testQuestionPack = new QuestionPack(1, "me", "best questions",
+            _testQuestionPack = new QuestionPack("me", "best questions",
                 new String[1] {"m"}, "questions", DateTime.Parse("2022-11-15"));
 
             _testConfiguration = new ConfigurationBuilder()

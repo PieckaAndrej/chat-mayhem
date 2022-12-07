@@ -9,9 +9,10 @@ namespace API.Services
 
         private IQuestionAccess _questionAccess;
 
-        public QuestionPackService(IQuestionPackAccess questionPackAccess)
+        public QuestionPackService(IQuestionPackAccess questionPackAccess, IQuestionAccess questionAccess)
         {
             _questionPackAccess = questionPackAccess;
+            _questionAccess = questionAccess;
         }
 
         public QuestionPack GetQuestionPackById(int id)
@@ -52,7 +53,14 @@ namespace API.Services
 
         public async Task<QuestionPack> InsertAsync(QuestionPack questionPack)
         {
-            return await _questionPackAccess.InsertAsync(questionPack);
+            QuestionPack qPack = await _questionPackAccess.InsertAsync(questionPack);
+
+            foreach (Question question in qPack.Questions)
+            {
+                _questionAccess.InsertQuestion(question, qPack.Id);
+            }
+
+            return qPack;
         }
 
         public async Task<QuestionPack> UpdateAsync(QuestionPack questionPack)

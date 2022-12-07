@@ -38,8 +38,22 @@ namespace API.Controllers
 
             if (returnValue == null)
             {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status204NoContent);
             }
+
+            return returnValue;
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<ActionResult<QuestionPack>> Put(int id, QuestionPack questionPack)
+        {
+            if (id != questionPack.Id)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
+            var returnValue = await _questionPackService.UpdateAsync(questionPack);
 
             return returnValue;
         }

@@ -72,7 +72,7 @@
         Console.WriteLine("create question");
 
         QuestionPackLogic logic = new QuestionPackLogic();
-        //logic.
+        await logic.InsertQuestionPack(questionPack);
     }
 
     public void RemoveQuestion(int index)

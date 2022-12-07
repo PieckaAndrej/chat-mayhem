@@ -18,6 +18,8 @@
     <button @onclick="CheckAnswer">Send</button>
 </div>
 
+<p>Total Votes @Question.Answers.Sum(answer => answer.Points)</p>
+
 @foreach (Player player in Players)
 {
     <span>

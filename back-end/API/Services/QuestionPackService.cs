@@ -49,5 +49,15 @@ namespace API.Services
         {
             return _questionPackAccess.GetAllQuestionPacks();
         }
+
+        public async Task<QuestionPack> InsertAsync(QuestionPack questionPack)
+        {
+            return await _questionPackAccess.InsertAsync(questionPack);
+        }
+
+        public async Task<QuestionPack> UpdateAsync(QuestionPack questionPack)
+        {
+            return await _questionPackAccess.UpdateAsync(questionPack);
+        }
     }
 }

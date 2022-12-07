@@ -32,9 +32,9 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<QuestionPack> Post(QuestionPack questionPack)
+        public async Task<ActionResult<QuestionPack>> Post(QuestionPack questionPack)
         {
-            var returnValue = ServiceInjector.QuestionPackService.CreateQuestionPack(questionPack);
+            var returnValue = await _questionPackService.InsertAsync(questionPack);
 
             if (returnValue == null)
             {

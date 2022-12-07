@@ -14,5 +14,7 @@ namespace Data.DatabaseLayer
         QuestionPack UpdateQuestionPack(int id, QuestionPack questionPack);
         bool DeleteQuestionPack(int id);
         List<QuestionPack> GetAllQuestionPacks();
+        Task<QuestionPack> InsertAsync(QuestionPack questionPack);
+        Task<QuestionPack> UpdateAsync(QuestionPack questionPack);
     }
 }

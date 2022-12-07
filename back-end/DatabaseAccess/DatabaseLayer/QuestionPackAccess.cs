@@ -119,7 +119,7 @@ namespace Data.DatabaseLayer
         public List<QuestionPack> GetAllQuestionPacks() 
         {
             string sql = "SELECT questionPack.id, questionPack.author, questionPack.name," +
-                " questionPack.tag, questionPack.category, questionPack.\"creationDate\", " +
+                " questionPack.tag, questionPack.category, questionPack.\"creationDate\", questionPack.\"xmin\", " +
                 "question.id, question.text " +
                 "FROM public.\"QuestionPack\" questionPack " +
                 "INNER JOIN public.\"Question\" question on question.\"questionPackId\" = questionPack.id;";
@@ -151,6 +151,7 @@ namespace Data.DatabaseLayer
                 return tempQuestionPack.Values.AsList();
             }
         }
+
         public async Task<QuestionPack> GetAsync(int id, QuestionPack questionPack)
         {
             const string Sql = "SELECT * FROM QuestionPack WHERE Id = @id";
@@ -179,6 +180,7 @@ namespace Data.DatabaseLayer
             
             return questionPack;
         }
+
         public async Task<QuestionPack> UpdateAsync(QuestionPack questionPack)
         {
             const string Sql = @"
@@ -192,13 +194,10 @@ namespace Data.DatabaseLayer
                 creationDate = @creationDate,
                 WHERE Id = @Id
                 AND xmin = @xmin";
+
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 var rowCount = await connection.ExecuteAsync(Sql, questionPack);
-                if (rowCount == 0)
-                {
-                    throw new Exception("Oh no, someone else edited this record!");
-                }
             }
             return questionPack;
         }

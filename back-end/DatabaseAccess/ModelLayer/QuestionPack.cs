@@ -10,17 +10,25 @@ namespace Data.ModelLayer
 {
     public class QuestionPack
     {
-        [Timestamp]
-        public uint RowVersion { get; set; }
+        [JsonPropertyName("id")]
         public int Id { get; set; }
+        [JsonPropertyName("author")]
         public string Author { get; set; }
+        [JsonPropertyName("name")]
         public string Name { get; set; }
-        public Array Tags { get; set; }
+        [JsonPropertyName("tags")]
+        public string[] Tags { get; set; }
+        [JsonPropertyName("category")]
         public string Category { get; set; }
+        [JsonPropertyName("creationDate")]
         public DateTime CreationDate { get; set; }
+        [JsonPropertyName("questions")]
         public List<Question> Questions { get; set; }
+        public int xmin { get; set; }
 
-        public QuestionPack (string author, string name, Array tag, string category, DateTime creationDate)
+        public QuestionPack() { }
+
+        public QuestionPack (string author, string name, string[] tag, string category, DateTime creationDate)
         {
             Author = author;
             Name = name;
@@ -28,7 +36,6 @@ namespace Data.ModelLayer
             Category = category;
             CreationDate = creationDate;
         }
-        [Timestamp]
-        public byte[] xmin { get; set; }
+
     }
 }

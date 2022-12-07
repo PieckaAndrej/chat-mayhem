@@ -76,12 +76,14 @@
             // 
             // generateStatisticsButton
             // 
+            this.generateStatisticsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(65)))), ((int)(((byte)(165)))));
+            this.generateStatisticsButton.ForeColor = System.Drawing.Color.White;
             this.generateStatisticsButton.Location = new System.Drawing.Point(45, 154);
             this.generateStatisticsButton.Name = "generateStatisticsButton";
-            this.generateStatisticsButton.Size = new System.Drawing.Size(139, 29);
+            this.generateStatisticsButton.Size = new System.Drawing.Size(139, 43);
             this.generateStatisticsButton.TabIndex = 16;
             this.generateStatisticsButton.Text = "Generate Statistics";
-            this.generateStatisticsButton.UseVisualStyleBackColor = true;
+            this.generateStatisticsButton.UseVisualStyleBackColor = false;
             this.generateStatisticsButton.Click += new System.EventHandler(this.generateStatisticsButton_Click);
             // 
             // AnswerList
@@ -90,23 +92,26 @@
             this.AnswerList.ItemHeight = 20;
             this.AnswerList.Location = new System.Drawing.Point(402, 95);
             this.AnswerList.Name = "AnswerList";
-            this.AnswerList.Size = new System.Drawing.Size(150, 104);
+            this.AnswerList.Size = new System.Drawing.Size(230, 204);
             this.AnswerList.TabIndex = 17;
             // 
             // addQuestionsButton
             // 
+            this.addQuestionsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(65)))), ((int)(((byte)(165)))));
+            this.addQuestionsButton.ForeColor = System.Drawing.Color.White;
             this.addQuestionsButton.Location = new System.Drawing.Point(161, 46);
             this.addQuestionsButton.Name = "addQuestionsButton";
-            this.addQuestionsButton.Size = new System.Drawing.Size(124, 27);
+            this.addQuestionsButton.Size = new System.Drawing.Size(124, 33);
             this.addQuestionsButton.TabIndex = 18;
             this.addQuestionsButton.Text = "Add Questions";
-            this.addQuestionsButton.UseVisualStyleBackColor = true;
+            this.addQuestionsButton.UseVisualStyleBackColor = false;
             this.addQuestionsButton.Click += new System.EventHandler(this.addQuestionsButton_Click);
             // 
             // GenerateStatistics
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.addQuestionsButton);
             this.Controls.Add(this.AnswerList);

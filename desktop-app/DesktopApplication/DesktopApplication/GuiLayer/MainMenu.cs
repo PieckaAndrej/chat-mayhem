@@ -30,5 +30,12 @@ namespace DesktopApplication.GuiLayer
             statistics.Show();
             this.Hide();
         }
+
+        private void createQuestionPackButton_Click(object sender, EventArgs e)
+        {
+            Form questionPack = new CreateQuestionPack();
+            questionPack.Show();
+            this.Hide();
+        }
     }
 }

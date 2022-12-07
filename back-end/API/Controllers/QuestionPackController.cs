@@ -31,5 +31,18 @@ namespace API.Controllers
             return _questionPackService.GetAllQuestionPacks();
         }
 
+        [HttpPost]
+        public ActionResult<QuestionPack> Post(QuestionPack questionPack)
+        {
+            var returnValue = ServiceInjector.QuestionPackService.CreateQuestionPack(questionPack);
+
+            if (returnValue == null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+
+            return returnValue;
+        }
+
     }
 }

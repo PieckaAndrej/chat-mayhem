@@ -22,14 +22,23 @@ namespace DesktopApplication.ModelLayer
         public DateTime CreationDate { get; set; }
         public List<Question> Questions { get; set; }
 
-        public QuestionPack (int id, string author, string name, Array tag, string category, DateTime creationDate)
+        public QuestionPack (string author, string name, Array tag, string category, DateTime creationDate)
         {
-            Id = id;
             Author = author;
             Name = name;
             Tags = tag;
             Category = category;
             CreationDate = creationDate;
+        }
+
+        public QuestionPack(int id, string author, string name, Array tag, string category, DateTime creationDate) : this(author, name, tag, category, creationDate)
+        {
+            Id = id;
+        }
+
+        public QuestionPack()
+        {
+
         }
     }
 }

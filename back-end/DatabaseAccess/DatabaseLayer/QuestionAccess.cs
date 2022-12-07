@@ -85,22 +85,22 @@ namespace Data.DatabaseLayer
         //}
 
 
-        //public Question InsertQuestion(Question question)
-        //{
-        //    string sql = "INSERT INTO public.\"Question\"" +
-        //        "\"questionPackId\", \"text\" " +
-        //        "VALUES (@questionPackId, @text) RETURNING id;";
+        public Question InsertQuestion(Question question, int questionPackId)
+        {
+            string sql = "INSERT INTO public.\"Question\"" +
+                "\"questionPackId\", \"text\" " +
+                "VALUES (@questionPackId, @text) RETURNING id;";
 
-        //    using (var connection = new NpgsqlConnection(_connectionString))
-        //    {
-        //        question.id = connection.QuerySingle<int>(sql, new
-        //        {
-        //            questionPackId = question.QuestionPack.Id,
-        //            text = question.text
-        //        });
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                question.id = connection.QuerySingle<int>(sql, new
+                {
+                    questionPackId = questionPackId,
+                    text = question.text
+                });
 
-        //        return question;
-        //    }
-        //}
+                return question;
+            }
+        }
     }
 }

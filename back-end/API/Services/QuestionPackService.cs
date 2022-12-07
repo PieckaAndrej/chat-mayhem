@@ -7,6 +7,8 @@ namespace API.Services
     {
         private IQuestionPackAccess _questionPackAccess;
 
+        private IQuestionAccess _questionAccess;
+
         public QuestionPackService(IQuestionPackAccess questionPackAccess)
         {
             _questionPackAccess = questionPackAccess;
@@ -24,7 +26,18 @@ namespace API.Services
 
         public QuestionPack CreateQuestionPack(QuestionPack questionPack)
         {
-            return _questionPackAccess.CreateQuestionPack(questionPack);
+            QuestionPack qPack = _questionPackAccess.CreateQuestionPack(questionPack);
+
+            List<Question> questions = qPack.Questions;
+
+            int questionPackId = qPack.Id;
+
+            foreach(Question question in questions)
+            {
+                _questionAccess.InsertQuestion(question, questionPackId);
+            }
+            
+            return qPack;
         }
 
         public bool DeleteQuestionPack(int id)

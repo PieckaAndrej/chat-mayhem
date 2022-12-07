@@ -29,5 +29,10 @@ namespace DesktopApplication.ModelLayer
         {
             this.answers = answers;
         }
+
+        public Question(string text)
+        {
+            this.text = text;
+        }
     }
 }

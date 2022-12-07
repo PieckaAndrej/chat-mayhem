@@ -96,34 +96,40 @@
             // 
             // addAnswerButton
             // 
+            this.addAnswerButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(65)))), ((int)(((byte)(165)))));
             this.addAnswerButton.Enabled = false;
+            this.addAnswerButton.ForeColor = System.Drawing.Color.White;
             this.addAnswerButton.Location = new System.Drawing.Point(511, 181);
             this.addAnswerButton.Name = "addAnswerButton";
             this.addAnswerButton.Size = new System.Drawing.Size(101, 29);
             this.addAnswerButton.TabIndex = 6;
             this.addAnswerButton.Text = "Add Answer";
-            this.addAnswerButton.UseVisualStyleBackColor = true;
+            this.addAnswerButton.UseVisualStyleBackColor = false;
             this.addAnswerButton.Click += new System.EventHandler(this.addAnswersButton_Click);
             // 
             // insertQuestionButton
             // 
+            this.insertQuestionButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(65)))), ((int)(((byte)(165)))));
             this.insertQuestionButton.Enabled = false;
+            this.insertQuestionButton.ForeColor = System.Drawing.Color.White;
             this.insertQuestionButton.Location = new System.Drawing.Point(502, 224);
             this.insertQuestionButton.Name = "insertQuestionButton";
             this.insertQuestionButton.Size = new System.Drawing.Size(118, 29);
             this.insertQuestionButton.TabIndex = 7;
             this.insertQuestionButton.Text = "Insert Question";
-            this.insertQuestionButton.UseVisualStyleBackColor = true;
+            this.insertQuestionButton.UseVisualStyleBackColor = false;
             this.insertQuestionButton.Click += new System.EventHandler(this.insertQuestionButton_Click);
             // 
             // addQuestionButton
             // 
+            this.addQuestionButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(65)))), ((int)(((byte)(165)))));
+            this.addQuestionButton.ForeColor = System.Drawing.Color.White;
             this.addQuestionButton.Location = new System.Drawing.Point(12, 181);
             this.addQuestionButton.Name = "addQuestionButton";
             this.addQuestionButton.Size = new System.Drawing.Size(120, 29);
             this.addQuestionButton.TabIndex = 8;
             this.addQuestionButton.Text = "Add Question";
-            this.addQuestionButton.UseVisualStyleBackColor = true;
+            this.addQuestionButton.UseVisualStyleBackColor = false;
             this.addQuestionButton.Click += new System.EventHandler(this.AddQuestion_Click);
             // 
             // questionPromptLabel

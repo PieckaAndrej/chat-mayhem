@@ -10,6 +10,8 @@ namespace Data.ModelLayer
 {
     public class QuestionPack
     {
+        [Timestamp]
+        public uint RowVersion { get; set; }
         public int Id { get; set; }
         public string Author { get; set; }
         public string Name { get; set; }
@@ -18,16 +20,14 @@ namespace Data.ModelLayer
         public DateTime CreationDate { get; set; }
         public List<Question> Questions { get; set; }
 
-        public QuestionPack (int id, string author, string name, Array tag, string category, DateTime creationDate)
+        public QuestionPack (string author, string name, Array tag, string category, DateTime creationDate)
         {
-            Id = id;
             Author = author;
             Name = name;
             Tags = tag;
             Category = category;
             CreationDate = creationDate;
         }
-
         [Timestamp]
         public byte[] xmin { get; set; }
     }

@@ -12,9 +12,13 @@ namespace DesktopApplication.ControlLayer
     {
         readonly IQuestionAccess _answerAccess;
 
+        readonly IQuestionPackAccess _answerPackAccess;
+
         public AnswerControl()
         {
             _answerAccess = new QuestionAccess();
+
+            _answerPackAccess = new QuestionPackAccess();
         }
 
         public async Task<Question?> InsertAnswers(Question question)
@@ -31,6 +35,11 @@ namespace DesktopApplication.ControlLayer
         public async Task<Question> GetQuestionById(int id)
         {
             return await _answerAccess.GetQuestionById(id);
+        }
+
+        public async Task<QuestionPack?> InsertQuestionPack(QuestionPack questionPack)
+        {
+            return await _answerPackAccess.InsertQuestionPack(questionPack);
         }
     }
 }

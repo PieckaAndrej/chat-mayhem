@@ -20,13 +20,12 @@ namespace Data.DatabaseLayer
         }
         public QuestionPack CreateQuestionPack(QuestionPack questionPack)
         {
-            string sql = "INSERT INTO public.\"QuestionPack\"( id, \"author\", \"name\", \"tag\", \"category\", \"creationDate\") " +
-                    "VALUES (@id, @author, @name, @tag, @category, @creationDate) RETURNING id;";
+            string sql = "INSERT INTO public.\"QuestionPack\"(\"author\", \"name\", \"tag\", \"category\", \"creationDate\") " +
+                    "VALUES (@author, @name, @tag, @category, @creationDate) RETURNING id;";
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 questionPack.Id = connection.Execute(sql, new
                 {
-                    id = questionPack.Id,
                     author = questionPack.Author,
                     name = questionPack.Name,
                     tag = questionPack.Tags,

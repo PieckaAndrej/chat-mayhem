@@ -1,8 +1,9 @@
-﻿
+﻿@using System.Timers;
+
 <h3>ChatListening</h3>
 <p>@Prompt</p>
 <button @onclick="End">End</button>
-<p>@Votes</p>
+<p>@currentTime</p>
 
 @code {
     [Parameter]
@@ -11,6 +12,42 @@
     public int Votes { get; set; }
     [Parameter]
     public string Prompt { get; set; }
+    [Parameter]
+    public int TimeLimit { get; set; }
+    private int currentTime;
+    private Timer timer;
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            currentTime = TimeLimit;
+            StateHasChanged();
+            timer = new Timer(1000);
+
+            timer.AutoReset = true;
+            timer.Elapsed += OnTimedEvent;
+            timer.Enabled = true;
+        }
+
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async void OnTimedEvent(Object source, ElapsedEventArgs e)
+    {
+        await InvokeAsync(async () =>
+        {
+            if (currentTime <= 0)
+            {
+                timer.Enabled = false;
+                await End();
+            } else
+            {
+                currentTime--;
+                StateHasChanged();
+            }
+        });
+    }
 
     public async Task End() => await EndListening.InvokeAsync();
 }

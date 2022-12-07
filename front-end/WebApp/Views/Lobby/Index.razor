@@ -10,10 +10,10 @@
 @switch (gameState)
 {
     case GAME_STATE.LOBBY:
-        <Lobby Game="StartListening" TimeLimit="(game?.TimeLimit ?? 0)" Players="players"></Lobby>
+        <Lobby Game="StartListening" QuestionPackName="@game?.QuestionPack.Name" Players="players"></Lobby>
         break;
     case GAME_STATE.LISTENING:
-        <Listening EndListening="EndListening" Votes="Votes" Prompt="@currentQuestion?.Prompt"></Listening>
+        <Listening EndListening="EndListening" Votes="Votes" Prompt="@currentQuestion?.Prompt" TimeLimit="(game?.TimeLimit ?? 0)"></Listening>
         break;
     case GAME_STATE.ANSWERING:
         <Answering Question="currentQuestion" Answer="Answer"

@@ -4,8 +4,8 @@
 
 <div>
     <h1>Lobby</h1>
-    <p>Time limit</p>
-    <p>@TimeLimit</p>
+    <p>Questions about:</p>
+    <h3>@QuestionPackName</h3>
     <h2>Players</h2>
     @foreach (Player player in Players)
     {
@@ -18,7 +18,7 @@
     [Parameter]
     public EventCallback Game { get; set; }
     [Parameter]
-    public int TimeLimit { get; set; }
+    public string QuestionPackName { get; set; }
     [Parameter]
     public List<Player> Players { get; set; }
 

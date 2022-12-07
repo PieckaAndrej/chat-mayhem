@@ -6,16 +6,14 @@ namespace API.DTOs
 {
     public class QuestionPackDto
     {
-        public int Id { get; set; }
         public string Author { get; set; }
         public string Name { get; set; }
-        public Array Tags { get; set; }
+        public List<string> Tags { get; set; }
         public string Category { get; set; }
         public DateTime CreationDate { get; set; }
         public List<Question> Questions { get; set; }
-        public QuestionPackDto(int id, string author, string name, Array tag, string category, DateTime creationDate)
+        public QuestionPackDto(string author, string name, List<string> tag, string category, DateTime creationDate)
         {
-            Id = id;
             Author = author;
             Name = name;
             Tags = tag;
@@ -24,7 +22,11 @@ namespace API.DTOs
         }
         public static QuestionPackDto Convert(QuestionPack questionPack)
         {
-            return new QuestionPackDto(questionPack.Id, questionPack.Author, questionPack.Name, questionPack.Tags, questionPack.Category, questionPack.CreationDate);
+            return new QuestionPackDto(questionPack.Author, questionPack.Name, questionPack.Tags.ToList(), questionPack.Category, questionPack.CreationDate);
+        }
+        public static QuestionPack Convert(QuestionPackDto questionPack)
+        {
+            return new QuestionPack(questionPack.Author, questionPack.Name, questionPack.Tags.ToArray(), questionPack.Category, questionPack.CreationDate);
         }
 
     }

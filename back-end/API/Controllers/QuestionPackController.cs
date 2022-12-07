@@ -32,8 +32,9 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<QuestionPack>> Post(QuestionPack questionPack)
+        public async Task<ActionResult<QuestionPack>> Post(QuestionPackDto inQuestionPack)
         {
+            var questionPack = QuestionPackDto.Convert(inQuestionPack);
             var returnValue = await _questionPackService.InsertAsync(questionPack);
 
             if (returnValue == null)

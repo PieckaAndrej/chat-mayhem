@@ -77,18 +77,20 @@ namespace Data.DatabaseLayer
         public QuestionPack UpdateQuestionPack(int id, QuestionPack questionPack)
         {
             string sql = "UPDATE public.\"QuestionPack\" SET" +
-                "\"author\" = @author, \"name\"=@name, \"tag\"=@tag, \"category\"=@category" +
-                "WHERE Id = @id RETURNING id;";
+                "\"author\" = @Author, \"name\"=@Name, \"tag\"=@Tag, \"category\"=@Category, " +
+                "\"creationDate\" = @CreationDate " +
+                "WHERE id = @Id;";
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 questionPack.Id = connection.Execute(sql, new
                 {
-                    author = questionPack.Author,
-                    name = questionPack.Name,
-                    tag = questionPack.Tags,
-                    category = questionPack.Category,
-                    creationDate = questionPack.CreationDate
+                    Id = id,    
+                    Author = questionPack.Author,
+                    Name = questionPack.Name,
+                    Tag = questionPack.Tags,
+                    Category = questionPack.Category,
+                    CreationDate = questionPack.CreationDate
                 });
                 return questionPack;
             }
@@ -186,23 +188,44 @@ namespace Data.DatabaseLayer
 
         public async Task<QuestionPack> UpdateAsync(QuestionPack questionPack)
         {
+            QuestionPack qp = new QuestionPack();
             const string Sql = @"
-                UPDATE QuestionPack 
+                UPDATE public.""QuestionPack"" 
                 SET
-                id = @id,
                 author = @author,
-                name = @name,
+                ""name"" = @name,
                 tag = @tag,
                 category = @category,
-                creationDate = @creationDate,
-                WHERE Id = @Id
+                ""creationDate"" = @creationDate
+                WHERE id = @Id
                 AND xmin = @xmin";
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                var rowCount = await connection.ExecuteAsync(Sql, questionPack);
+                connection.Open();
+                using(var transaction = await connection.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        qp = await connection.QuerySingleAsync<QuestionPack>(Sql, new
+                        {
+                            Id = questionPack.Id,
+                            xmin = questionPack.xmin,
+                            author = questionPack.Author,
+                            name = questionPack.Name,
+                            tag = questionPack.Tags,
+                            category = questionPack.Category,
+                            creationDate = questionPack.CreationDate
+                        });
+                        await transaction.CommitAsync();
+                    }
+                     catch
+                    {
+                        await transaction.RollbackAsync();
+                    }
+                }
             }
-            return questionPack;
+            return qp;
         }
 
     }

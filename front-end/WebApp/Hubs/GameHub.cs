@@ -89,17 +89,15 @@ namespace WebApp.Hubs
             } // TODO show error else
         }
 
-        public void EndListening(string connectionId)
+        public bool EndListening(string connectionId)
         {
             Lobby? lobby = GetLobbyById(connectionId);
             MessageHandlerService? handler = lobby?.MessageHandler;
 
             if (handler == null)
             {
-                return;
+                return false;
             }
-
-            handler.StopListening();
 
             Question<ViewerAnswer>? currentQuestion = lobby.GetCurrentQuestion();
 
@@ -110,7 +108,16 @@ namespace WebApp.Hubs
                 dbAnswers,
                 currentQuestion.QuestionId);
 
+            if (answers.Answers.Count == 0)
+            {
+                return false;
+            }
+
+            handler.StopListening();
+
             lobby.Answers[lobby.currentQuestionIndex] = answers;
+
+            return true;
         }
 
         public async Task SendAnswered(string connectionId)

@@ -13,7 +13,8 @@
         <Lobby Game="StartListening" QuestionPackName="@game?.QuestionPack.Name" Players="players"></Lobby>
         break;
     case GAME_STATE.LISTENING:
-        <Listening EndListening="EndListening" Votes="Votes" Prompt="@currentQuestion?.Prompt" TimeLimit="(game?.TimeLimit ?? 0)"></Listening>
+        <Listening EndListening="EndListening" Votes="Votes" Prompt="@currentQuestion?.Prompt" 
+            TimeLimit="(game?.TimeLimit ?? 0)" IsEnoughAnswers="isEnoughAnswers"></Listening>
         break;
     case GAME_STATE.ANSWERING:
         <Answering Question="currentQuestion" Answer="Answer"
@@ -33,6 +34,7 @@
     private Question<Answer> currentQuestion;
     private bool[] flippedAnswers;
     private List<Player> players = new List<Player>();
+    private bool isEnoughAnswers = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -118,6 +120,8 @@
     {
         await hubConnection.InvokeAsync("StartListening", hubConnection.ConnectionId);
 
+        isEnoughAnswers = true;
+
         gameState = GAME_STATE.LISTENING;
 
         StateHasChanged();
@@ -125,10 +129,17 @@
 
     public async Task EndListening()
     {
-        await hubConnection.InvokeAsync("EndListening", hubConnection.ConnectionId);
-        await GetCurrentQuestion();
+        bool ended = await hubConnection.InvokeAsync<bool>("EndListening", hubConnection.ConnectionId);
 
-        gameState = GAME_STATE.ANSWERING;
+        if (!ended)
+        {
+            isEnoughAnswers = false;
+        }
+        else
+        {
+            gameState = GAME_STATE.ANSWERING;
+            await GetCurrentQuestion();
+        }
 
         StateHasChanged();
     }

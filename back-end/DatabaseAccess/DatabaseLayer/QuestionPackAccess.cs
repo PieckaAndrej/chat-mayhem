@@ -3,6 +3,7 @@ using Data.ModelLayer;
 using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,6 +36,8 @@ namespace Data.DatabaseLayer
                 return questionPack;
             }
         }
+
+
 
         public QuestionPack GetQuestionPackById(int id)
         {
@@ -149,6 +152,58 @@ namespace Data.DatabaseLayer
                 return tempQuestionPack.Values.AsList();
             }
         }
+        public async Task<QuestionPack> GetAsync(int id, QuestionPack questionPack)
+        {
+            const string Sql = "SELECT * FROM QuestionPack WHERE Id = @id";
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                return connection.QuerySingle(Sql, new { id });
+            }     
+        }
+
+        public async Task<QuestionPack> InsertAsync(QuestionPack questionPack)
+        {
+            const string Sql = @"
+                INSERT INTO QuestionPack ( id, author, name, tag, category, creationDate )
+                VALUES ( @id, @author, @name, @tag, @category, @creationDate )
+                SELECT @Id = Id, @xmin = xmin
+                FROM QuestionPack WHERE Id = SCOPE_IDENTITY()";
+
+            var @params = new DynamicParameters(questionPack)
+                .Output(questionPack, q => q.xmin)
+                .Output(questionPack, q => q.Id);
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                await connection.ExecuteAsync(Sql, @params);
+            }
+            
+            return questionPack;
+        }
+        public async Task<QuestionPack> UpdateAsync(QuestionPack questionPack)
+        {
+            const string Sql = @"
+                UPDATE QuestionPack 
+                SET
+                id = @id,
+                author = @author,
+                name = @name,
+                tag = @tag,
+                category = @category,
+                creationDate = @creationDate,
+                WHERE Id = @Id
+                AND xmin = @xmin";
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                var rowCount = await connection.ExecuteAsync(Sql, questionPack);
+                if (rowCount == 0)
+                {
+                    throw new Exception("Oh no, someone else edited this record!");
+                }
+            }
+            return questionPack;
+        }
 
     }
+    
 }

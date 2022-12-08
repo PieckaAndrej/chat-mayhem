@@ -40,6 +40,7 @@
         <div class="form-group">
             <input type="submit" value="Save" class="btn btn-primary" @onclick="SaveQuestionPack" />
         </div>
+        <p>@error</p>
     </div>
 </div>
 
@@ -51,6 +52,7 @@
 @code {
     [Parameter]
     public Models.QuestionPack QuestionPack { get; set; }
+    private string error = "";
 
     protected override async Task OnAfterRenderAsync(bool firstFrame)
     {
@@ -73,8 +75,16 @@
     public async Task SaveQuestionPack()
     {
         QuestionPackLogic questionPackLogic = new QuestionPackLogic();
-        await questionPackLogic.UpdateQuestionPack(QuestionPack);
-        GoBack();
+        QuestionPack returnQuestion = await questionPackLogic.UpdateQuestionPack(QuestionPack);
+        if (returnQuestion.Author == null)
+        {
+            error = "was edited";
+            StateHasChanged();
+        }
+        else{
+            GoBack();
+        }
+        
     }
 
     public void GoBack()

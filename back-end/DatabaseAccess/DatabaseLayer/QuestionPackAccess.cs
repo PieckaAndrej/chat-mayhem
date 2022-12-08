@@ -1,6 +1,8 @@
 ﻿using Dapper;
 using Data.ModelLayer;
 using Npgsql;
+using Npgsql.Internal.TypeHandlers.NumericHandlers;
+using Npgsql.PostgresTypes;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -188,44 +190,45 @@ namespace Data.DatabaseLayer
 
         public async Task<QuestionPack> UpdateAsync(QuestionPack questionPack)
         {
-            QuestionPack qp = new QuestionPack();
-            const string Sql = @"
-                UPDATE public.""QuestionPack"" 
-                SET
-                author = @author,
-                ""name"" = @name,
-                tag = @tag,
-                category = @category,
-                ""creationDate"" = @creationDate
-                WHERE id = @Id
-                AND xmin = @xmin";
-
+            QuestionPack retQuestionPack = new QuestionPack();
+            const string Sql = @"UPDATE public.""QuestionPack""
+	                SET author=@Author, name=@Name, category=@Category, ""creationDate""=@CreationDate, tag=@Tags 
+	                WHERE id = @Id AND xmin = @xmin
+                    RETURNING xmin, id, author, name, category, ""creationDate"", tag";
+            
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                using(var transaction = await connection.BeginTransactionAsync())
+                using (var transaction = await connection.BeginTransactionAsync())
                 {
                     try
                     {
-                        qp = await connection.QuerySingleAsync<QuestionPack>(Sql, new
+                        SqlMapper.AddTypeHandler(new UintHandler());
+                        retQuestionPack = (await connection.QueryAsync<QuestionPack, string[], QuestionPack>(Sql, map: (qp, t) =>
                         {
+                            qp.Tags = t;
+                            return qp;
+                        },
+                        splitOn: "tag",
+                        param: new
+                        {
+                            Author = questionPack.Author,
+                            Name = questionPack.Name,
+                            Category = questionPack.Category,
+                            CreationDate = questionPack.CreationDate,
+                            Tags = questionPack.Tags,
                             Id = questionPack.Id,
-                            xmin = questionPack.xmin,
-                            author = questionPack.Author,
-                            name = questionPack.Name,
-                            tag = questionPack.Tags,
-                            category = questionPack.Category,
-                            creationDate = questionPack.CreationDate
-                        });
+                            xmin = questionPack.xmin
+                        } )).AsQueryable().First();
                         await transaction.CommitAsync();
                     }
-                     catch
+                    catch
                     {
                         await transaction.RollbackAsync();
                     }
                 }
             }
-            return qp;
+            return retQuestionPack;
         }
 
     }

@@ -21,5 +21,10 @@ namespace API.Services
         {
             return _questionAccess.GetQuestions();
         }
+
+        public Question Insert(Question question, int id)
+        {
+            return _questionAccess.InsertQuestion(question, id);
+        }
     }
 }

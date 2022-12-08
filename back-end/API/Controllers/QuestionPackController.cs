@@ -28,13 +28,13 @@ namespace API.Controllers
         [HttpGet]
         public ActionResult<List<QuestionPack>> GetAll()
         {
-            return _questionPackService.GetAllQuestionPacks();
+            return Ok(_questionPackService.GetAllQuestionPacks());
         }
 
         [HttpPost]
-        public async Task<ActionResult<QuestionPack>> Post(QuestionPackDto inQuestionPack)
+        public async Task<ActionResult<QuestionPack>> Post(QuestionPack questionPack)
         {
-            var questionPack = QuestionPackDto.Convert(inQuestionPack);
+            //var questionPack = QuestionPackDto.Convert(inQuestionPack);
             var returnValue = await _questionPackService.InsertAsync(questionPack);
 
             if (returnValue == null)
@@ -42,7 +42,7 @@ namespace API.Controllers
                 return new StatusCodeResult(StatusCodes.Status204NoContent);
             }
 
-            return returnValue;
+            return Ok(returnValue);
         }
 
         [HttpPut]
@@ -54,9 +54,8 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            var returnValue = await _questionPackService.UpdateAsync(questionPack);
-
-            return returnValue;
+            var retQuestion = await _questionPackService.UpdateAsync(questionPack);
+            return Ok(retQuestion);
         }
 
     }

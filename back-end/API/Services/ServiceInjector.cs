@@ -68,7 +68,7 @@ namespace API.Services
         {
             get
             {
-                return new QuestionPackService(new QuestionPackAccess(Con), new QuestionAccess(Con));
+                return new QuestionPackService(new QuestionPackAccess(Con));
             }
         }
 

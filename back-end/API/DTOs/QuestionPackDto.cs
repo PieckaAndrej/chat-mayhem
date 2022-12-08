@@ -1,16 +1,23 @@
 ﻿using API.Model;
 using API.Services;
 using Data.ModelLayer;
+using System.Text.Json.Serialization;
 
 namespace API.DTOs
 {
     public class QuestionPackDto
     {
+        [JsonPropertyName("author")]
         public string Author { get; set; }
+        [JsonPropertyName("name")]
         public string Name { get; set; }
+        [JsonPropertyName("tags")]
         public List<string> Tags { get; set; }
+        [JsonPropertyName("category")]
         public string Category { get; set; }
+        [JsonPropertyName("creationDate")]
         public DateTime CreationDate { get; set; }
+        [JsonPropertyName("questions")]
         public List<Question> Questions { get; set; }
         public QuestionPackDto(string author, string name, List<string> tag, string category, DateTime creationDate)
         {

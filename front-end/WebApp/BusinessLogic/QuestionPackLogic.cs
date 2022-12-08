@@ -21,5 +21,10 @@ namespace WebApp.BusinessLogic
         {
             return await _questionPackService.InsertQuestionPack(questionPack);
         }
+
+        public async Task<QuestionPack?> UpdateQuestionPack(QuestionPack questionPack)
+        {
+            return await _questionPackService.UpdateQuestionPack(questionPack);
+        }
     }
 }

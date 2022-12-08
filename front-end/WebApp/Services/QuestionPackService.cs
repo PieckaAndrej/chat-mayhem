@@ -25,5 +25,17 @@ namespace WebApp.Services
 
             return response.Data;
         }
+
+        public async Task<QuestionPack?> UpdateQuestionPack(QuestionPack questionPack)
+        {
+            RestClient restClient = new RestClient("https://localhost:7200/");
+            RestRequest restRequest = new RestRequest("api/QuestionPack/{id}");
+            restRequest.AddUrlSegment("id", questionPack.Id);
+
+            restRequest.AddJsonBody(questionPack);
+            var response = await restClient.ExecutePutAsync<QuestionPack>(restRequest);
+
+            return response.Data;
+        }
     }
 }

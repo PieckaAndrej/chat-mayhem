@@ -72,7 +72,9 @@
 
     public async Task SaveQuestionPack()
     {
-        Console.WriteLine(QuestionPack);
+        QuestionPackLogic questionPackLogic = new QuestionPackLogic();
+        await questionPackLogic.UpdateQuestionPack(QuestionPack);
+        GoBack();
     }
 
     public void GoBack()

@@ -24,6 +24,7 @@ namespace Data.ModelLayer
         public DateTime CreationDate { get; set; }
         [JsonPropertyName("questions")]
         public List<Question> Questions { get; set; }
+        [JsonPropertyName("xmin")]
         public int xmin { get; set; }
 
         public QuestionPack() { }

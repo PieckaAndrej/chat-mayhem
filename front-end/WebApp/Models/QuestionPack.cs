@@ -30,5 +30,8 @@ namespace WebApp.Models
 
         [JsonPropertyName("creationDate")]
         public DateTime CreationDate { get; set; }
+
+        [JsonPropertyName("xmin")]
+        public int xmin { get; set; }
     }
 }

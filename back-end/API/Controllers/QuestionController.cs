@@ -82,14 +82,5 @@ namespace API.Controllers
                 return Ok(questions);
             }
         }
-
-
-        //[HttpPut]
-        //[Route("answers/{questionId}")]
-        //public ActionResult Putss()
-        //{
-        //    Console.WriteLine("yo");
-        //    return Ok();
-        //}
     }
 }

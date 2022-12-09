@@ -25,6 +25,8 @@ namespace Test
             _testQuestionPack = new QuestionPack("me", "best questions",
                 new String[1] {"m"}, "questions", DateTime.Parse("2022-11-15"));
 
+            _testQuestionPack.Id = 100;
+
             _testConfiguration = new ConfigurationBuilder()
                 .AddJsonFile($"appsettings.Test.json", optional: false)
                 .Build();
@@ -37,15 +39,14 @@ namespace Test
             var questionPackAccess = new QuestionPackAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
 
             //Act
-            var resultStreamer = questionPackAccess.GetQuestionPackById(_testQuestionPack.Id);
+            questionPackAccess.CreateQuestionPack(_testQuestionPack);
+            var resultQuestioPack = questionPackAccess.GetQuestionPackById(_testQuestionPack.Id);
 
             //Assert
-            Assert.Equal(_testQuestionPack.Id, resultStreamer?.Id);
-            Assert.Equal(_testQuestionPack.Author, resultStreamer?.Author);
-            Assert.Equal(_testQuestionPack.Name, resultStreamer?.Name);
-            Assert.Equal(_testQuestionPack.Tags, resultStreamer?.Tags.OfType<object>().Select(s => s.ToString()).ToArray());
-            Assert.Equal(_testQuestionPack.Category, resultStreamer?.Category);
-            Assert.Equal(_testQuestionPack.CreationDate, resultStreamer?.CreationDate);
+            Assert.Equal(_testQuestionPack.Author, resultQuestioPack?.Author);
+            Assert.Equal(_testQuestionPack.Name, resultQuestioPack?.Name);
+            Assert.Equal(_testQuestionPack.Category, resultQuestioPack?.Category);
+            Assert.Equal(_testQuestionPack.CreationDate, resultQuestioPack?.CreationDate);
         }
     }
 }

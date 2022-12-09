@@ -32,7 +32,8 @@ namespace Test
             var owner = new Streamer("asdfg", "21345", "abcde");
             var gameMode = new GameMode(1, "Fun game", "No cheating");
             var timeLimit = 15;
-            var questionPack = new QuestionPack("me", "best questions", new string[1] {"m"} ,"questions",DateTime.Parse("2022-11-15"));
+            var questionPack = new QuestionPack("me", "best questions", new String[1] {"m"} ,"questions",DateTime.Parse("2022-11-15"));
+            questionPack.Id = 1;
             _testGame = new Game(owner, gameMode, timeLimit, questionPack);
 
             _testConfiguration = new ConfigurationBuilder()
@@ -92,22 +93,6 @@ namespace Test
             //Assert
             Assert.Equal(_testGame.TimeLimit, resultGame?.TimeLimit);
         }
-
-        /*[Fact]
-        public void TestPutGameController()
-        {
-            //Arrange
-            var gameController = new GameController(_testConfiguration);
-
-            //Act
-            ActionResult<GameDto> result = gameController.Post(GameDto.Convert(_testGame));
-            Game? resultValue = GameDto.Convert(result.Value);
-
-            //Arrange
-            Assert.Equal(_testGame.Streamer, resultValue?.Streamer);
-            Assert.Equal(_testGame.Mode, resultValue?.Mode);
-            Assert.Equal(_testGame.TimeLimit, resultValue?.TimeLimit);
-        }*/
 
         [Fact]
         public void TestDeleteGame()

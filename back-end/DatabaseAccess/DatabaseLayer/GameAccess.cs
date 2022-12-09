@@ -76,7 +76,7 @@ namespace Data.DatabaseLayer
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                var game = connection.Query<Game, Streamer, GameMode, QuestionPack, Question, string[],  Game>(sql,map: ((g, s, m, qp, q, t) =>
+                var game = connection.Query<Game, Streamer, GameMode, QuestionPack, Question, char[],  Game>(sql,map: ((g, s, m, qp, q, t) =>
                 {
                     if (questionPack != null)
                     {
@@ -88,7 +88,7 @@ namespace Data.DatabaseLayer
                     }
                     g.Streamer = s;
                     g.Mode = m;
-                    qp.Tags = t;
+                    //qp.Tags = t;
                     qp.Questions.Add(q);
                     g.QuestionPack = qp;
                     questionPack = qp;

@@ -37,6 +37,5 @@ namespace Data.ModelLayer
             Category = category;
             CreationDate = creationDate;
         }
-
     }
 }

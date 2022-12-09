@@ -66,23 +66,28 @@ namespace Data.DatabaseLayer
             }
         }
 
-        //public int UpdateQuestion(Question question)
-        //{
-        //    string sql = "UPDATE public.\"Question\" SET " +
-        //        "\"text\" = @text, \"questionPackId\" = @questionPackId " +
-        //        "WHERE Id = @id;";
+        public Question? UpdateQuestion(Question question)
+        {
+            string sql = "UPDATE public.\"Question\" SET " +
+                "\"text\" = @text, \"questionPackId\" = @questionPackId " +
+                "WHERE Id = @id;";
 
-        //    using (var connection = new NpgsqlConnection(_connectionString))
-        //    {
-        //        var rowsChnaged = connection.Execute(sql, new
-        //        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                var rowsChnaged = connection.Execute(sql, new
+                {
 
-        //            Id = question.id
-        //        });
+                    Id = question.id
+                });
 
-        //        return rowsChnaged;
-        //    }
-        //}
+                if (rowsChnaged == 0)
+                {
+                    question = null;
+                }
+
+                return question;
+            }
+        }
 
 
         public Question InsertQuestion(Question question, int questionPackId)

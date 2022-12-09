@@ -23,7 +23,7 @@ namespace Test
             _extraOutput = extraOutput;
 
             _testQuestionPack = new QuestionPack("me", "best questions",
-                new String[1] {"m"}, "questions", DateTime.Parse("2022-11-15"));
+                new String[1] {"maria"}, "questions", DateTime.Parse("2022-11-15"));
 
             _testQuestionPack.Id = 100;
 
@@ -33,14 +33,14 @@ namespace Test
         }
 
         [Fact]
-        public void TestGetGame()
+        public async Task TestGetQuestionPack()
         {
             //Arrange
             var questionPackAccess = new QuestionPackAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
 
             //Act
-            questionPackAccess.CreateQuestionPack(_testQuestionPack);
-            var resultQuestioPack = questionPackAccess.GetQuestionPackById(_testQuestionPack.Id);
+            QuestionPack insertedQuestionPack = await questionPackAccess.InsertAsync(_testQuestionPack);
+            var resultQuestioPack = questionPackAccess.GetQuestionPackById(insertedQuestionPack.Id);
 
             //Assert
             Assert.Equal(_testQuestionPack.Author, resultQuestioPack?.Author);

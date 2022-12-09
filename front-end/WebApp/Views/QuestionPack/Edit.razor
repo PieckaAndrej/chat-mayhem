@@ -76,15 +76,16 @@
     {
         QuestionPackLogic questionPackLogic = new QuestionPackLogic();
         QuestionPack returnQuestion = await questionPackLogic.UpdateQuestionPack(QuestionPack);
+
         if (returnQuestion.Author == null)
         {
             error = "was edited";
             StateHasChanged();
         }
-        else{
+        else
+        {
             GoBack();
         }
-        
     }
 
     public void GoBack()

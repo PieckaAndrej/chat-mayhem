@@ -21,25 +21,6 @@ namespace Data.DatabaseLayer
         {
             _connectionString = connectionString;
         }
-        public QuestionPack CreateQuestionPack(QuestionPack questionPack)
-        {
-            string sql = "INSERT INTO public.\"QuestionPack\"(\"author\", \"name\", \"tag\", \"category\", \"creationDate\") " +
-                    "VALUES (@author, @name, @tag, @category, @creationDate) RETURNING id;";
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                questionPack.Id = connection.Execute(sql, new
-                {
-                    author = questionPack.Author,
-                    name = questionPack.Name,
-                    tag = questionPack.Tags,
-                    category = questionPack.Category,
-                    creationDate = questionPack.CreationDate
-                });
-                return questionPack;
-            }
-        }
-
-
 
         public QuestionPack GetQuestionPackById(int id)
         {
@@ -76,29 +57,7 @@ namespace Data.DatabaseLayer
                 return questionPack;
             }
         }
-        public QuestionPack UpdateQuestionPack(int id, QuestionPack questionPack)
-        {
-            string sql = "UPDATE public.\"QuestionPack\" SET" +
-                "\"author\" = @Author, \"name\"=@Name, \"tag\"=@Tag, \"category\"=@Category, " +
-                "\"creationDate\" = @CreationDate " +
-                "WHERE id = @Id;";
-
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                questionPack.Id = connection.Execute(sql, new
-                {
-                    Id = id,    
-                    Author = questionPack.Author,
-                    Name = questionPack.Name,
-                    Tag = questionPack.Tags,
-                    Category = questionPack.Category,
-                    CreationDate = questionPack.CreationDate
-                });
-                return questionPack;
-            }
-
-        }
-
+        
         public bool DeleteQuestionPack(int id)
         {
             string sql = "DELETE FROM public.\"QuestionPack\" WHERE Id = @id";
@@ -110,7 +69,7 @@ namespace Data.DatabaseLayer
                     Id = id
                 });
 
-                if(rowsAffected != 0)
+                if (rowsAffected != 0)
                 {
                     return true;
                 }
@@ -121,7 +80,7 @@ namespace Data.DatabaseLayer
             }
         }
 
-        public List<QuestionPack> GetAllQuestionPacks() 
+        public List<QuestionPack> GetAllQuestionPacks()
         {
             string sql = "SELECT questionPack.id, questionPack.author, questionPack.name, " +
                 "questionPack.category, questionPack.\"creationDate\", questionPack.\"xmin\", questionPack.tag, " +
@@ -144,12 +103,8 @@ namespace Data.DatabaseLayer
                         tempQuestionPack.Add(qp.Id, questionPack = qp);
                     }
 
-                    if (questionPack.Questions == null)
-                    {
-                        questionPack.Questions = new List<Question>();
-                    }
                     questionPack.Questions.Add(q);
-                    
+
                     return questionPack;
                 },
                 splitOn: "tag, id"
@@ -165,7 +120,7 @@ namespace Data.DatabaseLayer
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 return connection.QuerySingle(Sql, new { id });
-            }     
+            }
         }
 
         public async Task<QuestionPack> InsertAsync(QuestionPack questionPack)
@@ -181,10 +136,32 @@ namespace Data.DatabaseLayer
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                await connection.ExecuteAsync(Sql, @params);
-                questionPack.xmin = Convert.ToInt32(@params.Get<UInt32>("xmin"));
+                connection.Open();
+                using (var transaction = await connection.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        await connection.ExecuteAsync(Sql, @params);
+                        questionPack.xmin = Convert.ToInt32(@params.Get<UInt32>("xmin"));
+
+                        List<Question> tempQuestions = new List<Question>();
+
+                        foreach (Question question in questionPack.Questions)
+                        {
+                            QuestionAccess questionAccess = new QuestionAccess(_connectionString);
+                            tempQuestions.Add(questionAccess.InsertQuestion(question, questionPack.Id));
+                        }
+
+                        questionPack.Questions = tempQuestions;
+                        await transaction.CommitAsync();
+                    }
+                    catch
+                    {
+                        await transaction.RollbackAsync();
+                    }
+                }
             }
-            
+
             return questionPack;
         }
 
@@ -195,7 +172,7 @@ namespace Data.DatabaseLayer
 	                SET author=@Author, name=@Name, category=@Category, ""creationDate""=@CreationDate, tag=@Tags 
 	                WHERE id = @Id AND xmin = @xmin
                     RETURNING xmin, id, author, name, category, ""creationDate"", tag";
-            
+
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
@@ -219,7 +196,7 @@ namespace Data.DatabaseLayer
                             Tags = questionPack.Tags,
                             Id = questionPack.Id,
                             xmin = questionPack.xmin
-                        } )).AsQueryable().First();
+                        })).AsQueryable().First();
                         await transaction.CommitAsync();
                     }
                     catch
@@ -232,5 +209,5 @@ namespace Data.DatabaseLayer
         }
 
     }
-    
+
 }

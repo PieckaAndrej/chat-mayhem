@@ -9,9 +9,7 @@ namespace Data.DatabaseLayer
 {
     public interface IQuestionPackAccess
     {
-        QuestionPack CreateQuestionPack(QuestionPack questionPack);
         QuestionPack GetQuestionPackById(int id);
-        QuestionPack UpdateQuestionPack(int id, QuestionPack questionPack);
         bool DeleteQuestionPack(int id);
         List<QuestionPack> GetAllQuestionPacks();
         Task<QuestionPack> InsertAsync(QuestionPack questionPack);

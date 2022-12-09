@@ -72,6 +72,7 @@
 
         QuestionPackLogic logic = new QuestionPackLogic();
         await logic.InsertQuestionPack(questionPack);
+        GoBack();
     }
 
     public void RemoveQuestion(int index)

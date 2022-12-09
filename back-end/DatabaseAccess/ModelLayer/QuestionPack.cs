@@ -27,7 +27,10 @@ namespace Data.ModelLayer
         [JsonPropertyName("xmin")]
         public int xmin { get; set; }
 
-        public QuestionPack() { }
+        public QuestionPack() 
+        { 
+            Questions = new List<Question>();
+        }
 
         public QuestionPack (string author, string name, string[] tag, string category, DateTime creationDate)
         {

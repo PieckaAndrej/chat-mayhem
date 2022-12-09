@@ -1,0 +1,157 @@
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@using System.Text.Json;
+@using System.Security.Claims;
+@using WebApp.Models;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+@implements IAsyncDisposable
+@inject IJSRuntime JsRuntime
+
+@switch (gameState)
+{
+    case GAME_STATE.LOBBY:
+        <Lobby Game="StartListening" QuestionPackName="@game?.QuestionPack.Name" Players="players"></Lobby>
+        break;
+    case GAME_STATE.LISTENING:
+        <Listening EndListening="EndListening" Votes="Votes" Prompt="@currentQuestion?.Prompt" 
+            TimeLimit="(game?.TimeLimit ?? 0)" IsEnoughAnswers="isEnoughAnswers"></Listening>
+        break;
+    case GAME_STATE.ANSWERING:
+        <Answering Question="currentQuestion" Answer="Answer"
+           FlippedAnswers="flippedAnswers" Players="players"></Answering>
+        break;
+    case GAME_STATE.FINISHED:
+        <End Players="players"></End>
+        break;
+}
+
+@code {
+    private HubConnection? hubConnection;
+    private Game? game;
+    private enum GAME_STATE { LOBBY, LISTENING, ANSWERING, FINISHED };
+    private GAME_STATE gameState = GAME_STATE.LOBBY;
+    private int Votes = 0;
+    private Question<Answer> currentQuestion;
+    private bool[] flippedAnswers;
+    private List<Player> players = new List<Player>();
+    private bool isEnoughAnswers = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            hubConnection = new HubConnectionBuilder()
+                .WithUrl(Navigation.ToAbsoluteUri("/gamehub"))
+                .Build();
+
+            await hubConnection.StartAsync();
+
+            string json = await JsRuntime.InvokeAsync<string>("ReadCookie.ReadCookie", "game");
+            game = JsonSerializer.Deserialize<Game>(json);
+
+            await hubConnection.InvokeAsync("CreateGroup", hubConnection.ConnectionId, game);
+
+            players = await hubConnection.InvokeAsync<List<Player>>("GetPlayers", hubConnection.ConnectionId);
+
+            await GetCurrentQuestion();
+
+            StateHasChanged();
+
+            hubConnection.On("Answered", () =>
+            {
+                Votes++;
+                StateHasChanged();
+            });
+
+            hubConnection.On<List<Player>>("PlayersUpdated", (p) =>
+            {
+                players = p;
+
+                StateHasChanged();
+            });
+        }
+    }
+
+    public async Task GoToNextQuestion()
+    {
+        bool isNextQuestion = await hubConnection.InvokeAsync<bool>("GoToNextQuestion",
+            hubConnection.ConnectionId);
+
+        if (isNextQuestion)
+        {
+            await GetCurrentQuestion();
+            await StartListening();
+        }
+        else
+        {
+            gameState = GAME_STATE.FINISHED;
+        }
+    }
+
+    public async Task Answer(string message)
+    {
+        int answerIndex = await hubConnection.InvokeAsync<int>("SendMessage", hubConnection.ConnectionId, message);
+
+        if (answerIndex >= 0)
+        {
+            flippedAnswers[answerIndex] = true;
+
+            StateHasChanged();
+
+            if (flippedAnswers.All(answer => answer == true))
+            {
+                await GoToNextQuestion();
+            }
+        }
+    }
+
+    public async Task GetCurrentQuestion()
+    {
+        currentQuestion = await hubConnection.InvokeAsync<Question<Answer>>("GetCurrentQuestion",
+            hubConnection.ConnectionId);
+
+        if (currentQuestion.Answers != null)
+        {
+            flippedAnswers = new bool[currentQuestion.Answers.Count];
+        }
+    }
+
+    public async Task StartListening()
+    {
+        await hubConnection.InvokeAsync("StartListening", hubConnection.ConnectionId);
+
+        isEnoughAnswers = true;
+
+        gameState = GAME_STATE.LISTENING;
+
+        StateHasChanged();
+    }
+
+    public async Task EndListening()
+    {
+        bool ended = await hubConnection.InvokeAsync<bool>("EndListening", hubConnection.ConnectionId);
+
+        if (!ended)
+        {
+            isEnoughAnswers = false;
+        }
+        else
+        {
+            gameState = GAME_STATE.ANSWERING;
+            await GetCurrentQuestion();
+        }
+
+        StateHasChanged();
+    }
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}

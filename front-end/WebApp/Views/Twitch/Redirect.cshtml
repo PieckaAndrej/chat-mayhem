@@ -1,0 +1,14 @@
+﻿@{
+    ViewData["Title"] = "Redirecting";
+}
+
+<center>
+    <p>Redirecting...</p>
+    <a asp-action="HandleCode" id="redirect"></a>
+</center>
+
+
+<script>
+    let redirect = document.getElementById("redirect");
+    redirect.click();
+</script>

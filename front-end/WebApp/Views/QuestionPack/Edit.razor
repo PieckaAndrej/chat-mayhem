@@ -24,12 +24,12 @@
         {
             @foreach (Question<ViewerAnswer> question in QuestionPack.Questions)
             {
-                question.QuestionId = i;
+                int index = i;
                 <div class="form-group">
-                    <label class="control-label">Question #@(question.QuestionId + 1)</label>
+                    <label class="control-label">Question #@(i + 1)</label>
                     <span>
-                        <input class="form-control" value="@question.Prompt" @oninput="((e) => (HandleChangeQuestion(e, question.QuestionId)))" />
-                        <button @onclick="(() => RemoveQuestion(question.QuestionId))" class="btn btn-outline-primary">Delete</button>
+                        <input class="form-control" value="@question.Prompt" @oninput="((e) => (HandleChangeQuestion(e, index)))" />
+                        <button @onclick="(() => RemoveQuestion(index))" class="btn btn-outline-primary">Delete</button>
                     </span>
                 </div>
                 i++;
@@ -66,9 +66,10 @@
         }
     }
 
-    public Task HandleChangeQuestion(ChangeEventArgs e, int questionId)
+    public Task HandleChangeQuestion(ChangeEventArgs e, int index)
     {
-        QuestionPack.Questions[questionId].Prompt = e.Value.ToString();
+        QuestionPack.Questions[index].Prompt = e.Value.ToString();
+        QuestionPack.Questions[index].QuestionId = -Math.Abs(QuestionPack.Questions[index].QuestionId);
         return Task.CompletedTask;
     }
 
@@ -104,6 +105,6 @@
 
     public void AddQuestion()
     {
-        QuestionPack.Questions.Add(new Question<ViewerAnswer>("", null, QuestionPack.Questions.Count));
+        QuestionPack.Questions.Add(new Question<ViewerAnswer>("", new List<ViewerAnswer>(), 0));
     }
 }

@@ -12,8 +12,7 @@ namespace Data.ModelLayer
         public int id { get; set; }
         public string? text { get; set; }
         public List<Answer> answers { get; set; }
-
-        public int QuestionPackId { get; set; }
+            
 
         public Question(int id, string text) : this()
         {

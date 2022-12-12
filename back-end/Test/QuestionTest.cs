@@ -20,6 +20,7 @@ namespace Test
         private readonly ITestOutputHelper _extraOutput;
         private readonly Question _testQuestion;
         private readonly IConfiguration _testConfiguration;
+        private readonly int questionPackId;
 
         public QuestionTest(ITestOutputHelper extraOutput)
         {
@@ -40,7 +41,7 @@ namespace Test
 
             _testQuestion.answers = answers;
 
-            _testQuestion.QuestionPackId = 1;
+            questionPackId = 1;
 
             _testConfiguration = new ConfigurationBuilder()
                 .AddJsonFile($"appsettings.Test.json", optional: false)
@@ -48,11 +49,10 @@ namespace Test
         }
 
         [Fact]
-        public void TestCreateGame()
+        public void TestCreateQuestion()
         {
             //Arrange
             var questionAccess = new QuestionAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
-            int questionPackId = _testQuestion.QuestionPackId;
 
             //Act
             Question resultQuestion = questionAccess.InsertQuestion(_testQuestion, questionPackId);
@@ -60,11 +60,10 @@ namespace Test
             //Assert
             Assert.Equal(_testQuestion.text, resultQuestion?.text);
             Assert.Equal(_testQuestion.id, resultQuestion?.id);
-            Assert.Equal(_testQuestion.QuestionPackId, resultQuestion?.QuestionPackId);
         }
 
         [Fact]
-        public void TestGetAllGames()
+        public void TestGetAllQuestions()
         {
             var questionAccess = new QuestionAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
 
@@ -74,11 +73,10 @@ namespace Test
         }
 
         [Fact]
-        public void TestGetGameById()
+        public void TestGetQuestionById()
         {
             //Arrange
             var questionAccess = new QuestionAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
-            int questionPackId = _testQuestion.QuestionPackId;
 
             //Act
             Question question = questionAccess.InsertQuestion(_testQuestion, questionPackId);
@@ -87,7 +85,6 @@ namespace Test
             //Assert
             Assert.Equal(_testQuestion.text, resultQuestion?.text);
             Assert.Equal(_testQuestion.id, resultQuestion?.id);
-            Assert.Equal(_testQuestion.QuestionPackId, resultQuestion?.QuestionPackId);
         }
 
         [Fact]
@@ -96,7 +93,6 @@ namespace Test
             //Arrange
             var questionAccess = new QuestionAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
             var questionController = new QuestionController(_testConfiguration);
-            int questionPackId = _testQuestion.QuestionPackId;
 
             //Act
             Question question = questionAccess.InsertQuestion(_testQuestion, questionPackId);

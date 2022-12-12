@@ -1,4 +1,6 @@
 ﻿using RestSharp;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using WebApp.Models;
 
 namespace WebApp.Services
@@ -31,7 +33,7 @@ namespace WebApp.Services
             RestClient restClient = new RestClient("https://localhost:7200/");
             RestRequest restRequest = new RestRequest("api/QuestionPack/{id}");
             restRequest.AddUrlSegment("id", questionPack.Id);
-
+            var x = JsonSerializer.Serialize(questionPack);
             restRequest.AddJsonBody(questionPack);
             var response = await restClient.ExecutePutAsync<QuestionPack>(restRequest);
 

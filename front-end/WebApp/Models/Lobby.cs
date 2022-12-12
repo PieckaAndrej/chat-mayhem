@@ -21,7 +21,7 @@ namespace WebApp.Models
             Players = new List<Player>();
             Answers = new Question<Answer>[questionPack.Questions?.Count ?? 0];
 
-            for (int i = 0; i < QuestionPack.Questions.Count; i++)
+            for (int i = 0; i < QuestionPack.Questions?.Count; i++)
             {
                 Answers[i] = new Question<Answer>() { Prompt = QuestionPack.Questions[i].Prompt };
             }

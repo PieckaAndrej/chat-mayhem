@@ -20,6 +20,8 @@ namespace WebApp.Hubs
     {
         private static List<Lobby> _lobbies = new List<Lobby>();
 
+        public List<Lobby> Lobbies { get { return _lobbies; } }
+
         public async Task CreateGroup(string connectionId, Game game)
         {
             Streamer streamer = game.Streamer;
@@ -181,7 +183,7 @@ namespace WebApp.Hubs
             return lobby.NextQuestion();
         }
 
-        private Lobby? GetLobbyById(string connectionId)
+        public Lobby? GetLobbyById(string connectionId)
         {
             return _lobbies.SingleOrDefault(
                 lobby => lobby.Players.Any(player => player.ConnectionId == connectionId));

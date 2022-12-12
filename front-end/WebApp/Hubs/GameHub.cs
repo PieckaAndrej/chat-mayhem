@@ -164,6 +164,7 @@ namespace WebApp.Hubs
                 returnIndex = answers.IndexOf(answer);
                 lobby.Players.SingleOrDefault(player => player.ConnectionId == connectionId)
                     .Points += answer.Points;
+                answer.Answered = true;
             }
             else
             {

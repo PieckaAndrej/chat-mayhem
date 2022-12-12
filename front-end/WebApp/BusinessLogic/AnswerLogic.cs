@@ -18,7 +18,7 @@ namespace WebApp.BusinessLogic
                 return null;
             }
 
-            return answers.Where(a => a.Text == similar.Key).FirstOrDefault();
+            return answers.Where(a => a.Text == similar.Key && !a.Answered).FirstOrDefault();
         }
     }
 }

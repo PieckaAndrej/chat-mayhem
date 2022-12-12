@@ -2,6 +2,7 @@
 using API.Services;
 using Data.DatabaseLayer;
 using Data.ModelLayer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestSharp;
 using System.Text.Json;
@@ -10,6 +11,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class ChatController : ControllerBase
     {
         private ChatService chatService;

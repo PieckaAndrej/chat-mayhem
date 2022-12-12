@@ -8,6 +8,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class QuestionController : ControllerBase
     {
         private AnswerService _answerService;
@@ -70,7 +71,6 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public ActionResult<List<Question>> GetQuestions()
         {
             List<Question> questions = ServiceInjector.QuestionService.GetQuestions();

@@ -178,6 +178,45 @@ namespace Test
         }
 
         [Fact]
+        public async void TestAnswerWrongLocked()
+        {
+            // Arrange 
+            string connectionId = "answerWrongLocked";
+
+            Game game = new Game();
+            Streamer streamer = new Streamer("test", "test", "test");
+            QuestionPack questionPack = new QuestionPack();
+
+            questionPack.Questions = new List<Question<ViewerAnswer>>() {
+                new Question<ViewerAnswer>("test?", null, 0) };
+
+            game.Streamer = streamer;
+            game.QuestionPack = questionPack;
+
+            Question<Answer> question = new Question<Answer>("test?", new List<Answer>()
+            {
+                new Answer(1, "test"),
+                new Answer(2, "right")
+            }, 0);
+
+            // Act
+            await _gameHub.CreateGroup(connectionId, game);
+            Lobby? lobby = _gameHub.GetLobbyById(connectionId);
+
+            lobby.Answers[lobby.currentQuestionIndex] = question;
+            int response = await _gameHub.SendMessage(connectionId, "wrong");
+            await _gameHub.SendMessage(connectionId, "wrong");
+            await _gameHub.SendMessage(connectionId, "wrong");
+            int responseRight = await _gameHub.SendMessage(connectionId, "right");
+
+            // Assert
+            Assert.Equal(-1, response);
+            Assert.Equal(0, lobby.Players.First().Points);
+            Assert.Equal(3, lobby.Players.First().WrongAnswers);
+            Assert.Equal(-2, responseRight);
+        }
+
+        [Fact]
         public async void TestAnswerTwice()
         {
             // Arrange 

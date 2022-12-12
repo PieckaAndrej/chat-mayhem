@@ -150,6 +150,12 @@ namespace WebApp.Hubs
 
             if (lobby == null)
             {
+                return -3;
+            }
+
+            if (lobby.Players.Single(player => player.ConnectionId == connectionId)
+                .WrongAnswers >= 3)
+            {
                 return -2;
             }
 

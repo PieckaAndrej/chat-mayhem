@@ -1,6 +1,7 @@
 ﻿using API.DTOs;
 using API.Services;
 using Data.ModelLayer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -69,6 +70,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult<List<Question>> GetQuestions()
         {
             List<Question> questions = ServiceInjector.QuestionService.GetQuestions();

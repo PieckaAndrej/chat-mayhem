@@ -40,13 +40,12 @@ namespace Test
 
             //Act
             QuestionPack insertedQuestionPack = await questionPackAccess.InsertAsync(_testQuestionPack);
-            var resultQuestioPack = questionPackAccess.GetQuestionPackById(insertedQuestionPack.Id);
 
             //Assert
-            Assert.Equal(_testQuestionPack.Author, resultQuestioPack?.Author);
-            Assert.Equal(_testQuestionPack.Name, resultQuestioPack?.Name);
-            Assert.Equal(_testQuestionPack.Category, resultQuestioPack?.Category);
-            Assert.Equal(_testQuestionPack.CreationDate, resultQuestioPack?.CreationDate);
+            Assert.Equal(_testQuestionPack.Author, insertedQuestionPack?.Author);
+            Assert.Equal(_testQuestionPack.Name, insertedQuestionPack?.Name);
+            Assert.Equal(_testQuestionPack.Category, insertedQuestionPack?.Category);
+            Assert.Equal(_testQuestionPack.CreationDate, insertedQuestionPack?.CreationDate);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace Data.ModelLayer
             Questions = new List<Question>();
         }
 
-        public QuestionPack (string author, string name, string[] tag, string category, DateTime creationDate)
+        public QuestionPack (string author, string name, string[] tag, string category, DateTime creationDate) : this()
         {
             Author = author;
             Name = name;

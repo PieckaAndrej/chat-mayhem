@@ -11,7 +11,11 @@
     {
         <p>@player.Name</p>
     }
-    <button @onclick="Start">Start</button>
+    @if (IsHosting)
+    {
+        <button @onclick="Start">Start</button>
+        <button @onclick="CopyLink">Copy join link</button>
+    }
 </div>
 
 @code {
@@ -21,6 +25,11 @@
     public string QuestionPackName { get; set; }
     [Parameter]
     public List<Player> Players { get; set; }
+    [Parameter]
+    public bool IsHosting { get; set; }
+    [Parameter]
+    public EventCallback Link { get; set; }
 
     public async Task Start() => await Game.InvokeAsync();
+    public async Task CopyLink() => await Link.InvokeAsync();
 }

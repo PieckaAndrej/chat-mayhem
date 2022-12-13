@@ -7,34 +7,41 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JsRuntime
 
-@switch (gameState)
+@switch (lobby?.GameState)
 {
-    case GAME_STATE.LOBBY:
-        <Lobby Game="StartListening" QuestionPackName="@game?.QuestionPack.Name" Players="players"></Lobby>
+    case WebApp.Models.Lobby.GAME_STATE.LOBBY:
+        <Lobby IsHosting="isHosting" Game="StartListening" Link="CopyJoinLink"
+            QuestionPackName="@lobby.Game?.QuestionPack.Name" Players="lobby.Players"></Lobby>
         break;
-    case GAME_STATE.LISTENING:
+    case WebApp.Models.Lobby.GAME_STATE.LISTENING:
         <Listening EndListening="EndListening" Votes="Votes" Prompt="@currentQuestion?.Prompt" 
-            TimeLimit="(game?.TimeLimit ?? 0)" IsEnoughAnswers="isEnoughAnswers"></Listening>
+            TimeLimit="(lobby.Game?.TimeLimit ?? 0)" IsEnoughAnswers="isEnoughAnswers"></Listening>
         break;
-    case GAME_STATE.ANSWERING:
+    case WebApp.Models.Lobby.GAME_STATE.ANSWERING:
         <Answering Question="currentQuestion" Answer="Answer"
-           FlippedAnswers="flippedAnswers" Players="players"></Answering>
+           FlippedAnswers="flippedAnswers" Players="lobby.Players"></Answering>
         break;
-    case GAME_STATE.FINISHED:
-        <End Players="players"></End>
+    case WebApp.Models.Lobby.GAME_STATE.FINISHED:
+        <End Players="lobby.Players"></End>
         break;
 }
 
 @code {
+    [Parameter]
+    public string? Code { get; set; }
+    [Parameter]
+    public string? Name { get; set; }
     private HubConnection? hubConnection;
-    private Game? game;
-    private enum GAME_STATE { LOBBY, LISTENING, ANSWERING, FINISHED };
-    private GAME_STATE gameState = GAME_STATE.LOBBY;
+    private WebApp.Models.Lobby? lobby;
+    //private Game? game;
+    //private enum GAME_STATE { LOBBY, LISTENING, ANSWERING, FINISHED };
+    //private GAME_STATE gameState = GAME_STATE.LOBBY;
     private int Votes = 0;
-    private Question<Answer> currentQuestion;
+    private Question<Answer>? currentQuestion;
     private bool[] flippedAnswers;
-    private List<Player> players = new List<Player>();
+    //private List<Player> players = new List<Player>();
     private bool isEnoughAnswers = true;
+    private bool isHosting;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -46,14 +53,29 @@
 
             await hubConnection.StartAsync();
 
-            string json = await JsRuntime.InvokeAsync<string>("ReadCookie.ReadCookie", "game");
-            game = JsonSerializer.Deserialize<Game>(json);
+            if (String.IsNullOrWhiteSpace(Code))
+            {
+                string json = await JsRuntime.InvokeAsync<string>("ReadCookie.ReadCookie", "game");
+                Game game = JsonSerializer.Deserialize<Game>(json);
 
-            await hubConnection.InvokeAsync("CreateGroup", hubConnection.ConnectionId, game);
+                await hubConnection.InvokeAsync("CreateGroup", hubConnection.ConnectionId, game);
 
-            players = await hubConnection.InvokeAsync<List<Player>>("GetPlayers", hubConnection.ConnectionId);
+                isHosting = true;
+            }
+            else
+            {
+                bool joined = await hubConnection.InvokeAsync<bool>("JoinGroup", hubConnection.ConnectionId, Code, Name);
 
-            await GetCurrentQuestion();
+                if (!joined)
+                {
+                    Navigation.NavigateTo("Home/Error", true);
+                }
+                else
+                {
+                }
+            }
+
+            lobby = await hubConnection.InvokeAsync<WebApp.Models.Lobby>("GetLobbyById", hubConnection.ConnectionId);
 
             StateHasChanged();
 
@@ -63,9 +85,9 @@
                 StateHasChanged();
             });
 
-            hubConnection.On<List<Player>>("PlayersUpdated", (p) =>
+            hubConnection.On<WebApp.Models.Lobby>("LobbyUpdated", (l) =>
             {
-                players = p;
+                lobby = l;
 
                 StateHasChanged();
             });
@@ -77,6 +99,16 @@
             });
         }
     }
+
+    public async Task CopyJoinLink()
+    {
+        string groupName = await hubConnection.InvokeAsync<string>("GetGroupName", hubConnection.ConnectionId);
+
+        string link = $"https://localhost:7026/lobby/join?code={groupName}";
+
+        await JsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", link);
+    }
+
 
     public async Task GoToNextQuestion()
     {
@@ -90,7 +122,7 @@
         }
         else
         {
-            gameState = GAME_STATE.FINISHED;
+            await hubConnection.InvokeAsync("SetGameState", hubConnection.ConnectionId, WebApp.Models.Lobby.GAME_STATE.FINISHED);
         }
     }
 
@@ -113,8 +145,7 @@
 
     public async Task GetCurrentQuestion()
     {
-        currentQuestion = await hubConnection.InvokeAsync<Question<Answer>>("GetCurrentQuestion",
-            hubConnection.ConnectionId);
+        currentQuestion = lobby.Answers[lobby.currentQuestionIndex];
 
         if (currentQuestion.Answers != null)
         {
@@ -128,7 +159,7 @@
 
         isEnoughAnswers = true;
 
-        gameState = GAME_STATE.LISTENING;
+        await hubConnection.InvokeAsync("SetGameState", hubConnection.ConnectionId, WebApp.Models.Lobby.GAME_STATE.LISTENING);
 
         StateHasChanged();
     }
@@ -143,7 +174,7 @@
         }
         else
         {
-            gameState = GAME_STATE.ANSWERING;
+            await hubConnection.InvokeAsync("SetGameState", hubConnection.ConnectionId, WebApp.Models.Lobby.GAME_STATE.ANSWERING);
             await GetCurrentQuestion();
         }
 

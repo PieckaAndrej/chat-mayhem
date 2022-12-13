@@ -11,15 +11,16 @@ using System.Security.Claims;
 using System.Text.Json;
 using WebApp.Models;
 using WebApp.Services;
+using WebApp.ViewModels;
 
 namespace WebApp.Controllers
 {
     [Authorize]
     public class LobbyController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index(JoinLobby joinLobby)
         {
-            return View("Index");
+            return View("Index", joinLobby);
         }
 
         public async Task<IActionResult> RefreshToken(string access)
@@ -40,6 +41,20 @@ namespace WebApp.Controllers
                         IsPersistent = true
                     });
             return View("Close");
+        }
+
+        public IActionResult Join(string code)
+        {
+            JoinLobby model = new JoinLobby();
+            model.Code = code;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Join(JoinLobby joinLobby)
+        {
+            return RedirectToAction("Index", joinLobby);
         }
     }
 }

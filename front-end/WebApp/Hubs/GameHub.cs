@@ -31,7 +31,7 @@ namespace WebApp.Hubs
                 string groupName = Guid.NewGuid().ToString();
                 MessageHandlerService messageHandlerService = new MessageHandlerService(streamer);
 
-                Lobby lobby = new Lobby(groupName, game.QuestionPack, messageHandlerService);
+                Lobby lobby = new Lobby(groupName, game, messageHandlerService);
 
                 _lobbies.Add(lobby);
 
@@ -46,8 +46,16 @@ namespace WebApp.Hubs
             return lobby.Answers[lobby.currentQuestionIndex];
         }
 
-        public async Task JoinGroup(string connectionId, string groupName, string playerName)
+        public string? GetGroupName(string connectionId)
         {
+            Lobby? lobby = GetLobbyById(connectionId);
+
+            return lobby?.GroupName;
+        }
+
+        public async Task<bool> JoinGroup(string connectionId, string groupName, string playerName)
+        {
+            bool retVal = false;
             Lobby? lobby = _lobbies.SingleOrDefault(lobby => lobby.GroupName == groupName);
 
             if (lobby != null)
@@ -55,7 +63,14 @@ namespace WebApp.Hubs
                 await Groups.AddToGroupAsync(connectionId, groupName);
                 Player player = new Player(playerName, connectionId);
                 lobby.Players.Add(player);
+
+                //await SendUpdatedPlayer(connectionId);
+                await SendLobbyChanged(connectionId);
+
+                retVal = true;
             }
+
+            return retVal;
         }
 
         public async Task StartListening(string connectionId)
@@ -130,19 +145,19 @@ namespace WebApp.Hubs
             await group.SendAsync("Answered");
         }
 
-        public List<Player> GetPlayers(string connectionId)
-        {
-            Lobby? lobby = GetLobbyById(connectionId);
+        //public List<Player> GetPlayers(string connectionId)
+        //{
+        //    Lobby? lobby = GetLobbyById(connectionId);
 
-            return lobby.Players;
-        }
+        //    return lobby.Players;
+        //}
 
-        public async Task SendUpdatedPlayer(string connectionId)
-        {
-            Lobby? lobby = GetLobbyById(connectionId);
+        //public async Task SendUpdatedPlayer(string connectionId)
+        //{
+        //    Lobby? lobby = GetLobbyById(connectionId);
 
-            await Clients.Group(lobby.GroupName).SendAsync("PlayersUpdated", GetPlayers(connectionId));
-        }
+        //    await Clients.Group(lobby.GroupName).SendAsync("PlayersUpdated", GetPlayers(connectionId));
+        //}
 
         public async Task<int> SendMessage(string connectionId, string message)
         {
@@ -178,7 +193,8 @@ namespace WebApp.Hubs
                     .WrongAnswers++;
             }
 
-            _ = SendUpdatedPlayer(connectionId);
+            //_ = SendUpdatedPlayer(connectionId);
+            _ = SendLobbyChanged(connectionId);
 
             return returnIndex;
         }
@@ -188,6 +204,22 @@ namespace WebApp.Hubs
             Lobby? lobby = GetLobbyById(connectionId);
 
             return lobby.NextQuestion();
+        }
+
+        public async Task SetGameState(string connectionId, Lobby.GAME_STATE state)
+        {
+            Lobby? lobby = GetLobbyById(connectionId);
+
+            lobby.GameState = state;
+
+            await SendLobbyChanged(connectionId);
+        }
+
+        public async Task SendLobbyChanged(string connectionId)
+        {
+            Lobby? lobby = GetLobbyById(connectionId);
+
+            await Clients.Group(lobby.GroupName).SendAsync("LobbyUpdated", lobby);
         }
 
         public Lobby? GetLobbyById(string connectionId)

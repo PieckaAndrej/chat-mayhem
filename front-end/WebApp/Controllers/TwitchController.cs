@@ -49,14 +49,14 @@ namespace WebApp.Controllers
 
                 if (streamer == null)
                 {
-                    return View("Error");
+                    return RedirectToAction("Error", "Home");
                 }
 
                 TwitchUsers? users = await TwitchService.GetTwitchUsers(streamer.AccessToken);
 
                 if (users?.Data?.Count == 0)
                 {
-                    return View("Error");
+                    return RedirectToAction("Error", "Home");
                 }
 
                 UsersData userdata = users.Data.First();
@@ -80,7 +80,7 @@ namespace WebApp.Controllers
                 return RedirectToAction("Index", "Game");
             }
 
-            return View("Error");
+            return RedirectToAction("Error", "Home");
         }
     }
 }

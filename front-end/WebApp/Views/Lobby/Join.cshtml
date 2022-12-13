@@ -1,0 +1,15 @@
+﻿@using WebApp.ViewModels
+@model JoinLobby
+
+<form asp-action="Join">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group" hidden>
+        <input asp-for="Code" class="form-control" value="@Model.Code" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Name" class="control-label">Name</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <input type="submit" value="Join" class="btn login-button" />
+</form>

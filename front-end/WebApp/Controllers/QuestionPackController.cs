@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 using WebApp.BusinessLogic;
 using WebApp.Models;
@@ -63,6 +64,11 @@ namespace WebApp.Controllers
             QuestionPack? questionPack = questionPacks.SingleOrDefault(
                 questionPack => questionPack.Id == id);
 
+            if (questionPack == null)
+            {
+                return RedirectToAction("Index");
+            }
+
             return View(questionPack);
         }
 
@@ -70,10 +76,6 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> Edit()
         {
-            string json = Request.Cookies.SingleOrDefault(cookie => cookie.Key == "EditQuestionPack").Value;
-            QuestionPack questionPack = JsonSerializer.Deserialize<QuestionPack>(json);
-
-            Console.WriteLine(questionPack);
             try
             {
                 return RedirectToAction(nameof(Index));

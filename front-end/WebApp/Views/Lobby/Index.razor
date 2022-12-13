@@ -97,7 +97,7 @@
             hubConnection.On<string>("Refresh", async (access) =>
             {
                 string url = "Lobby/RefreshToken?access=" + access;
-                await JsRuntime.InvokeAsync<object>("open", url, "_blank");
+                await JsRuntime.InvokeAsync<object>("open", url, "_self");
             });
         }
     }

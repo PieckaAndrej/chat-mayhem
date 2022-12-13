@@ -78,7 +78,10 @@ namespace WebApp.Services
                 while (IsRunning)
                 {
                     string line = await _streamReader.ReadLineAsync() ?? "";
-                    Console.WriteLine(line);
+                    if (!String.IsNullOrWhiteSpace(line))
+                    {
+                        Console.WriteLine(line);
+                    }
 
                     string[] split = line.Split(" ");
 

@@ -1,7 +1,7 @@
 ﻿@using WebApp.Models;
 
 <div id="game" class="center answer">
-    <h1 class="answer-title">@Question.Prompt</h1>
+    <h1 class="answer-title">@Question?.Prompt</h1>
     <div class="answer-grid">
         @for (int i = 0; i < Question.Answers.Count; i++)
         {

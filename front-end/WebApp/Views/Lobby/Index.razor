@@ -77,6 +77,8 @@
 
             lobby = await hubConnection.InvokeAsync<WebApp.Models.Lobby>("GetLobbyById", hubConnection.ConnectionId);
 
+            await GetCurrentQuestion();
+
             StateHasChanged();
 
             hubConnection.On("Answered", () =>

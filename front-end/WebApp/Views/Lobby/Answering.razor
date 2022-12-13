@@ -14,7 +14,7 @@
             </div>
         }
     </div>
-    <input type="text" value="@Text" @oninput="this.OnChange" @onkeypress="PressKey"/>
+    <input type="text" value="@Text" @oninput="this.OnChange" @onkeypress="PressKey" />
     <button @onclick="CheckAnswer">Send</button>
 </div>
 
@@ -22,13 +22,16 @@
 
 @foreach (Player player in Players)
 {
-    <span>
-        @player.Name
-        Wrong: 
-        @player.WrongAnswers
-        Points: 
-        @player.Points
-    </span>
+    <div>
+        <span>
+            @player.Name
+            Wrong:
+            @player.WrongAnswers
+            Points:
+            @player.Points
+        </span>
+
+    </div>
 }
 
 

@@ -176,8 +176,8 @@
         }
         else
         {
-            await hubConnection.InvokeAsync("SetGameState", hubConnection.ConnectionId, WebApp.Models.Lobby.GAME_STATE.ANSWERING);
             await GetCurrentQuestion();
+            await hubConnection.InvokeAsync("SetGameState", hubConnection.ConnectionId, WebApp.Models.Lobby.GAME_STATE.ANSWERING);
         }
 
         StateHasChanged();

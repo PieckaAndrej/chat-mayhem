@@ -4,11 +4,13 @@
 <h1>Results</h1>
 @for (int i = 0; i < players.Count; i++)
 {
-    <span>
-        @(i + 1).
-        @players[i].Name
-        @players[i].Points
-    </span>
+    <div>
+        <span>
+            @(i + 1).
+            @players[i].Name
+            @players[i].Points
+        </span>
+    </div>
 }
 
 @code {
@@ -21,8 +23,8 @@
         }
         set
         {
-            value.Sort((p1, p2) => p1.Points > p2.Points ? 1 :
-                            p1.Points == p2.Points ? 0 : -1);
+            value.Sort((p1, p2) => p1.Points > p2.Points ? -1 :
+                            p1.Points == p2.Points ? 0 : 1);
             players = value;
         }
     }

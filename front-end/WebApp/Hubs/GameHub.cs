@@ -106,7 +106,7 @@ namespace WebApp.Hubs
             } // TODO show error else
         }
 
-        public bool EndListening(string connectionId)
+        public async Task<bool> EndListening(string connectionId)
         {
             Lobby? lobby = GetLobbyById(connectionId);
             MessageHandlerService? handler = lobby?.MessageHandler;
@@ -133,6 +133,8 @@ namespace WebApp.Hubs
             handler.StopListening();
 
             lobby.Answers[lobby.currentQuestionIndex] = answers;
+
+            await SendLobbyChanged(connectionId);
 
             return true;
         }

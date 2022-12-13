@@ -16,7 +16,7 @@ namespace DesktopApplication.GuiLayer
         private LoginControl loginControl;
         public LoginMenu()
         {
-            loginControl = new LoginControl();
+            loginControl = new LoginControl();  
 
             InitializeComponent();
         }

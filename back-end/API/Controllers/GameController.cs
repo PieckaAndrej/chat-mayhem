@@ -11,7 +11,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class GameController : ControllerBase
     {
         private GameService _gameService;

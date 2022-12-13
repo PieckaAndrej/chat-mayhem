@@ -1,5 +1,6 @@
 ﻿using DesktopApplication.ModelLayer;
 using RestSharp;
+using RestSharp.Authenticators.OAuth2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,15 +16,27 @@ namespace DesktopApplication.ServiceLayer
         public QuestionPackAccess()
         {
             _restClient = new RestClient("https://localhost:7200/");
+
+            if (!String.IsNullOrEmpty(LoginAccess.token))
+            {
+                _restClient.Authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator(LoginAccess.token, "Bearer");
+            }
         }
 
         public async Task<QuestionPack?> InsertQuestionPack(QuestionPack questionPack)
         {
             var request = new RestRequest("api/QuestionPack");
             request.AddJsonBody(questionPack);
-            var response = await _restClient.ExecutePostAsync<QuestionPack>(request);
-
-            return response.Data;
+            
+            if (!String.IsNullOrEmpty(LoginAccess.token))
+            {
+                var response = await _restClient.ExecutePostAsync<QuestionPack>(request);
+                return response.Data;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

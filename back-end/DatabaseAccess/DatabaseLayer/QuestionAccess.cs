@@ -145,15 +145,22 @@ namespace Data.DatabaseLayer
                 "(\"questionPackId\", \"text\") " +
                 "VALUES (@questionPackId, @text) RETURNING id;";
 
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var transaction = new TransactionScope(scopeOption: TransactionScopeOption.Required, asyncFlowOption: TransactionScopeAsyncFlowOption.Enabled, transactionOptions: new TransactionOptions()))
             {
-                question.id = connection.QuerySingle<int>(sql, param: new
+                using (var connection = new NpgsqlConnection(_connectionString))
                 {
-                    QuestionPackId = questionPackId,
-                    Text = question.text
-                });
+                    question.id = connection.QuerySingle<int>(sql, param: new
+                    {
+                        QuestionPackId = questionPackId,
+                        Text = question.text
+                    });
 
-                return question;
+                    AnswerAccess answerAccess = new AnswerAccess(_connectionString);
+                    answerAccess.InsertAnswer(question.answers, question.id);
+
+                    transaction.Complete();
+                    return question;
+                }
             }
         }
 
@@ -162,9 +169,7 @@ namespace Data.DatabaseLayer
             string sql = "INSERT INTO public.\"Question\" " +
                 "(\"questionPackId\", \"text\") " +
                 "VALUES (@QuestionPackId, @text) RETURNING id;";
-            string usql = "UPDATE public.\"Question\" SET " +
-                "\"text\" = @text, \"questionPackId\" = @questionPackId " +
-                "WHERE Id = @id;";
+
             using (var transaction = new TransactionScope(scopeOption: TransactionScopeOption.Required, asyncFlowOption: TransactionScopeAsyncFlowOption.Enabled, transactionOptions: new TransactionOptions()))
             {
                 using (var connection = new NpgsqlConnection(_connectionString))
@@ -178,26 +183,10 @@ namespace Data.DatabaseLayer
                         });
                     }
 
-                    //int rowsChanged = 0;
-                    //foreach (var question in updateQuestions)
-                    //{
-                    //    rowsChanged += connection.Execute(sql, param: new
-                    //    {
-                    //        Id = question.id,
-                    //        text = question.text,
-                    //        questionPackId = questionPackId
-                    //    });
-                    //}
-
-                    //if (rowsChanged == 0)
-                    //{
-                    //    updateQuestions = null;
-                    //}
                     transaction.Complete();
                     return questions;
                 }
             }
-            
         }
 
         public void DeleteQuestion(List<Question> questions)

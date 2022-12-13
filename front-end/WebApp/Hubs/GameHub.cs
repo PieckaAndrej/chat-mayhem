@@ -81,7 +81,7 @@ namespace WebApp.Hubs
                 return;
             }
 
-            if (await handler.Connect())
+            if (await handler.Connect((access) => Clients.Caller.SendAsync("Refresh", access)))
             {
                 _ = handler.Listen(async (username, message, streamerId) =>
                 {

@@ -27,7 +27,7 @@ namespace WebApp.Services
             Streamer = streamer;
         }
 
-        public async Task<bool> Connect()
+        public async Task<bool> Connect(Action<string> func)
         {
             // Validate if the token is still valid
             TwitchValidate? validate = await TwitchService.ValidateToken(Streamer.AccessToken);
@@ -40,7 +40,9 @@ namespace WebApp.Services
                 if (!String.IsNullOrEmpty(access))
                 {
                     Streamer.AccessToken = access;
+                    func(access);
                 }
+                //TODO something
             }
 
             _tcpClient = new TcpClient();

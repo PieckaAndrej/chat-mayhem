@@ -322,7 +322,7 @@ namespace Test
             lobby.Answers[lobby.currentQuestionIndex] = question;
             int questionIndex = lobby.currentQuestionIndex;
             int response = await _gameHub.SendMessage(connectionId, "wrong");
-            bool nextQuestion = _gameHub.GoToNextQuestion(connectionId);
+            bool nextQuestion = await _gameHub.GoToNextQuestion(connectionId);
 
 
             // Assert

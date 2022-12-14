@@ -20,6 +20,10 @@
     {
         <button @onclick="NextQuestion">Next Question</button>
     }
+    @if (IsOutOfTries)
+    {
+        <button @onclick="ShowAnswers">Reveal Answers</button>
+    }
 </div>
 
 <p>Total Votes @Question?.Answers.Sum(answer => answer.Points)</p>
@@ -34,7 +38,6 @@
             Points:
             @player.Points
         </span>
-
     </div>
 }
 
@@ -52,6 +55,10 @@
     public bool IsAnswered { get; set; }
     [Parameter]
     public EventCallback GoToNextQuestion { get; set; }
+    [Parameter]
+    public bool IsOutOfTries { get; set; }
+    [Parameter]
+    public EventCallback RevealAnswers { get; set; }
     public string Text { get; set; }
 
     public void OnChange(ChangeEventArgs e)
@@ -68,6 +75,8 @@
     }
 
     public async Task NextQuestion() => await GoToNextQuestion.InvokeAsync();
+
+    public async Task ShowAnswers() => await RevealAnswers.InvokeAsync();
 
     public async Task CheckAnswer()
     {

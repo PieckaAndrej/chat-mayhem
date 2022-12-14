@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using MongoDB.Driver.Core.Connections;
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Security.Policy;
 using System.Text.Json;
@@ -102,7 +103,7 @@ namespace WebApp.Hubs
                     await QuestionService.InsertAnswers(
                         new ViewerAnswer(username, message), streamerId, currentQuestion);
 
-                    await SendAnswered(connectionId);
+                    _ = SendAnswered(connectionId);
                 });
             } // TODO show error else
         }
@@ -144,8 +145,7 @@ namespace WebApp.Hubs
         {
             Lobby? lobby = GetLobbyById(connectionId);
 
-            var group = Clients.Group(lobby.GroupName);
-            await group.SendAsync("Answered");
+            await Clients.Group(lobby.GroupName).SendAsync("Answered");
         }
 
         public async Task<int> SendMessage(string connectionId, string message)
@@ -186,6 +186,15 @@ namespace WebApp.Hubs
             _ = SendLobbyChanged(connectionId);
 
             return returnIndex;
+        }
+
+        public async Task RevealAnswers(string connectionId)
+        {
+            Lobby? lobby = GetLobbyById(connectionId);
+
+            GetCurrentQuestion(connectionId).Answers.ForEach(answer => answer.Answered = true);
+
+            await SendLobbyChanged(connectionId);
         }
 
         public async Task<bool> GoToNextQuestion(string connectionId)

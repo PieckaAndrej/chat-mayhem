@@ -21,7 +21,8 @@
     case WebApp.Models.Lobby.GAME_STATE.ANSWERING:
         <Answering Question="GetCurrentQuestion()" Answer="Answer"
            FlippedAnswers="GetCurrentQuestion().Answers.Select(answer => answer.Answered).ToList()" 
-           Players="lobby.Players" IsAnswered="@(isAnswered && isHosting)" GoToNextQuestion="GoToNextQuestion"></Answering>
+           Players="lobby.Players" IsAnswered="@(isAnswered && isHosting)" IsOutOfTries="@(isOutOfTries && isHosting)"
+           GoToNextQuestion="GoToNextQuestion" RevealAnswers="RevealAswers"></Answering>
         break;
     case WebApp.Models.Lobby.GAME_STATE.FINISHED:
         <End Players="lobby.Players"></End>
@@ -39,6 +40,7 @@
     private bool isEnoughAnswers = true;
     private bool isHosting;
     private bool isAnswered;
+    private bool isOutOfTries;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -89,6 +91,11 @@
                     {
                         isAnswered = true;
                     }
+
+                    if (lobby.Players.All(player => player.WrongAnswers >= 3))
+                    {
+                        isOutOfTries = true;
+                    }
                 }
 
                 StateHasChanged();
@@ -100,6 +107,12 @@
                 await JsRuntime.InvokeAsync<object>("open", url, "_self");
             });
         }
+    }
+
+    public async Task RevealAswers()
+    {
+        await hubConnection.InvokeAsync("RevealAnswers", hubConnection.ConnectionId);
+        isOutOfTries = false;
     }
 
     public async Task CopyJoinLink()
@@ -118,6 +131,7 @@
             hubConnection.ConnectionId);
 
         isAnswered = false;
+        Votes = 0;
 
         if (isNextQuestion)
         {

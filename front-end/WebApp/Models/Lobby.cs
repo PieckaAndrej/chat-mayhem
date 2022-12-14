@@ -10,7 +10,7 @@ namespace WebApp.Models
         public List<Player> Players { get; set; }
         [JsonIgnore]
         public MessageHandlerService? MessageHandler { get; set; }
-        public int currentQuestionIndex;
+        public int currentQuestionIndex { get; set; }
         public Question<Answer>[] Answers { get; set; }
         public Game Game { get; set; }
         public enum GAME_STATE { LOBBY, LISTENING, ANSWERING, FINISHED }

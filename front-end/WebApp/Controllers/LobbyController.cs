@@ -18,8 +18,15 @@ namespace WebApp.Controllers
     [Authorize]
     public class LobbyController : Controller
     {
-        public IActionResult Index(JoinLobby joinLobby)
+        public IActionResult Index()
         {
+            JoinLobby joinLobby= new JoinLobby();
+
+            joinLobby.Code = TempData["code"]?.ToString() ?? "";
+            joinLobby.Name = TempData["name"]?.ToString() ?? "";
+            TempData.Remove("code");
+            TempData.Remove("name");
+
             return View("Index", joinLobby);
         }
 
@@ -54,7 +61,9 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Join(JoinLobby joinLobby)
         {
-            return RedirectToAction("Index", joinLobby);
+            TempData["code"] = joinLobby.Code;
+            TempData["name"] = joinLobby.Name;
+            return RedirectToAction("Index");
         }
     }
 }

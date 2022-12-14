@@ -14,12 +14,12 @@
             QuestionPackName="@lobby.Game?.QuestionPack.Name" Players="lobby.Players"></Lobby>
         break;
     case WebApp.Models.Lobby.GAME_STATE.LISTENING:
-        <Listening EndListening="EndListening" Votes="Votes" Prompt="@currentQuestion?.Prompt" 
+        <Listening EndListening="EndListening" Votes="Votes" Prompt="@GetCurrentQuestion()?.Prompt" 
             TimeLimit="(lobby.Game?.TimeLimit ?? 0)" IsEnoughAnswers="isEnoughAnswers"></Listening>
         break;
     case WebApp.Models.Lobby.GAME_STATE.ANSWERING:
-        <Answering Question="currentQuestion" Answer="Answer"
-           FlippedAnswers="flippedAnswers" Players="lobby.Players"></Answering>
+        <Answering Question="GetCurrentQuestion()" Answer="Answer"
+           FlippedAnswers="GetCurrentQuestion().Answers.Select(answer => answer.Answered).ToList()" Players="lobby.Players"></Answering>
         break;
     case WebApp.Models.Lobby.GAME_STATE.FINISHED:
         <End Players="lobby.Players"></End>
@@ -37,8 +37,6 @@
     //private enum GAME_STATE { LOBBY, LISTENING, ANSWERING, FINISHED };
     //private GAME_STATE gameState = GAME_STATE.LOBBY;
     private int Votes = 0;
-    private Question<Answer>? currentQuestion;
-    private bool[] flippedAnswers;
     //private List<Player> players = new List<Player>();
     private bool isEnoughAnswers = true;
     private bool isHosting;
@@ -76,8 +74,6 @@
             }
 
             lobby = await hubConnection.InvokeAsync<WebApp.Models.Lobby>("GetLobbyById", hubConnection.ConnectionId);
-
-            await GetCurrentQuestion();
 
             StateHasChanged();
 
@@ -119,7 +115,6 @@
 
         if (isNextQuestion)
         {
-            await GetCurrentQuestion();
             await StartListening();
         }
         else
@@ -134,25 +129,18 @@
 
         if (answerIndex >= 0)
         {
-            flippedAnswers[answerIndex] = true;
-
             StateHasChanged();
 
-            if (flippedAnswers.All(answer => answer == true))
+            if (GetCurrentQuestion().Answers.All(answer => answer.Answered == true))
             {
                 await GoToNextQuestion();
             }
         }
     }
 
-    public async Task GetCurrentQuestion()
+    public Question<Answer> GetCurrentQuestion()
     {
-        currentQuestion = lobby.Answers[lobby.currentQuestionIndex];
-
-        if (currentQuestion.Answers != null)
-        {
-            flippedAnswers = new bool[currentQuestion.Answers.Count];
-        }
+        return lobby.Answers[lobby.currentQuestionIndex];
     }
 
     public async Task StartListening()
@@ -176,7 +164,6 @@
         }
         else
         {
-            await GetCurrentQuestion();
             await hubConnection.InvokeAsync("SetGameState", hubConnection.ConnectionId, WebApp.Models.Lobby.GAME_STATE.ANSWERING);
         }
 

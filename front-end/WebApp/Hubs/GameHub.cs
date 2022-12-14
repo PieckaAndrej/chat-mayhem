@@ -64,7 +64,6 @@ namespace WebApp.Hubs
                 Player player = new Player(playerName, connectionId);
                 lobby.Players.Add(player);
 
-                //await SendUpdatedPlayer(connectionId);
                 await SendLobbyChanged(connectionId);
 
                 retVal = true;
@@ -102,6 +101,8 @@ namespace WebApp.Hubs
                 {
                     await QuestionService.InsertAnswers(
                         new ViewerAnswer(username, message), streamerId, currentQuestion);
+
+                    await SendAnswered(connectionId);
                 });
             } // TODO show error else
         }
@@ -147,20 +148,6 @@ namespace WebApp.Hubs
             await group.SendAsync("Answered");
         }
 
-        //public List<Player> GetPlayers(string connectionId)
-        //{
-        //    Lobby? lobby = GetLobbyById(connectionId);
-
-        //    return lobby.Players;
-        //}
-
-        //public async Task SendUpdatedPlayer(string connectionId)
-        //{
-        //    Lobby? lobby = GetLobbyById(connectionId);
-
-        //    await Clients.Group(lobby.GroupName).SendAsync("PlayersUpdated", GetPlayers(connectionId));
-        //}
-
         public async Task<int> SendMessage(string connectionId, string message)
         {
             Lobby? lobby = GetLobbyById(connectionId);
@@ -187,6 +174,7 @@ namespace WebApp.Hubs
                 returnIndex = answers.IndexOf(answer);
                 lobby.Players.SingleOrDefault(player => player.ConnectionId == connectionId)
                     .Points += answer.Points;
+
                 answer.Answered = true;
             }
             else
@@ -195,16 +183,14 @@ namespace WebApp.Hubs
                     .WrongAnswers++;
             }
 
-            //_ = SendUpdatedPlayer(connectionId);
             _ = SendLobbyChanged(connectionId);
 
             return returnIndex;
         }
 
-        public bool GoToNextQuestion(string connectionId)
+        public async Task<bool> GoToNextQuestion(string connectionId)
         {
             Lobby? lobby = GetLobbyById(connectionId);
-
             return lobby.NextQuestion();
         }
 

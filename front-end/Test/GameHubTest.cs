@@ -57,7 +57,7 @@ namespace Test
         [Fact]
         public async void TestJoinGroup()
         {
-            // Arrange 
+            // Arrange
             string connectionId = "joinGroup";
             Game game = new Game();
             Streamer streamer = new Streamer("test", "test", "test");

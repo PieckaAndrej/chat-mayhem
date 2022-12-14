@@ -15,6 +15,10 @@
     {
         <button @onclick="Start">Start</button>
         <button @onclick="CopyLink">Copy join link</button>
+        if (isCoppied)
+        {
+            <p>Coppied!</p>
+        }
     }
 </div>
 
@@ -29,7 +33,13 @@
     public bool IsHosting { get; set; }
     [Parameter]
     public EventCallback Link { get; set; }
+    private bool isCoppied = false;
 
     public async Task Start() => await Game.InvokeAsync();
-    public async Task CopyLink() => await Link.InvokeAsync();
+    public async Task CopyLink()
+    {
+        await Link.InvokeAsync();
+        isCoppied = true;
+        StateHasChanged();
+    }
 }

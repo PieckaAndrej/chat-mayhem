@@ -34,7 +34,7 @@
         <div class="form-group">
             <label asp-for="QuestionPackId" class="control-label">Question Pack</label>
             <select asp-for="QuestionPackId" class="form-select" aria-label="Default select example">
-                @foreach (QuestionPack questionPack in questionPacks)
+                @foreach (QuestionPack questionPack in questionPacks.Where(q => q.Questions.Count != 0))
                 {
                     <option value="@questionPack.Id">@questionPack.Name</option>
                 }

@@ -62,8 +62,8 @@ namespace Data.DatabaseLayer
                 " streamer.\"accessToken\", streamer.id, streamer.\"refreshToken\", " +
                 "mode.id, mode.description, mode.rules, " +
                 "questionPack.id, questionPack.author, questionPack.\"name\", " +
-                "questionPack.category, questionPack.\"creationDate\", " +
-                "question.id, question.text, questionPack.tag " +
+                "questionPack.category, questionPack.\"creationDate\", questionPack.\"tag\", " +
+                "question.id, question.text " +
                 "FROM public.\"Game\" game " +
                 "INNER JOIN public.\"Streamer\" streamer on streamer.id = game.\"owner\" " +
                 "INNER JOIN public.\"Mode\" mode on mode.id = game.\"modelId\" " +
@@ -76,7 +76,7 @@ namespace Data.DatabaseLayer
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                var game = connection.Query<Game, Streamer, GameMode, QuestionPack, Question, Game>(sql,map: ((g, s, m, qp, q) =>
+                var game = connection.Query<Game, Streamer, GameMode, QuestionPack, string[], Question, Game>(sql,map: ((g, s, m, qp, t, q) =>
                 {
                     if (questionPack != null)
                     {
@@ -88,13 +88,14 @@ namespace Data.DatabaseLayer
                     }
                     g.Streamer = s;
                     g.Mode = m;
+                    qp.Tags = t;
                     qp.Questions.Add(q);
                     g.QuestionPack = qp;
                     questionPack = qp;
                     return g;
                 }), 
                 new { Id = id },
-                splitOn: "accessToken, id, id, id"
+                splitOn: "accessToken, id, id, tag, id"
                 ).AsQueryable().FirstOrDefault();
 
                 return game;

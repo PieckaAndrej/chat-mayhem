@@ -26,8 +26,8 @@ namespace Data.DatabaseLayer
 
         public QuestionPack GetQuestionPackById(int id)
         {
-            string sql = "SELECT questionPack.id, questionPack.author, questionPack.name," +
-                " questionPack.tag, questionPack.category, questionPack.\"creationDate\", " +
+            string sql = "SELECT questionPack.id, questionPack.author, questionPack.name, " +
+                "questionPack.category, questionPack.\"creationDate\", questionPack.tag, " +
                 "question.id, question.text " +
                 "FROM public.\"QuestionPack\" questionPack " +
                 "LEFT JOIN public.\"Question\" question on question.\"questionPackId\" = questionPack.id " +
@@ -37,7 +37,7 @@ namespace Data.DatabaseLayer
             using (var connection = new NpgsqlConnection(_connectionString))
             {
 
-                var questionPack = connection.Query<QuestionPack, Question, QuestionPack>(sql, map: (qp, q) =>
+                var questionPack = connection.Query<QuestionPack, string[], Question, QuestionPack>(sql, map: (qp, t, q) =>
                 {
                     if (qp.Questions == null)
                     {
@@ -47,13 +47,17 @@ namespace Data.DatabaseLayer
                     {
                         qp = tempQuestionPack;
                     }
-                    qp.Questions.Add(q);
+                    qp.Tags = t;
+                    if (q != null)
+                    {
+                        qp.Questions.Add(q);
+                    }
                     tempQuestionPack = qp;
 
                     return qp;
                 },
                 new { Id = id },
-                splitOn: "id"
+                splitOn: "tag, id"
                 ).AsQueryable().FirstOrDefault();
 
                 return questionPack;
@@ -105,7 +109,10 @@ namespace Data.DatabaseLayer
                         tempQuestionPack.Add(qp.Id, questionPack = qp);
                     }
 
-                    questionPack.Questions.Add(q);
+                    if (q != null)
+                    {
+                        questionPack.Questions.Add(q);
+                    }
 
                     return questionPack;
                 },

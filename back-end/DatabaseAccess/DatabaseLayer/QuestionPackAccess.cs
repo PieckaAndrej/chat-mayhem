@@ -27,7 +27,7 @@ namespace Data.DatabaseLayer
         public QuestionPack GetQuestionPackById(int id)
         {
             string sql = "SELECT questionPack.id, questionPack.author, questionPack.name, " +
-                "questionPack.category, questionPack.\"creationDate\", questionPack.tag, " +
+                "questionPack.category, questionPack.\"creationDate\", questionPack.\"xmin\", questionPack.tag, " +
                 "question.id, question.text " +
                 "FROM public.\"QuestionPack\" questionPack " +
                 "LEFT JOIN public.\"Question\" question on question.\"questionPackId\" = questionPack.id " +

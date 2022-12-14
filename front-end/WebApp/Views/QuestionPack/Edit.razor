@@ -40,7 +40,30 @@
         <div class="form-group">
             <input type="submit" value="Save" class="btn btn-primary" @onclick="SaveQuestionPack" />
         </div>
-        <p>@error</p>
+        @if (wasEdited)
+        {
+            <h2>Edited Question Pack</h2>
+            <div class="form-group">
+                <label class="control-label">Name</label>
+                <p>@editedPack.Name</p>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Category</label>
+                <p>@editedPack.Category</p>
+            </div>
+            @if (QuestionPack != null)
+            {
+                <label class="control-label">Questions</label>
+                @foreach (Question<ViewerAnswer> question in QuestionPack?.Questions)
+                {
+                    <div class="form-group">
+                        <span>
+                            @question.Prompt
+                        </span>
+                    </div>
+                }
+            }
+        }
     </div>
 </div>
 
@@ -52,7 +75,8 @@
 @code {
     [Parameter]
     public Models.QuestionPack QuestionPack { get; set; }
-    private string error = "";
+    private Models.QuestionPack editedPack = new Models.QuestionPack();
+    private bool wasEdited;
 
     protected override async Task OnAfterRenderAsync(bool firstFrame)
     {
@@ -78,9 +102,11 @@
         QuestionPackLogic questionPackLogic = new QuestionPackLogic();
         QuestionPack returnQuestion = await questionPackLogic.UpdateQuestionPack(QuestionPack);
 
-        if (returnQuestion.Author == null)
+        if (returnQuestion.xmin != QuestionPack.xmin)
         {
-            error = "was edited";
+            editedPack = returnQuestion;
+            wasEdited = true;
+            QuestionPack.xmin = returnQuestion.xmin;
             StateHasChanged();
         }
         else

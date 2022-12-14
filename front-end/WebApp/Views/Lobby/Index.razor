@@ -29,7 +29,6 @@
         break;
 }
 
-<Popup @ref="popupRef"/>
 
 @code {
     [Parameter]
@@ -43,7 +42,6 @@
     private bool isHosting;
     private bool isAnswered;
     private bool isOutOfTries;
-    private Popup popupRef;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -94,6 +92,10 @@
                     {
                         isAnswered = true;
                     }
+                    else
+                    {
+                        isAnswered = false;
+                    }
 
                     if (lobby.Players.All(player => player.WrongAnswers >= 3))
                     {
@@ -112,7 +114,7 @@
 
             hubConnection.On("CloseConnection", () =>
             {
-                popupRef.Show("Popup body text");
+                Navigation.NavigateTo("lobby/ClossedLobby", true);
             });
         }
     }
@@ -206,7 +208,6 @@
     {
         if (hubConnection is not null)
         {
-            Console.WriteLine("closed");
             await hubConnection.InvokeAsync("CloseConnection", hubConnection.ConnectionId);
             await hubConnection.DisposeAsync();
         }

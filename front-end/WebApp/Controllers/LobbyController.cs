@@ -65,5 +65,10 @@ namespace WebApp.Controllers
             TempData["name"] = joinLobby.Name;
             return RedirectToAction("Index");
         }
+
+        public IActionResult ClosedLobby()
+        {
+            return View();
+        }
     }
 }

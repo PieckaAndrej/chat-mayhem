@@ -64,6 +64,17 @@ namespace API.Controllers
             }
 
             var retQuestion = await _questionPackService.UpdateAsync(questionPack);
+
+
+            if (retQuestion.Author == null)
+            {
+                retQuestion = _questionPackService.GetQuestionPackById(id);
+            } 
+            else
+            {
+                retQuestion.xmin = questionPack.xmin;
+            }
+
             return Ok(retQuestion);
         }
 

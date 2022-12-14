@@ -128,7 +128,7 @@ namespace WebApp.Services
                                                 ).ToList();
 
             answers.Sort((answer1, answer2) =>
-                answer1.Points > answer2.Points ? 1 : answer1.Points == answer2.Points ? 0 : -1);
+                answer1.Points < answer2.Points ? 1 : answer1.Points == answer2.Points ? 0 : -1);
 
             return answers;
         }

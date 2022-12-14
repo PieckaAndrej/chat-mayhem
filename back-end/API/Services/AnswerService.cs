@@ -14,7 +14,7 @@ namespace API.Services
 
         public List<Answer>? InsertAnswers(Question question)
         {
-            var answers = _answerAccess.GetAnswersQuestionById(question.id);
+            var answers = _answerAccess.GetQuestionsAnswerById(question.id);
             foreach (var answer in question.answers)
             {
                 if (answers.Select(a => a.text.ToLower()).Contains(answer.text.ToLower()))
@@ -34,7 +34,7 @@ namespace API.Services
                 }
                 
             }
-            return _answerAccess.GetAnswersQuestionById(question.id);
+            return _answerAccess.GetQuestionsAnswerById(question.id);
         }
     }
 }

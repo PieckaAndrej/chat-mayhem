@@ -41,9 +41,53 @@ namespace Test
             var id = answerAccess.CreateAnswer(_testAnswer, _questionId);
 
             //Assert
-            //Assert.Equal(_testAnswer.text, answer.text);
-            //Assert.Equal(_testAnswer.answerCount, answer.answerCount);
             Assert.Equal(1, id);
+        }
+
+        [Fact]
+        public void UpdatePoints()
+        {
+            //Arrange
+            var answerAccess = new AnswerAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
+
+            //Act
+            int oldPoints = 100;
+            answerAccess.CreateAnswer(_testAnswer, _questionId);
+            int rowsAffected = answerAccess.UpdatePoints(_testAnswer, oldPoints, _questionId);
+
+            //Assert
+            Assert.Equal(1, rowsAffected);
+        }
+
+        [Fact]
+        public void GetAnswersTest()
+        {
+            //Arrange
+            var answerAccess = new AnswerAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
+
+            //Act
+            answerAccess.CreateAnswer(_testAnswer, _questionId);
+            List<Answer> answers = new List<Answer>();
+            answers = answerAccess.GetQuestionsAnswerById(_questionId);
+
+            //Assert
+            Assert.True(answers.Count != 0);
+        }
+
+        [Fact]
+        public void InsertAnswersTest()
+        {
+            //Arrange
+            var answerAccess = new AnswerAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
+
+            //Act
+            List<Answer> answers = new List<Answer>();
+            List<Answer> returnAnswers = new List<Answer>();
+            answers.Add(_testAnswer);
+            returnAnswers = answerAccess.InsertAnswers(answers, _questionId);
+
+            //Assert
+            Assert.True(returnAnswers.Count == 1);
         }
     }
 }

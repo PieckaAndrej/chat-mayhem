@@ -33,7 +33,7 @@ namespace Test
         }
 
         [Fact]
-        public async Task TestGetQuestionPack()
+        public async Task TestInsertQuestionPack()
         {
             //Arrange
             var questionPackAccess = new QuestionPackAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");

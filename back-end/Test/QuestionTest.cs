@@ -103,5 +103,22 @@ namespace Test
             //Assert
             Assert.NotNull(resultValue.answers);
         }
+
+        [Fact]
+        public void DeleteAnswerTest()
+        {
+            //Arrange
+            var questionAccess = new QuestionAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
+
+            //Act
+            Question question = questionAccess.InsertQuestion(_testQuestion, questionPackId);
+            List<Question> questions = new List<Question>();
+            questions.Add(question);
+            questionAccess.DeleteQuestion(questions);
+            Question returnQuestion = questionAccess.GetQuestionById(question.id);
+
+            //Assert
+            Assert.Null(returnQuestion);
+        }
     }
 }

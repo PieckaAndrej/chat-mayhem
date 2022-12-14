@@ -11,6 +11,6 @@ namespace Data.DatabaseLayer
     {
         int CreateAnswer(Answer answer, int? questionId);
         int UpdatePoints(Answer answer, int oldPoints, int? questionId);
-        List<Answer> GetAnswersQuestionById(int? questionId);
+        List<Answer> GetQuestionsAnswerById(int? questionId);
     }
 }

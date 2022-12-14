@@ -19,7 +19,7 @@ namespace Data.DatabaseLayer
             _connectionString = connectionString;
         }
 
-        public List<Answer> GetAnswersQuestionById(int? questionId)
+        public List<Answer> GetQuestionsAnswerById(int? questionId)
         {
             string sql = "SELECT \"answerCount\", \"answerText\" AS text  " +
                 "FROM public.\"Answer\" " +
@@ -55,7 +55,7 @@ namespace Data.DatabaseLayer
             }
         }
 
-        public List<Answer>? InsertAnswer(List<Answer>? answers, int? questionId)
+        public List<Answer>? InsertAnswers(List<Answer>? answers, int? questionId)
         {
             string sql = "INSERT INTO public.\"Answer\" " +
                 "(\"questionId\", \"answerText\", \"answerCount\") " +

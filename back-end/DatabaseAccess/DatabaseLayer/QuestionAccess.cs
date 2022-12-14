@@ -82,30 +82,30 @@ namespace Data.DatabaseLayer
             }
         }
 
-        public Question? UpdateQuestion(Question question, int questionPackId)
-        {
-            string sql = "UPDATE public.\"Question\" SET " +
-                "\"text\" = @Text, \"questionPackId\" = @QuestionPackId " +
-                "WHERE id = @Id;";
+        //public Question? UpdateQuestion(Question question, int questionPackId)
+        //{
+        //    string sql = "UPDATE public.\"Question\" SET " +
+        //        "\"text\" = @Text, \"questionPackId\" = @QuestionPackId " +
+        //        "WHERE id = @Id;";
 
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                var rowsChnaged = connection.Execute(sql, new
-                {
+        //    using (var connection = new NpgsqlConnection(_connectionString))
+        //    {
+        //        var rowsChnaged = connection.Execute(sql, new
+        //        {
 
-                    Id = question.id,
-                    Text = question.text,
-                    QuestionPackId = questionPackId
-                });
+        //            Id = question.id,
+        //            Text = question.text,
+        //            QuestionPackId = questionPackId
+        //        });
 
-                if (rowsChnaged == 0)
-                {
-                    question = null;
-                }
+        //        if (rowsChnaged == 0)
+        //        {
+        //            question = null;
+        //        }
 
-                return question;
-            }
-        }
+        //        return question;
+        //    }
+        //}
 
         public List<Question>? UpdateQuestion(List<Question> questions, int questionPackId)
         {
@@ -156,7 +156,7 @@ namespace Data.DatabaseLayer
                     });
 
                     AnswerAccess answerAccess = new AnswerAccess(_connectionString);
-                    answerAccess.InsertAnswer(question.answers, question.id);
+                    answerAccess.InsertAnswers(question.answers, question.id);
 
                     transaction.Complete();
                     return question;

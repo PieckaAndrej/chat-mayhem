@@ -179,8 +179,6 @@ namespace Data.DatabaseLayer
                     RETURNING xmin, id, author, name, category, ""creationDate"", tag";
             try
             {
-                var t = new TransactionOptions();
-                t.IsolationLevel = IsolationLevel.Chaos;
                 using (var transaction = new TransactionScope(scopeOption: TransactionScopeOption.Required,asyncFlowOption: TransactionScopeAsyncFlowOption.Enabled, transactionOptions: new TransactionOptions()))
                 {
                     using (var connection = new NpgsqlConnection(_connectionString))

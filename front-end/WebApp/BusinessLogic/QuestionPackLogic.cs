@@ -12,6 +12,11 @@ namespace WebApp.BusinessLogic
             _questionPackService = new QuestionPackService();
         }
 
+        public async Task<QuestionPack?> GetQuestionPackById(int id)
+        {
+            return await _questionPackService.GetQuestionPackById(id);
+        }
+
         public async Task<List<QuestionPack>?> GetAllQuestionPacks()
         {
             return await _questionPackService.GetQuestionPacks();

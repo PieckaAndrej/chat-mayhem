@@ -58,11 +58,8 @@ namespace WebApp.Controllers
         // GET: QuestionPackController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
-            List<QuestionPack>? questionPacks = await _questionPackLogic
-                .GetAllQuestionPacks();
-
-            QuestionPack? questionPack = questionPacks.SingleOrDefault(
-                questionPack => questionPack.Id == id);
+            QuestionPack? questionPack = await _questionPackLogic
+                .GetQuestionPackById(id);
 
             if (questionPack == null)
             {

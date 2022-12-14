@@ -29,6 +29,8 @@
         break;
 }
 
+<Popup @ref="popupRef"/>
+
 @code {
     [Parameter]
     public string? Code { get; set; }
@@ -105,6 +107,11 @@
             {
                 string url = "Lobby/RefreshToken?access=" + access;
                 await JsRuntime.InvokeAsync<object>("open", url, "_self");
+            });
+
+            hubConnection.On("CloseConnection", () =>
+            {
+                popupRef.Show("Popup body text");
             });
         }
     }
@@ -198,6 +205,8 @@
     {
         if (hubConnection is not null)
         {
+            Console.WriteLine("closed");
+            await hubConnection.InvokeAsync("CloseConnection", hubConnection.ConnectionId);
             await hubConnection.DisposeAsync();
         }
     }

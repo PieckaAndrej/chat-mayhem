@@ -33,6 +33,13 @@ namespace API.Controllers
             return Ok(_questionPackService.GetAllQuestionPacks());
         }
 
+        [HttpGet]
+        [Route("{id}")]
+        public ActionResult<List<QuestionPack>> Get(int id)
+        {
+            return Ok(_questionPackService.GetQuestionPackById(id));
+        }
+
         [HttpPost]
         public async Task<ActionResult<QuestionPack>> Post(QuestionPack questionPack)
         {

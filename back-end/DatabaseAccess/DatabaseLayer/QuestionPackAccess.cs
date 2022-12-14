@@ -30,7 +30,7 @@ namespace Data.DatabaseLayer
                 " questionPack.tag, questionPack.category, questionPack.\"creationDate\", " +
                 "question.id, question.text " +
                 "FROM public.\"QuestionPack\" questionPack " +
-                "INNER JOIN public.\"Question\" question on question.\"questionPackId\" = questionPack.id " +
+                "LEFT JOIN public.\"Question\" question on question.\"questionPackId\" = questionPack.id " +
                 "WHERE questionPack.id = @Id;";
 
             QuestionPack tempQuestionPack = null;
@@ -88,7 +88,7 @@ namespace Data.DatabaseLayer
                 "questionPack.category, questionPack.\"creationDate\", questionPack.\"xmin\", questionPack.tag, " +
                 "question.id, question.text " +
                 "FROM public.\"QuestionPack\" questionPack " +
-                "INNER JOIN public.\"Question\" question on question.\"questionPackId\" = questionPack.id;";
+                "LEFT JOIN public.\"Question\" question on question.\"questionPackId\" = questionPack.id;";
 
             Dictionary<int, QuestionPack> tempQuestionPack = new Dictionary<int, QuestionPack>();
             using (var connection = new NpgsqlConnection(_connectionString))
@@ -116,7 +116,7 @@ namespace Data.DatabaseLayer
 
                 retQuestionPacks = retQuestionPacks.OrderBy(q => q.Id).ToList();
 
-                retQuestionPacks.ForEach(q => q.Questions = q.Questions.OrderBy(q => q.id).ToList());
+                retQuestionPacks.ForEach(q => q.Questions = q.Questions.OrderBy(q => q?.id).ToList());
 
                 return retQuestionPacks;
             }

@@ -96,6 +96,8 @@ namespace WebApp.Hubs
                 return;
             }
 
+            _lobbies.ForEach(l => Console.WriteLine(l));
+
             if (await handler.Connect((access) => Clients.Caller.SendAsync("Refresh", access)))
             {
                 _ = handler.Listen(async (username, message, streamerId) =>
@@ -217,6 +219,13 @@ namespace WebApp.Hubs
             Lobby? lobby = GetLobbyById(connectionId);
 
             await Clients.Group(lobby.GroupName).SendAsync("LobbyUpdated", lobby);
+        }
+
+        public async Task CloseConnection(string connectionId)
+        {
+            var lobby = GetLobbyById(connectionId);
+            await Clients.Group(lobby.GroupName).SendAsync("CloseConnection");
+            _lobbies.Remove(lobby);
         }
 
         public Lobby? GetLobbyById(string connectionId)

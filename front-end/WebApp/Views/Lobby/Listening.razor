@@ -2,7 +2,10 @@
 
 <h3>ChatListening</h3>
 <p>@Prompt</p>
-<button @onclick="End">End</button>
+@if (IsHosting)
+{
+    <button @onclick="End">End</button>
+}
 <p>@currentTime</p>
 @if (!IsEnoughAnswers)
 {
@@ -20,6 +23,8 @@
     public int TimeLimit { get; set; }
     [Parameter]
     public bool IsEnoughAnswers { get; set; }
+    [Parameter]
+    public bool IsHosting { get; set; }
     private int currentTime;
     private Timer timer;
 

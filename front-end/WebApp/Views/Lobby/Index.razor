@@ -15,11 +15,13 @@
         break;
     case WebApp.Models.Lobby.GAME_STATE.LISTENING:
         <Listening EndListening="EndListening" Votes="Votes" Prompt="@GetCurrentQuestion()?.Prompt" 
-            TimeLimit="(lobby.Game?.TimeLimit ?? 0)" IsEnoughAnswers="isEnoughAnswers"></Listening>
+            TimeLimit="(lobby.Game?.TimeLimit ?? 0)" IsEnoughAnswers="isEnoughAnswers"
+            IsHosting="@isHosting"></Listening>
         break;
     case WebApp.Models.Lobby.GAME_STATE.ANSWERING:
         <Answering Question="GetCurrentQuestion()" Answer="Answer"
-           FlippedAnswers="GetCurrentQuestion().Answers.Select(answer => answer.Answered).ToList()" Players="lobby.Players"></Answering>
+           FlippedAnswers="GetCurrentQuestion().Answers.Select(answer => answer.Answered).ToList()" 
+           Players="lobby.Players" IsAnswered="@(isAnswered && isHosting)" GoToNextQuestion="GoToNextQuestion"></Answering>
         break;
     case WebApp.Models.Lobby.GAME_STATE.FINISHED:
         <End Players="lobby.Players"></End>
@@ -33,13 +35,10 @@
     public string? Name { get; set; }
     private HubConnection? hubConnection;
     private WebApp.Models.Lobby? lobby;
-    //private Game? game;
-    //private enum GAME_STATE { LOBBY, LISTENING, ANSWERING, FINISHED };
-    //private GAME_STATE gameState = GAME_STATE.LOBBY;
     private int Votes = 0;
-    //private List<Player> players = new List<Player>();
     private bool isEnoughAnswers = true;
     private bool isHosting;
+    private bool isAnswered;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -68,9 +67,6 @@
                 {
                     Navigation.NavigateTo("Home/Error", true);
                 }
-                else
-                {
-                }
             }
 
             lobby = await hubConnection.InvokeAsync<WebApp.Models.Lobby>("GetLobbyById", hubConnection.ConnectionId);
@@ -86,6 +82,14 @@
             hubConnection.On<WebApp.Models.Lobby>("LobbyUpdated", (l) =>
             {
                 lobby = l;
+
+                if (lobby.GameState == Models.Lobby.GAME_STATE.ANSWERING)
+                {
+                    if (GetCurrentQuestion().Answers.All(answer => answer.Answered == true))
+                    {
+                        isAnswered = true;
+                    }
+                }
 
                 StateHasChanged();
             });
@@ -113,6 +117,8 @@
         bool isNextQuestion = await hubConnection.InvokeAsync<bool>("GoToNextQuestion",
             hubConnection.ConnectionId);
 
+        isAnswered = false;
+
         if (isNextQuestion)
         {
             await StartListening();
@@ -125,16 +131,17 @@
 
     public async Task Answer(string message)
     {
+        if (isAnswered)
+        {
+            return;
+        }
+
         int answerIndex = await hubConnection.InvokeAsync<int>("SendMessage", hubConnection.ConnectionId, message);
 
         if (answerIndex >= 0)
         {
-            StateHasChanged();
 
-            if (GetCurrentQuestion().Answers.All(answer => answer.Answered == true))
-            {
-                await GoToNextQuestion();
-            }
+            StateHasChanged();
         }
     }
 

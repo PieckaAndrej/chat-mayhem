@@ -11,16 +11,16 @@
 {
     case WebApp.Models.Lobby.GAME_STATE.LOBBY:
         <Lobby IsHosting="isHosting" Game="StartListening" Link="CopyJoinLink"
-            QuestionPackName="@lobby.Game?.QuestionPack.Name" Players="lobby.Players"></Lobby>
+       QuestionPackName="@lobby.Game?.QuestionPack.Name" Players="lobby.Players"></Lobby>
         break;
     case WebApp.Models.Lobby.GAME_STATE.LISTENING:
-        <Listening EndListening="EndListening" Votes="Votes" Prompt="@GetCurrentQuestion()?.Prompt" 
-            TimeLimit="(lobby.Game?.TimeLimit ?? 0)" IsEnoughAnswers="isEnoughAnswers"
-            IsHosting="@isHosting"></Listening>
+        <Listening EndListening="EndListening" Votes="Votes" Prompt="@GetCurrentQuestion()?.Prompt"
+           TimeLimit="(lobby.Game?.TimeLimit ?? 0)" IsEnoughAnswers="isEnoughAnswers"
+           IsHosting="@isHosting"></Listening>
         break;
     case WebApp.Models.Lobby.GAME_STATE.ANSWERING:
         <Answering Question="GetCurrentQuestion()" Answer="Answer"
-           FlippedAnswers="GetCurrentQuestion().Answers.Select(answer => answer.Answered).ToList()" 
+           FlippedAnswers="GetCurrentQuestion().Answers.Select(answer => answer.Answered).ToList()"
            Players="lobby.Players" IsAnswered="@(isAnswered && isHosting)" IsOutOfTries="@(isOutOfTries && isHosting)"
            GoToNextQuestion="GoToNextQuestion" RevealAnswers="RevealAswers"></Answering>
         break;
@@ -43,12 +43,14 @@
     private bool isAnswered;
     private bool isOutOfTries;
 
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             hubConnection = new HubConnectionBuilder()
                 .WithUrl(Navigation.ToAbsoluteUri("/gamehub"))
+                .WithAutomaticReconnect()
                 .Build();
 
             await hubConnection.StartAsync();
@@ -129,7 +131,7 @@
     {
         string groupName = await hubConnection.InvokeAsync<string>("GetGroupName", hubConnection.ConnectionId);
 
-        string link = $"https://localhost:7026/lobby/join?code={groupName}";
+        string link = $"{Navigation.BaseUri}lobby/join?code={groupName}";
 
         await JsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", link);
     }

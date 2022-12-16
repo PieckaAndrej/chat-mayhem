@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Data.DatabaseLayer
 {
@@ -66,29 +67,77 @@ namespace Data.DatabaseLayer
             }
         }
 
-        public Question? UpdateQuestion(Question question)
+        public List<Question>? GetQuestionsByQuestionPackId(int questionPackId)
+        {
+            string sql = "SELECT id, \"questionPackId\", text FROM public.\"Question\" " +
+                "WHERE \"questionPackId\" = @questionPackId";
+
+            List<Question>? questions = new List<Question>();
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                questions = connection.Query<Question>(sql, new {questionPackId = questionPackId}).ToList();
+
+                return questions;
+            }
+        }
+
+        //public Question? UpdateQuestion(Question question, int questionPackId)
+        //{
+        //    string sql = "UPDATE public.\"Question\" SET " +
+        //        "\"text\" = @Text, \"questionPackId\" = @QuestionPackId " +
+        //        "WHERE id = @Id;";
+
+        //    using (var connection = new NpgsqlConnection(_connectionString))
+        //    {
+        //        var rowsChnaged = connection.Execute(sql, new
+        //        {
+
+        //            Id = question.id,
+        //            Text = question.text,
+        //            QuestionPackId = questionPackId
+        //        });
+
+        //        if (rowsChnaged == 0)
+        //        {
+        //            question = null;
+        //        }
+
+        //        return question;
+        //    }
+        //}
+
+        public List<Question>? UpdateQuestion(List<Question> questions, int questionPackId)
         {
             string sql = "UPDATE public.\"Question\" SET " +
                 "\"text\" = @text, \"questionPackId\" = @questionPackId " +
                 "WHERE Id = @id;";
-
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var transaction = new TransactionScope(scopeOption: TransactionScopeOption.Required, asyncFlowOption: TransactionScopeAsyncFlowOption.Enabled, transactionOptions: new TransactionOptions()))
             {
-                var rowsChnaged = connection.Execute(sql, new
+                using (var connection = new NpgsqlConnection(_connectionString))
                 {
+                    int rowsChanged = 0;
+                    foreach (var question in questions)
+                    {
+                        rowsChanged += connection.Execute(sql, param: new
+                        {
+                            Id = question.id,
+                            text = question.text,
+                            questionPackId = questionPackId
+                        });
+                    }
 
-                    Id = question.id
-                });
+                    if (rowsChanged == 0)
+                    {
+                        questions = null;
+                    }
 
-                if (rowsChnaged == 0)
-                {
-                    question = null;
+                    transaction.Complete();
+                    return questions;
                 }
-
-                return question;
             }
+            
         }
-
 
         public Question InsertQuestion(Question question, int questionPackId)
         {
@@ -96,15 +145,62 @@ namespace Data.DatabaseLayer
                 "(\"questionPackId\", \"text\") " +
                 "VALUES (@questionPackId, @text) RETURNING id;";
 
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var transaction = new TransactionScope(scopeOption: TransactionScopeOption.Required, asyncFlowOption: TransactionScopeAsyncFlowOption.Enabled, transactionOptions: new TransactionOptions()))
             {
-                question.id = connection.QuerySingle<int>(sql, new
+                using (var connection = new NpgsqlConnection(_connectionString))
                 {
-                    questionPackId = questionPackId,
-                    text = question.text
-                });
+                    question.id = connection.QuerySingle<int>(sql, param: new
+                    {
+                        QuestionPackId = questionPackId,
+                        Text = question.text
+                    });
 
-                return question;
+                    AnswerAccess answerAccess = new AnswerAccess(_connectionString);
+                    answerAccess.InsertAnswers(question.answers, question.id);
+
+                    transaction.Complete();
+                    return question;
+                }
+            }
+        }
+
+        public List<Question> InsertQuestion(List<Question> questions, int questionPackId)
+        {
+            string sql = "INSERT INTO public.\"Question\" " +
+                "(\"questionPackId\", \"text\") " +
+                "VALUES (@QuestionPackId, @text) RETURNING id;";
+
+            using (var transaction = new TransactionScope(scopeOption: TransactionScopeOption.Required, asyncFlowOption: TransactionScopeAsyncFlowOption.Enabled, transactionOptions: new TransactionOptions()))
+            {
+                using (var connection = new NpgsqlConnection(_connectionString))
+                {
+                    foreach (var question in questions)
+                    {
+                        question.id = connection.QuerySingle<int>(sql, param: new
+                        {
+                            QuestionPackId = questionPackId,
+                            Text = question.text
+                        });
+                    }
+
+                    transaction.Complete();
+                    return questions;
+                }
+            }
+        }
+
+        public void DeleteQuestion(List<Question> questions)
+        {
+            string sql = "DELETE FROM public.\"Question\" " +
+                "WHERE id = @Id";
+            using (var transaction = new TransactionScope(scopeOption: TransactionScopeOption.Required, asyncFlowOption: TransactionScopeAsyncFlowOption.Enabled, transactionOptions: new TransactionOptions()))
+            {
+                using (var connection = new NpgsqlConnection(_connectionString))
+                {
+                    connection.Execute(sql, questions);
+                }
+
+                transaction.Complete();
             }
         }
     }

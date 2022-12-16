@@ -17,7 +17,16 @@ namespace WebApp.Models
         [JsonPropertyName("id")]
         public int QuestionId { get; set; }
 
-        public Question() { }
+        public Question() 
+        {
+            Answers = new List<T>();
+        }
+
+        public Question(string prompt, int questionId):this()
+        {
+            Prompt = prompt;
+            QuestionId = questionId;
+        }
 
         public Question(string prompt, List<T> answers, int questionId)
         {

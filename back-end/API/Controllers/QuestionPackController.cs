@@ -1,12 +1,14 @@
 ﻿using API.DTOs;
 using API.Services;
 using Data.ModelLayer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class QuestionPackController : Controller
     {
 
@@ -29,6 +31,13 @@ namespace API.Controllers
         public ActionResult<List<QuestionPack>> GetAll()
         {
             return Ok(_questionPackService.GetAllQuestionPacks());
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public ActionResult<List<QuestionPack>> Get(int id)
+        {
+            return Ok(_questionPackService.GetQuestionPackById(id));
         }
 
         [HttpPost]
@@ -55,6 +64,17 @@ namespace API.Controllers
             }
 
             var retQuestion = await _questionPackService.UpdateAsync(questionPack);
+
+
+            if (retQuestion.Author == null)
+            {
+                retQuestion = _questionPackService.GetQuestionPackById(id);
+            } 
+            else
+            {
+                retQuestion.xmin = questionPack.xmin;
+            }
+
             return Ok(retQuestion);
         }
 

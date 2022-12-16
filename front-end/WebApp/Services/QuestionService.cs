@@ -2,6 +2,7 @@
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using RestSharp;
+using RestSharp.Authenticators.OAuth2;
 using System.Collections;
 using System.Diagnostics.Metrics;
 using System.IO;
@@ -18,6 +19,13 @@ namespace WebApp.Services
                                 .Build().GetSection("ConnectionString").Value;
 
         private const string DATABASE_NAME = "ChatMayhem";
+
+        private readonly RestClient _client;
+
+        public QuestionService()
+        {
+            _client = new RestClient("https://localhost:7200/");
+        }
 
 
         public static async Task<int> InsertAnswers(ViewerAnswer viewerAnswer,
@@ -120,7 +128,7 @@ namespace WebApp.Services
                                                 ).ToList();
 
             answers.Sort((answer1, answer2) =>
-                answer1.Points > answer2.Points ? 1 : answer1.Points == answer2.Points ? 0 : -1);
+                answer1.Points < answer2.Points ? 1 : answer1.Points == answer2.Points ? 0 : -1);
 
             return answers;
         }
@@ -130,16 +138,23 @@ namespace WebApp.Services
             //TODO needs to be tested
             var answers = GetAnswers(question.Prompt, collectionName);
 
-            RestClient restClient = new RestClient("https://localhost:7200/");
-
             var restQuestion = new Question<Answer>(question.Prompt, answers, question.QuestionId);
 
             RestRequest restRequest = new RestRequest("api/Question/answers/{id}")
                 .AddUrlSegment("id", question.QuestionId).AddJsonBody(restQuestion);
 
-            var response = await restClient.ExecutePutAsync<Question<Answer>>(restRequest);
+            await LoginAccess.GetToken("admin", "admin");
 
-            return response.Data;
+            if (!String.IsNullOrEmpty(LoginAccess.token))
+            {
+                _client.Authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator(LoginAccess.token, "Bearer");
+                var response = await _client.ExecutePutAsync<Question<Answer>>(restRequest);
+                return response.Data;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

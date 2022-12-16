@@ -26,15 +26,13 @@
             <input asp-for="TimeLimitSeconds" class="form-control" />
             <span asp-validation-for="TimeLimitSeconds" class="text-danger"></span>
         </div>
-        <div class="form-group">
-            <label asp-for="ModeId" class="control-label">Mode</label>
-            <input asp-for="ModeId" class="form-control" />
-            <span asp-validation-for="ModeId" class="text-danger"></span>
+        <div class="form-group" hidden>
+            <input asp-for="ModeId" class="form-control" value="1"/>
         </div>
         <div class="form-group">
             <label asp-for="QuestionPackId" class="control-label">Question Pack</label>
             <select asp-for="QuestionPackId" class="form-select" aria-label="Default select example">
-                @foreach (QuestionPack questionPack in questionPacks)
+                @foreach (QuestionPack questionPack in questionPacks.Where(q => q.Questions.Count != 0))
                 {
                     <option value="@questionPack.Id">@questionPack.Name</option>
                 }

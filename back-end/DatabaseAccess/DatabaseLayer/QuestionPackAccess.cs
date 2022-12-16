@@ -10,6 +10,8 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
+using IsolationLevel = System.Transactions.IsolationLevel;
 
 namespace Data.DatabaseLayer
 {
@@ -24,18 +26,18 @@ namespace Data.DatabaseLayer
 
         public QuestionPack GetQuestionPackById(int id)
         {
-            string sql = "SELECT questionPack.id, questionPack.author, questionPack.name," +
-                " questionPack.tag, questionPack.category, questionPack.\"creationDate\", " +
+            string sql = "SELECT questionPack.id, questionPack.author, questionPack.name, " +
+                "questionPack.category, questionPack.\"creationDate\", questionPack.\"xmin\", questionPack.tag, " +
                 "question.id, question.text " +
                 "FROM public.\"QuestionPack\" questionPack " +
-                "INNER JOIN public.\"Question\" question on question.\"questionPackId\" = questionPack.id " +
+                "LEFT JOIN public.\"Question\" question on question.\"questionPackId\" = questionPack.id " +
                 "WHERE questionPack.id = @Id;";
 
             QuestionPack tempQuestionPack = null;
             using (var connection = new NpgsqlConnection(_connectionString))
             {
 
-                var questionPack = connection.Query<QuestionPack, Question, QuestionPack>(sql, map: (qp, q) =>
+                var questionPack = connection.Query<QuestionPack, string[], Question, QuestionPack>(sql, map: (qp, t, q) =>
                 {
                     if (qp.Questions == null)
                     {
@@ -45,13 +47,17 @@ namespace Data.DatabaseLayer
                     {
                         qp = tempQuestionPack;
                     }
-                    qp.Questions.Add(q);
+                    qp.Tags = t;
+                    if (q != null)
+                    {
+                        qp.Questions.Add(q);
+                    }
                     tempQuestionPack = qp;
 
                     return qp;
                 },
                 new { Id = id },
-                splitOn: "id"
+                splitOn: "tag, id"
                 ).AsQueryable().FirstOrDefault();
 
                 return questionPack;
@@ -86,7 +92,7 @@ namespace Data.DatabaseLayer
                 "questionPack.category, questionPack.\"creationDate\", questionPack.\"xmin\", questionPack.tag, " +
                 "question.id, question.text " +
                 "FROM public.\"QuestionPack\" questionPack " +
-                "INNER JOIN public.\"Question\" question on question.\"questionPackId\" = questionPack.id;";
+                "LEFT JOIN public.\"Question\" question on question.\"questionPackId\" = questionPack.id;";
 
             Dictionary<int, QuestionPack> tempQuestionPack = new Dictionary<int, QuestionPack>();
             using (var connection = new NpgsqlConnection(_connectionString))
@@ -103,14 +109,23 @@ namespace Data.DatabaseLayer
                         tempQuestionPack.Add(qp.Id, questionPack = qp);
                     }
 
-                    questionPack.Questions.Add(q);
+                    if (q != null)
+                    {
+                        questionPack.Questions.Add(q);
+                    }
 
                     return questionPack;
                 },
                 splitOn: "tag, id"
                 ).AsQueryable();
 
-                return tempQuestionPack.Values.AsList();
+                var retQuestionPacks = tempQuestionPack.Values.AsList();
+
+                retQuestionPacks = retQuestionPacks.OrderBy(q => q.Id).ToList();
+
+                retQuestionPacks.ForEach(q => q.Questions = q.Questions.OrderBy(q => q?.id).ToList());
+
+                return retQuestionPacks;
             }
         }
 
@@ -134,30 +149,27 @@ namespace Data.DatabaseLayer
                 .Output(questionPack, q => q.Id);
             @params.Add("xmin", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var transaction = new TransactionScope(scopeOption: TransactionScopeOption.Required, asyncFlowOption: TransactionScopeAsyncFlowOption.Enabled, transactionOptions: new TransactionOptions()))
             {
-                connection.Open();
-                using (var transaction = await connection.BeginTransactionAsync())
+                using (var connection = new NpgsqlConnection(_connectionString))
                 {
                     try
                     {
-                        await connection.ExecuteAsync(Sql, @params);
+                        connection.Execute(Sql, @params);
                         questionPack.xmin = Convert.ToInt32(@params.Get<UInt32>("xmin"));
 
                         List<Question> tempQuestions = new List<Question>();
 
-                        foreach (Question question in questionPack.Questions)
-                        {
-                            QuestionAccess questionAccess = new QuestionAccess(_connectionString);
-                            tempQuestions.Add(questionAccess.InsertQuestion(question, questionPack.Id));
-                        }
+                        QuestionAccess questionAccess = new QuestionAccess(_connectionString);
+
+                        questionAccess.InsertQuestion(questionPack.Questions, questionPack.Id);
 
                         questionPack.Questions = tempQuestions;
-                        await transaction.CommitAsync();
+                        transaction.Complete();
                     }
                     catch
                     {
-                        await transaction.RollbackAsync();
+                        questionPack = new QuestionPack();
                     }
                 }
             }
@@ -172,13 +184,11 @@ namespace Data.DatabaseLayer
 	                SET author=@Author, name=@Name, category=@Category, ""creationDate""=@CreationDate, tag=@Tags 
 	                WHERE id = @Id AND xmin = @xmin
                     RETURNING xmin, id, author, name, category, ""creationDate"", tag";
-
-            using (var connection = new NpgsqlConnection(_connectionString))
+            try
             {
-                connection.Open();
-                using (var transaction = await connection.BeginTransactionAsync())
+                using (var transaction = new TransactionScope(scopeOption: TransactionScopeOption.Required,asyncFlowOption: TransactionScopeAsyncFlowOption.Enabled, transactionOptions: new TransactionOptions()))
                 {
-                    try
+                    using (var connection = new NpgsqlConnection(_connectionString))
                     {
                         SqlMapper.AddTypeHandler(new UintHandler());
                         retQuestionPack = (await connection.QueryAsync<QuestionPack, string[], QuestionPack>(Sql, map: (qp, t) =>
@@ -197,13 +207,43 @@ namespace Data.DatabaseLayer
                             Id = questionPack.Id,
                             xmin = questionPack.xmin
                         })).AsQueryable().First();
-                        await transaction.CommitAsync();
-                    }
-                    catch
-                    {
-                        await transaction.RollbackAsync();
+
+                        var questionAccess = new QuestionAccess(_connectionString);
+                        var oldQuestions = questionAccess.GetQuestionsByQuestionPackId(questionPack.Id);
+
+                        var insertQuestions = questionPack.Questions.Where(q => q.id == 0).ToList();
+                        var updateQuestions = questionPack.Questions.Where(q => q.id < 0).ToList();
+                        updateQuestions.ForEach(q => q.id = Math.Abs(q.id));
+                        questionPack.Questions.ForEach(q => q.id = Math.Abs(q.id));
+                        var deleteQuestions = oldQuestions.ExceptBy(questionPack.Questions.Select(q => q.id), oq => oq.id).ToList();
+
+                        var insertedQuestions = questionAccess.InsertQuestion(insertQuestions, questionPack.Id);
+
+                        var updatedQuestions = questionAccess.UpdateQuestion(updateQuestions, questionPack.Id);
+
+                        questionAccess.DeleteQuestion(deleteQuestions);
+
+                        retQuestionPack.Questions = oldQuestions.ExceptBy(deleteQuestions.Select(dq => dq.id), q => q.id).ToList();
+
+                        if (insertedQuestions != null)
+                        {
+                            retQuestionPack.Questions.AddRange(insertedQuestions);
+                        }
+
+                        if (updatedQuestions != null)
+                        {
+                            retQuestionPack.Questions.AddRange(updatedQuestions);
+                        }
+
+                        retQuestionPack.Questions = retQuestionPack.Questions.OrderBy(q1 => q1.id).ToList();
+
+                        transaction.Complete();
                     }
                 }
+            }
+            catch
+            {
+                retQuestionPack = new QuestionPack();
             }
             return retQuestionPack;
         }

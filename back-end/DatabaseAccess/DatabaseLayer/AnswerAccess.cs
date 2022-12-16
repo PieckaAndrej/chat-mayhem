@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Data.DatabaseLayer
 {
@@ -18,7 +19,7 @@ namespace Data.DatabaseLayer
             _connectionString = connectionString;
         }
 
-        public List<Answer> GetAnswersQuestionById(int? questionId)
+        public List<Answer> GetQuestionsAnswerById(int? questionId)
         {
             string sql = "SELECT \"answerCount\", \"answerText\" AS text  " +
                 "FROM public.\"Answer\" " +
@@ -52,6 +53,39 @@ namespace Data.DatabaseLayer
 
                 return rowsAffected;
             }
+        }
+
+        public List<Answer>? InsertAnswers(List<Answer>? answers, int? questionId)
+        {
+            string sql = "INSERT INTO public.\"Answer\" " +
+                "(\"questionId\", \"answerText\", \"answerCount\") " +
+                "VALUES (@questionId, @answerText, @answerCount);";
+
+            using (var transaction = new TransactionScope(scopeOption: TransactionScopeOption.Required, asyncFlowOption: TransactionScopeAsyncFlowOption.Enabled, transactionOptions: new TransactionOptions()))
+            {
+                using (var connection = new NpgsqlConnection(_connectionString))
+                {
+                    int rowsAffected = 0;
+                    foreach (var answer in answers)
+                    {
+                        rowsAffected += connection.Execute(sql, new
+                        {
+                            questionId = questionId,
+                            answerText = answer.text.ToLower(),
+                            answerCount = answer.answerCount
+                        });
+                    }
+
+                    if (rowsAffected == 0)
+                    {
+                        answers = null;
+                    }
+
+                    transaction.Complete();
+                    return answers;
+                }
+            }
+            
         }
 
         public int UpdatePoints(Answer answer, int oldPoints, int? questionId)

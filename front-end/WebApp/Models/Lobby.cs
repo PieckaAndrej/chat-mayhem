@@ -1,4 +1,5 @@
 ﻿using Data.ModelLayer;
+using System.Text.Json.Serialization;
 using WebApp.Services;
 
 namespace WebApp.Models
@@ -7,23 +8,27 @@ namespace WebApp.Models
     {
         public string GroupName { get; set; }
         public List<Player> Players { get; set; }
+        [JsonIgnore]
         public MessageHandlerService? MessageHandler { get; set; }
-        public QuestionPack QuestionPack { get; set; }
-        public int currentQuestionIndex;
+        public int currentQuestionIndex { get; set; }
         public Question<Answer>[] Answers { get; set; }
+        public Game Game { get; set; }
+        public enum GAME_STATE { LOBBY, LISTENING, ANSWERING, FINISHED }
+        public GAME_STATE GameState { get; set; }
 
-        public Lobby(string groupName, QuestionPack questionPack, MessageHandlerService messageHandler)
+        public Lobby(string groupName, Game game, MessageHandlerService messageHandler)
         {
             GroupName = groupName;
-            QuestionPack = questionPack;
+            Game = game;
             MessageHandler = messageHandler;
+            GameState = GAME_STATE.LOBBY;
 
             Players = new List<Player>();
-            Answers = new Question<Answer>[questionPack.Questions?.Count ?? 0];
+            Answers = new Question<Answer>[Game.QuestionPack.Questions?.Count ?? 0];
 
-            for (int i = 0; i < QuestionPack.Questions.Count; i++)
+            for (int i = 0; i < Game.QuestionPack.Questions?.Count; i++)
             {
-                Answers[i] = new Question<Answer>() { Prompt = QuestionPack.Questions[i].Prompt };
+                Answers[i] = new Question<Answer>() { Prompt = Game.QuestionPack.Questions[i].Prompt };
             }
         }
 
@@ -31,7 +36,7 @@ namespace WebApp.Models
         {
             bool retVal = false;
 
-            if (QuestionPack?.Questions?.Count - 1 > currentQuestionIndex)
+            if (Game.QuestionPack?.Questions?.Count - 1 > currentQuestionIndex)
             {
                 currentQuestionIndex++;
                 Players.ForEach(p => p.WrongAnswers = 0);
@@ -43,7 +48,7 @@ namespace WebApp.Models
 
         public Question<ViewerAnswer>? GetCurrentQuestion()
         {
-            return QuestionPack?.Questions?[currentQuestionIndex];
+            return Game.QuestionPack?.Questions?[currentQuestionIndex];
         }
     }
 }

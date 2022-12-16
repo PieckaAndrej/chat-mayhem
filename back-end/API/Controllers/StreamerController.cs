@@ -3,12 +3,14 @@ using API.DTOs;
 using API.Model;
 using API.Services;
 using Data.ModelLayer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class StreamerController : ControllerBase
     {
         private StreamerService _streamerService;

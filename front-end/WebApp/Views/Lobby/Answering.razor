@@ -1,9 +1,9 @@
 ﻿@using WebApp.Models;
 
 <div id="game" class="center answer">
-    <h1 class="answer-title">@Question.Prompt</h1>
+    <h1 class="answer-title">@Question?.Prompt</h1>
     <div class="answer-grid">
-        @for (int i = 0; i < Question.Answers.Count; i++)
+        @for (int i = 0; i < Question?.Answers.Count; i++)
         {
             <div class="answer-item" style="@(FlippedAnswers[i] ? "Background-color:red" : "")">
                 <p class="answer-id">#@(i + 1)</p>
@@ -14,21 +14,31 @@
             </div>
         }
     </div>
-    <input type="text" value="@Text" @oninput="this.OnChange" @onkeypress="PressKey"/>
+    <input type="text" value="@Text" @oninput="this.OnChange" @onkeypress="PressKey" />
     <button @onclick="CheckAnswer">Send</button>
+    @if (IsAnswered)
+    {
+        <button @onclick="NextQuestion">Next Question</button>
+    }
+    @if (IsOutOfTries)
+    {
+        <button @onclick="ShowAnswers">Reveal Answers</button>
+    }
 </div>
 
-<p>Total Votes @Question.Answers.Sum(answer => answer.Points)</p>
+<p>Total Votes @Question?.Answers.Sum(answer => answer.Points)</p>
 
 @foreach (Player player in Players)
 {
-    <span>
-        @player.Name
-        Wrong: 
-        @player.WrongAnswers
-        Points: 
-        @player.Points
-    </span>
+    <div>
+        <span>
+            @player.Name
+            Wrong:
+            @player.WrongAnswers
+            Points:
+            @player.Points
+        </span>
+    </div>
 }
 
 
@@ -38,9 +48,17 @@
     [Parameter]
     public EventCallback<string> Answer { get; set; }
     [Parameter]
-    public bool[] FlippedAnswers { get; set; }
+    public List<bool> FlippedAnswers { get; set; }
     [Parameter]
     public List<Player> Players { get; set; }
+    [Parameter]
+    public bool IsAnswered { get; set; }
+    [Parameter]
+    public EventCallback GoToNextQuestion { get; set; }
+    [Parameter]
+    public bool IsOutOfTries { get; set; }
+    [Parameter]
+    public EventCallback RevealAnswers { get; set; }
     public string Text { get; set; }
 
     public void OnChange(ChangeEventArgs e)
@@ -55,6 +73,10 @@
             await CheckAnswer();
         }
     }
+
+    public async Task NextQuestion() => await GoToNextQuestion.InvokeAsync();
+
+    public async Task ShowAnswers() => await RevealAnswers.InvokeAsync();
 
     public async Task CheckAnswer()
     {

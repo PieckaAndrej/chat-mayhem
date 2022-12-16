@@ -1,3 +1,5 @@
-﻿@using WebApp.Views.Shared
+﻿@using WebApp.ViewModels
+@model JoinLobby 
 
-<component type="typeof(WebApp.Views.Lobby.Index)" render-mode="ServerPrerendered"/>
+
+<component param-Code="@Model.Code" param-Name="@Model.Name" type="typeof(WebApp.Views.Lobby.Index)" render-mode="ServerPrerendered" />

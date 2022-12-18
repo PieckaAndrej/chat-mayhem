@@ -38,7 +38,8 @@ namespace Test
             var answerAccess = new AnswerAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
 
             //Act
-            var id = answerAccess.CreateAnswer(_testAnswer, _questionId);
+            Answer testAnswer = new Answer(10, "Shirt " + DateTime.Now.ToString());
+            var id = answerAccess.CreateAnswer(testAnswer, _questionId);
 
             //Assert
             Assert.Equal(1, id);
@@ -51,9 +52,10 @@ namespace Test
             var answerAccess = new AnswerAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
 
             //Act
+            Answer testAnswer = new Answer(10, "Shirt " + DateTime.Now.ToString());
             int oldPoints = 100;
-            answerAccess.CreateAnswer(_testAnswer, _questionId);
-            int rowsAffected = answerAccess.UpdatePoints(_testAnswer, oldPoints, _questionId);
+            answerAccess.CreateAnswer(testAnswer, _questionId);
+            int rowsAffected = answerAccess.UpdatePoints(testAnswer, oldPoints, _questionId);
 
             //Assert
             Assert.Equal(1, rowsAffected);

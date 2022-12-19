@@ -155,7 +155,7 @@ namespace Data.DatabaseLayer
                 {
                     try
                     {
-                        connection.Execute(Sql, @params);
+                        await connection.ExecuteAsync(Sql, @params);
                         questionPack.xmin = Convert.ToInt32(@params.Get<UInt32>("xmin"));
 
                         List<Question> tempQuestions = new List<Question>();

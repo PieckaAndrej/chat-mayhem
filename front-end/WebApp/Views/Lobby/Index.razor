@@ -20,7 +20,6 @@
         break;
     case WebApp.Models.Lobby.GAME_STATE.ANSWERING:
         <Answering Question="GetCurrentQuestion()" Answer="Answer"
-           FlippedAnswers="GetCurrentQuestion().Answers.Select(answer => answer.Answered).ToList()"
            Players="lobby.Players" IsAnswered="@(isAnswered && isHosting)" IsOutOfTries="@(isOutOfTries && isHosting)"
            GoToNextQuestion="GoToNextQuestion" RevealAnswers="RevealAswers"></Answering>
         break;
@@ -42,7 +41,6 @@
     private bool isHosting;
     private bool isAnswered;
     private bool isOutOfTries;
-
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

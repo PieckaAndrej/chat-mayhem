@@ -211,12 +211,31 @@ body {
     font-size: 1rem !important;
 }
 
-.answer-players {
+.answer-stats {
     position: fixed;
     right: 0;
     bottom: 0;
+}
+
+.answer-stats-player {
     display: flex;
     align-items: center;
+    font-size: 1.2rem;
+}
+
+
+.answer-stats-wrong {
+    color: #DF7E7E;
+    text-shadow: 0 3px 2px rgba(0, 0, 0, 0.1);
+    font-size: 3rem !important;
+    animation-name: rotate;
+    animation-duration: 0.4s;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(-100deg) scale(0);
+    }
 }
 
 .answer-messages {

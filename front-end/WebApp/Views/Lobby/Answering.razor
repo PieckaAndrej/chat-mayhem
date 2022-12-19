@@ -9,7 +9,8 @@
                 <p class="@(Question.Answers[i].Answered ? "answer-id-answered" : "answer-id")">#@(i + 1)</p>
                 <div class="answer-text">
                     <p class="answer-text-label">@(Question.Answers[i].Answered ? Question.Answers[i].Text : "???")</p>
-                    @if (Question.Answers[i].Answered) {
+                    @if (Question.Answers[i].Answered)
+                    {
                         <div class="answer-points">
                             <span class="answer-points-icon material-symbols-outlined">
                                 lightbulb
@@ -69,22 +70,26 @@
 </div>
 <p class="answer-messages">@Question?.Answers.Sum(answer => answer.Points) messages</p>
 
-@foreach (Player player in Players)
-{
-    <div class="answer-players">
-        <p>@player.Name</p>
-        @for (int i = 0; i < player.WrongAnswers; i++)
-        {
-            <span class="material-symbols-outlined">
-                close
-            </span>
-        }
-        <span class="answer-points-icon material-symbols-outlined">
-            lightbulb
-        </span>
-        <p>@player.Points</p>
-    </div>
-}
+<div class="answer-stats">
+    @foreach (Player player in Players)
+    {
+        <div class="answer-stats-player">
+            <p>@player.Name</p>
+            @for (int i = 0; i < player.WrongAnswers; i++)
+            {
+                <span class="material-symbols-outlined answer-stats-wrong">
+                    close
+                </span>
+            }
+            <div>
+                <span class="answer-points-icon material-symbols-outlined">
+                    lightbulb
+                </span>
+            </div>
+            <p>@player.Points</p>
+        </div>
+    }
+</div>
 
 
 @code {

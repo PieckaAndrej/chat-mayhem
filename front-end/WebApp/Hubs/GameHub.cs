@@ -152,6 +152,11 @@ namespace WebApp.Hubs
 
         public async Task<int> SendMessage(string connectionId, string message)
         {
+            if (String.IsNullOrWhiteSpace(message))
+            {
+                return -2;
+            }
+
             Lobby? lobby = GetLobbyById(connectionId);
 
             if (lobby == null)

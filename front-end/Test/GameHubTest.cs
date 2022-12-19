@@ -68,7 +68,11 @@ namespace Test
             // Act
             await _gameHub.CreateGroup(connectionId, game);
             Lobby? lobby = _gameHub.GetLobbyById(connectionId);
-            await _gameHub.JoinGroup("2", lobby.GroupName, "second");
+            try
+            {
+                await _gameHub.JoinGroup("2", lobby.GroupName, "second");
+            }
+            catch (NullReferenceException) { }
 
             // Assert
             Assert.Equal(2, lobby.Players.Count);
@@ -278,7 +282,11 @@ namespace Test
             // Act
             await _gameHub.CreateGroup(connectionId, game);
             Lobby? lobby = _gameHub.GetLobbyById(connectionId);
-            await _gameHub.JoinGroup(connectionId + "2", lobby.GroupName, "Player2");
+            try
+            {
+                await _gameHub.JoinGroup(connectionId + "2", lobby.GroupName, "Player2");
+            }
+            catch (NullReferenceException) { }
 
             lobby.Answers[lobby.currentQuestionIndex] = question;
             int response = await _gameHub.SendMessage(connectionId, "right");

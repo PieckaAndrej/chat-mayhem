@@ -215,6 +215,12 @@ body {
     position: fixed;
     right: 0;
     bottom: 0;
+    color: #6750A4;
+    font-weight: 600;
+}
+
+.answer-stats p {
+    margin: 0;
 }
 
 .answer-stats-player {

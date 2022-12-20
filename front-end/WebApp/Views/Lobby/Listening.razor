@@ -61,5 +61,10 @@
         });
     }
 
-    public async Task End() => await EndListening.InvokeAsync();
+    public async Task End()
+    {
+        timer.Enabled = false;
+
+        await EndListening.InvokeAsync();
+    }
 }

@@ -13,7 +13,7 @@
     }
     @if (IsHosting)
     {
-        <button @onclick="Start">Start</button>
+        <button @onclick="Start" disabled="@isDisabled">Start</button>
         <button @onclick="CopyLink">Copy join link</button>
         if (isCoppied)
         {
@@ -34,8 +34,14 @@
     [Parameter]
     public EventCallback Link { get; set; }
     private bool isCoppied = false;
+    private bool isDisabled = false;
 
-    public async Task Start() => await Game.InvokeAsync();
+    public async Task Start()
+    {
+        isDisabled = true;
+        await Game.InvokeAsync();
+    }
+
     public async Task CopyLink()
     {
         await Link.InvokeAsync();

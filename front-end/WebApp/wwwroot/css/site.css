@@ -2,21 +2,10 @@
 
 html {
     font-size: 14px;
-}
-
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
-}
-
-html {
-    position: relative;
-    min-height: 100%;
+    margin: 0;
 }
 
 body {
-    margin-bottom: 60px;
     font-family: 'Open Sans', sans-serif;
 }
 
@@ -51,9 +40,14 @@ body {
 .center {
     display: flex;
     justify-content: center;
-    height: calc(100vh - 170px);
     align-items: center;
     flex-direction: column;
+    height: 100vh;
+    margin: 0;
+}
+
+.navbar-offset {
+    height: calc(100vh - 170px);
 }
 
 .login-button {
@@ -101,13 +95,15 @@ body {
 
 .answer {
     font-family: 'Roboto', sans-serif;
+    display: flex;
+    gap: 20px;
 }
 
 .answer-grid {
     display: grid;
     grid-template-columns: repeat(2, auto);
     grid-row-gap: 20px;
-    grid-column-gap: 50px;
+    grid-column-gap: 80px;
 }
 
 .answer-item {
@@ -117,28 +113,186 @@ body {
     color: white;
     position: relative;
     text-align: center;
-    height: 100%;
     width: 300px;
-    padding: 15px;
+    height: 75px;
     font-size: 1.8rem;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
-.answer-item p {
+    .answer-item::after {
+        content: "";
+        position: absolute;
+        width: 250px;
+        height: 250px;
+        background: linear-gradient(40deg, transparent 50%, #D1C0FF 70%);
+        border-radius: 50%;
+        top: -10px;
+        right: -130px;
+    }
+
+.answer-text {
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 80px;
+}
+
+.answer-text p {
     margin: 0;
+}
+
+.answer-text-label {
+    margin-bottom: -5px !important;
+    padding-bottom: 5px !important;
 }
 
 .answer-id {
     color: #6750A4;
     padding: 5px;
     position: absolute;
-    left: 0;
+    left: 5px;
     top: 0;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
 }
 
 .answer-title {
     color: #6750A4;
-    margin: 20px;
+    font-weight: 600;
 }
+
+.answer-item-answered {
+    display: flex;
+    justify-content: center;
+    background-color: #FDB1B1;
+    color: white;
+    position: relative;
+    text-align: center;
+    width: 300px;
+    height: 75px;
+    font-size: 1.8rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.answer-id-answered {
+    color: #D86F6F;
+    padding: 5px;
+    position: absolute;
+    left: 5px;
+    top: 0;
+    font-size: 1.2rem;
+}
+
+.answer-item-answered::after {
+    content: "";
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    background: linear-gradient(20deg, #FFD0D0 40%, transparent 100%);
+    border-radius: 50%;
+    top: -10px;
+    left: -130px;
+}
+
+.answer-points {
+    display: flex;
+    align-items: center;
+    color: #D86F6F;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.answer-points-icon 
+{
+    font-size: 1rem !important;
+}
+
+.answer-stats {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+}
+
+.answer-stats-player {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+
+.answer-stats-wrong {
+    color: #DF7E7E;
+    text-shadow: 0 3px 2px rgba(0, 0, 0, 0.1);
+    font-size: 3rem !important;
+    animation-name: rotate;
+    animation-duration: 0.4s;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(-100deg) scale(0);
+    }
+}
+
+.answer-messages {
+    position: fixed;
+    left: 20px;
+    bottom: 0;
+    color: white;
+}
+
+.answer-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.answer-input input {
+    font-size: 1.2rem;
+    padding: 5px;
+    border: solid 3px #B69DF8;
+    border-radius: 5px;
+    color: #6750A4;
+    transition: 0.3s;
+}
+
+.answer-input input:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    transition: 0.3s;
+}
+
+.answer-input button {
+    font-size: 1.2rem;
+    padding: 5px;
+    border: solid 3px #B69DF8;
+    border-radius: 5px;
+    background-color: #B69DF8;
+    color: white;
+    transition: 0.3s;
+}
+
+.answer-input button:hover {
+    background-color: #D1C0FF;
+    border: solid 3px #D1C0FF;
+    transition: 0.3s;
+}
+
+.background-bottom-left {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: -1;
+}
+
+.background-top-right {
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: -1;
+}
+

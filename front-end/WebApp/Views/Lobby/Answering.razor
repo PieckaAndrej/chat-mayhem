@@ -5,20 +5,30 @@
     <div class="answer-grid">
         @for (int i = 0; i < Question?.Answers.Count; i++)
         {
-            <div class="answer-item" style="@(FlippedAnswers[i] ? "Background-color:red" : "")">
-                <p class="answer-id">#@(i + 1)</p>
-                <div>
-                    <p>@(FlippedAnswers[i] ? Question.Answers[i].Text : "???")</p>
-                    <p>@(FlippedAnswers[i] ? Question.Answers[i].Points : "")</p>
+            <div class="@(Question.Answers[i].Answered ? "answer-item-answered" : "answer-item")">
+                <p class="@(Question.Answers[i].Answered ? "answer-id-answered" : "answer-id")">#@(i + 1)</p>
+                <div class="answer-text">
+                    <p class="answer-text-label">@(Question.Answers[i].Answered ? Question.Answers[i].Text : "???")</p>
+                    @if (Question.Answers[i].Answered)
+                    {
+                        <div class="answer-points">
+                            <span class="answer-points-icon material-symbols-outlined">
+                                lightbulb
+                            </span>
+                            <p>@Question.Answers[i].Points</p>
+                        </div>
+                    }
                 </div>
             </div>
         }
     </div>
-    <input type="text" value="@Text" @oninput="this.OnChange" @onkeypress="PressKey" />
-    <button @onclick="CheckAnswer">Send</button>
+    <div class="answer-input">
+        <input type="text" value="@Text" @oninput="this.OnChange" @onkeypress="PressKey" />
+        <button @onclick="CheckAnswer">Send</button>
+    </div>
     @if (IsAnswered)
     {
-        <button @onclick="NextQuestion">Next Question</button>
+        <button @onclick="NextQuestion" disabled="@isDisabled">Next Question</button>
     }
     @if (IsOutOfTries)
     {
@@ -26,20 +36,60 @@
     }
 </div>
 
-<p>Total Votes @Question?.Answers.Sum(answer => answer.Points)</p>
+<div class="background-top-right">
+    <svg width="308" height="156" viewBox="0 0 308 156" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <mask id="mask0_52821_23883" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="308" height="156">
+            <g style="mix-blend-mode:soft-light">
+                <path d="M126.5 55C85 32 67 55.5 0 0H308V156C302.5 156 280.1 112 232.5 110C173 107.5 168 78 126.5 55Z" fill="#B69DF8" />
+            </g>
+        </mask>
+        <g mask="url(#mask0_52821_23883)">
+            <path d="M126.5 55C85 32 67 55.5 0 0H308V156C302.5 156 280.1 112 232.5 110C173 107.5 168 78 126.5 55Z" fill="#B69DF8" />
+            <circle cx="-0.33017" cy="103.67" r="138.5" transform="rotate(-60.582 -0.33017 103.67)" fill="url(#paint0_linear_52821_23883)" />
+        </g>
+        <defs>
+            <linearGradient id="paint0_linear_52821_23883" x1="-61.3302" y1="42.6698" x2="-0.830169" y2="-23.8302" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#B69DF8" stop-opacity="0" />
+                <stop offset="1" stop-color="#D1C0FF" />
+            </linearGradient>
+        </defs>
+    </svg>
+</div>
 
-@foreach (Player player in Players)
-{
-    <div>
-        <span>
-            @player.Name
-            Wrong:
-            @player.WrongAnswers
-            Points:
-            @player.Points
-        </span>
-    </div>
-}
+
+<div class="background-bottom-left">
+    <svg width="515" height="381" viewBox="0 0 515 381" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M140.5 41L0 131.172V381H446.5L514.5 247L364 302L496 70L282 208.5L328.812 0L100.5 177L140.5 41Z" fill="url(#paint0_linear_52697_23926)" />
+        <defs>
+            <linearGradient id="paint0_linear_52697_23926" x1="116.5" y1="322" x2="187" y2="5.969e-06" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#B69DF8" />
+                <stop offset="1" stop-color="#B69DF8" stop-opacity="0" />
+            </linearGradient>
+        </defs>
+    </svg>
+</div>
+<p class="answer-messages">@Question?.Answers.Sum(answer => answer.Points) messages</p>
+
+<div class="answer-stats">
+    @foreach (Player player in Players)
+    {
+        <div class="answer-stats-player">
+            <p>@player.Name</p>
+            @for (int i = 0; i < player.WrongAnswers; i++)
+            {
+                <span class="material-symbols-outlined answer-stats-wrong">
+                    close
+                </span>
+            }
+            <div>
+                <span class="answer-points-icon material-symbols-outlined">
+                    lightbulb
+                </span>
+            </div>
+            <p>@player.Points</p>
+        </div>
+    }
+</div>
 
 
 @code {
@@ -47,8 +97,6 @@
     public Question<Answer>? Question { get; set; }
     [Parameter]
     public EventCallback<string> Answer { get; set; }
-    [Parameter]
-    public List<bool> FlippedAnswers { get; set; }
     [Parameter]
     public List<Player> Players { get; set; }
     [Parameter]
@@ -60,6 +108,7 @@
     [Parameter]
     public EventCallback RevealAnswers { get; set; }
     public string Text { get; set; }
+    public bool isDisabled = false;
 
     public void OnChange(ChangeEventArgs e)
     {
@@ -74,7 +123,11 @@
         }
     }
 
-    public async Task NextQuestion() => await GoToNextQuestion.InvokeAsync();
+    public async Task NextQuestion()
+    {
+        isDisabled = true;
+        await GoToNextQuestion.InvokeAsync();
+    }
 
     public async Task ShowAnswers() => await RevealAnswers.InvokeAsync();
 

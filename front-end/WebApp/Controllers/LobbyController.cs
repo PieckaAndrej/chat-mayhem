@@ -9,6 +9,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text.Json;
+using System.Transactions;
 using WebApp.Models;
 using WebApp.Services;
 using WebApp.ViewModels;
@@ -32,21 +33,36 @@ namespace WebApp.Controllers
 
         public async Task<IActionResult> RefreshToken(string access)
         {
-            var claims = HttpContext.User.Claims;
-            var newClaims = new List<Claim>
+            using(var transactionScope =  new TransactionScope())
+            {
+                var claims = HttpContext.User.Claims;
+                var newClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, claims.Single(c => c.Type == ClaimTypes.Name).Value),
                     new Claim(ClaimTypes.NameIdentifier, claims.Single(c => c.Type == ClaimTypes.NameIdentifier).Value),
                     new Claim("AccessToken", access),
                     new Claim("ProfileImage", claims.Single(c => c.Type == "ProfileImage").Value)
                 };
-            var claimsIdentity = new ClaimsIdentity(newClaims, "Login");
-            await HttpContext.SignOutAsync();
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity), new AuthenticationProperties
-                    {
-                        IsPersistent = true
-                    });
+                var claimsIdentity = new ClaimsIdentity(newClaims, "Login");
+                await HttpContext.SignOutAsync();
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimsIdentity), new AuthenticationProperties
+                        {
+                            IsPersistent = true
+                        });
+                transactionScope.Complete();
+            }
+            using(var transactionScope =  new TransactionScope())
+            {
+                var json = Request.Cookies.Single(c => c.Key == "game").Value;
+                Game game = JsonSerializer.Deserialize<Game>(json);
+                game.Streamer.AccessToken = access;
+                Response.Cookies.Delete("game");
+                Response.Cookies.Append("game", JsonSerializer.Serialize(game));
+                transactionScope.Complete();
+            }
+            
+            
             return View("Close");
         }
 

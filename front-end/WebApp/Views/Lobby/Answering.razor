@@ -8,7 +8,9 @@
             <div class="@(Question.Answers[i].Answered ? "answer-item-answered" : "answer-item")">
                 <p class="@(Question.Answers[i].Answered ? "answer-id-answered" : "answer-id")">#@(i + 1)</p>
                 <div class="answer-text">
-                    <p class="answer-text-label">@(Question.Answers[i].Answered ? Question.Answers[i].Text : "???")</p>
+                    <p class="@(Question.Answers[i].Answered ? "answer-text-label-answered" : "")">
+                        @(Question.Answers[i].Answered ? Question.Answers[i].Text : "???")
+                    </p>
                     @if (Question.Answers[i].Answered)
                     {
                         <div class="answer-points">

@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Oswald&family=Roboto&display=swap');
 
 html {
-    font-size: 14px;
+    font-size: 1rem;
     margin: 0;
 }
 
@@ -121,16 +121,16 @@ body {
     overflow: hidden;
 }
 
-    .answer-item::after {
-        content: "";
-        position: absolute;
-        width: 250px;
-        height: 250px;
-        background: linear-gradient(40deg, transparent 50%, #D1C0FF 70%);
-        border-radius: 50%;
-        top: -10px;
-        right: -130px;
-    }
+.answer-item::after {
+    content: "";
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    background: linear-gradient(40deg, transparent 50%, #D1C0FF 70%);
+    border-radius: 50%;
+    top: -10px;
+    right: -130px;
+}
 
 .answer-text {
     justify-content: center;
@@ -144,9 +144,9 @@ body {
     margin: 0;
 }
 
-.answer-text-label {
-    margin-bottom: -5px !important;
-    padding-bottom: 5px !important;
+.answer-text-label-answered {
+    margin-bottom: -10px !important;
+    margin-top: -5px !important;
 }
 
 .answer-id {
@@ -215,6 +215,12 @@ body {
     position: fixed;
     right: 0;
     bottom: 0;
+    color: #6750A4;
+    font-weight: 600;
+}
+
+.answer-stats p {
+    margin: 0;
 }
 
 .answer-stats-player {

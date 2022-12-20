@@ -74,6 +74,21 @@
 
             lobby = await hubConnection.InvokeAsync<WebApp.Models.Lobby>("GetLobbyById", hubConnection.ConnectionId);
 
+            // If redirected from token refresh
+            try
+            {
+                string autoStart = await JsRuntime.InvokeAsync<string>("ReadCookie.ReadCookie", "auto_start");
+
+                if (autoStart == "true")
+                {
+                    await JsRuntime.InvokeAsync<bool>("WriteCookie.WriteCookie", "auto_start", "false");
+
+                    await StartListening();
+                }
+            }
+            catch (JSException) { }
+
+
             StateHasChanged();
 
             hubConnection.On("Answered", () =>
@@ -108,6 +123,8 @@
 
             hubConnection.On<string>("Refresh", async (access) =>
             {
+                await JsRuntime.InvokeAsync<string>("WriteCookie.WriteCookie", "auto_start", "true");
+
                 string url = "Lobby/RefreshToken?access=" + access;
                 await JsRuntime.InvokeAsync<object>("open", url, "_self");
             });

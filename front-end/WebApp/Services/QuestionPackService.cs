@@ -12,7 +12,11 @@ namespace WebApp.Services
 
         public QuestionPackService()
         {
-            _client = new RestClient("https://localhost:7200/");
+            string serviceUrl = new ConfigurationBuilder()
+                                .AddJsonFile("appsettings.json", optional: false)
+                                .Build().GetSection("ServiceURL").Value;
+            
+            _client = new RestClient(serviceUrl);
         }
 
         public async Task<QuestionPack?> GetQuestionPackById(int id)

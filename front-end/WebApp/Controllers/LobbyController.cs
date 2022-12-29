@@ -16,7 +16,6 @@ using WebApp.ViewModels;
 
 namespace WebApp.Controllers
 {
-    [Authorize]
     public class LobbyController : Controller
     {
         public IActionResult Index()

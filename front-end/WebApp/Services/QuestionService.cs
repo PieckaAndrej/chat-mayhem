@@ -24,7 +24,10 @@ namespace WebApp.Services
 
         public QuestionService()
         {
-            _client = new RestClient("https://localhost:7200/");
+            string serviceUrl = new ConfigurationBuilder()
+                                .AddJsonFile("appsettings.json", optional: false)
+                                .Build().GetSection("ServiceURL").Value;
+            _client = new RestClient(serviceUrl);
         }
 
 

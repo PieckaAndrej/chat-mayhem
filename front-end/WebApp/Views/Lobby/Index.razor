@@ -131,7 +131,7 @@
 
             hubConnection.On("CloseConnection", () =>
             {
-                Navigation.NavigateTo("lobby/ClossedLobby", true);
+                Navigation.NavigateTo("Lobby/ClosedLobby", true);
             });
         }
     }
@@ -181,7 +181,6 @@
 
         if (answerIndex >= 0)
         {
-
             StateHasChanged();
         }
     }

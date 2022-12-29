@@ -2,7 +2,7 @@
 
 <div id="game" class="center answer">
     <h1 class="answer-title">@Question?.Prompt</h1>
-    <div class="answer-grid">
+    <div class="answer-grid" style="@(Question?.Answers.Count == 1 ? "grid-column-gap: 0" : "")">
         @for (int i = 0; i < Question?.Answers.Count; i++)
         {
             <div class="@(Question.Answers[i].Answered ? "answer-item-answered" : "answer-item")">

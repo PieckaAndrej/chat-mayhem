@@ -39,7 +39,7 @@ namespace WebApp.Controllers
             param.Add("response_type", "code");
             param.Add("client_id", "8hmbxjfogmmj9e14y2ohn2vb0q8zv5");
             param.Add("scope", "chat:read");
-            param.Add("redirect_uri", "https://localhost:7026/twitch");
+            param.Add("redirect_uri", "https://chatmayhem.tictactoe.dk/twitch");
             param.Add("state", twitchState);
 
             var url = HttpUtility.ParseQueryString(baseUrl);

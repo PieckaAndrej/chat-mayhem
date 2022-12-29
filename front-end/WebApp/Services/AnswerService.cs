@@ -14,7 +14,11 @@ namespace WebApp.Services
 
         public AnswerService()
         {
-            _client = new RestClient("https://localhost:7200/");
+            string serviceUrl = new ConfigurationBuilder()
+                                .AddJsonFile("appsettings.json", optional: false)
+                                .Build().GetSection("ServiceURL").Value;
+
+            _client = new RestClient(serviceUrl);
         }
 
         public static async Task<Dictionary<string, double>?> CheckAnswer(string sentence, List<Answer> answers)

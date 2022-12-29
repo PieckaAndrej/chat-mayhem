@@ -12,7 +12,11 @@ namespace WebApp.Services
 
         public StreamerService()
         {
-            _client = new RestClient("https://localhost:7200/");
+            string serviceUrl = new ConfigurationBuilder()
+                                .AddJsonFile("appsettings.json", optional: false)
+                                .Build().GetSection("ServiceURL").Value;
+
+            _client = new RestClient(serviceUrl);
         }
 
         public async Task<StreamerDto?> CreateStreamer(StreamerDto streamer)
@@ -34,7 +38,11 @@ namespace WebApp.Services
 
         public static async Task<string?> RefreshToken(string streamerId, string accessToken)
         {
-            RestClient restClient = new RestClient("https://localhost:7200/");
+            string serviceUrl = new ConfigurationBuilder()
+                                .AddJsonFile("appsettings.json", optional: false)
+                                .Build().GetSection("ServiceURL").Value;
+
+            RestClient restClient = new RestClient(serviceUrl);
             RestRequest restRequest = new RestRequest("api/streamer/token");
             restRequest.AddQueryParameter("streamerId", streamerId);
             restRequest.AddQueryParameter("token", accessToken);

@@ -1,5 +1,9 @@
 ﻿@using WebApp.ViewModels
 @model JoinLobby 
 
+@{
+    ViewData["Title"] = "Game";
+}
+
 
 <component param-Code="@Model.Code" param-Name="@Model.Name" type="typeof(WebApp.Views.Lobby.Index)" render-mode="ServerPrerendered" />

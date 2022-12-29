@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:6646",
+      "applicationUrl": "http://chatmayhem.tictactoe.dk",
       "sslPort": 44308
     }
   },

@@ -13,7 +13,11 @@ namespace WebApp.Services
 
         public static async Task<string?> GetToken(string username, string password)
         {
-            RestClient _restClient = new RestClient("https://localhost:7200/");
+            string serviceUrl = new ConfigurationBuilder()
+                                .AddJsonFile("appsettings.json", optional: false)
+                                .Build().GetSection("ServiceURL").Value;
+
+            RestClient _restClient = new RestClient(serviceUrl);
             var request = new RestRequest("token");
             request.AddParameter("username", username);
             request.AddParameter("password", password);

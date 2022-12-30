@@ -54,7 +54,7 @@
             @if (QuestionPack != null)
             {
                 <label class="control-label">Questions</label>
-                @foreach (Question<ViewerAnswer> question in QuestionPack?.Questions)
+                @foreach (Question<ViewerAnswer> question in editedPack.Questions)
                 {
                     <div class="form-group">
                         <span>
@@ -86,7 +86,6 @@
             {
                 QuestionPack.Questions = new List<Question<ViewerAnswer>>();
             }
-
         }
     }
 

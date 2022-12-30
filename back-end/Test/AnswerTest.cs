@@ -23,7 +23,7 @@ namespace Test
         {
             _extraOutput = extraOutput;
 
-            _testAnswer = new Answer(10, "Shirt " + DateTime.Now.ToString());
+            _testAnswer = new Answer(10, "Shirt " + Guid.NewGuid().ToString());
 
             _questionId = 1;
             _testConfiguration = new ConfigurationBuilder()
@@ -38,7 +38,7 @@ namespace Test
             var answerAccess = new AnswerAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
 
             //Act
-            Answer testAnswer = new Answer(10, "Shirt " + DateTime.Now.ToString());
+            Answer testAnswer = new Answer(10, "Shirt " + Guid.NewGuid().ToString());
             var id = answerAccess.CreateAnswer(testAnswer, _questionId);
 
             //Assert

@@ -21,12 +21,22 @@ jobs:
       with:
         dotnet-version: 6.0.x
     #substitute production appsettings entries to appsettings json file
-    - name: App Settings Variable Substitution
+    - name: App Settings Test Variable Substitution
       uses: microsoft/variable-substitution@v1
       with:
         files: './back-end/API/appsettings.Test.json'
       env:
+        ConnectionStrings.ChatMayhem Connection: ${{ secrets.CHAT_MAYHEM_CONNECTION_TEST }}
+    - name: App Settings Test Variable Substitution
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: './back-end/API/appsettings.json'
+      env:
         ConnectionStrings.ChatMayhem Connection: ${{ secrets.CHAT_MAYHEM_CONNECTION }}
+        ClientSecret: ${{ secrets.CLIENT_SECRET }}
+        AllowDesktopApp.Username: ${{ secrets.USERNAME }}
+        AllowDesktopApp.Password: ${{ secrets.PASSWORD }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
     - name: Restore dependencies
       working-directory: ./back-end
       run: dotnet restore

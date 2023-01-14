@@ -45,6 +45,7 @@ namespace API.Controllers
         }
 
         [HttpPut]
+        [Route("{id}")]
         public ActionResult<GameDto> Put(GameDto inGame, int id)
         {
             Game game = GameDto.Convert(inGame);
@@ -61,6 +62,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("{id}")]
         public ActionResult<Game> Get(int id)
         {
             Game? game = ServiceInjector.GameService.GetGameById(id);

@@ -52,7 +52,7 @@ namespace Test
             var answerAccess = new AnswerAccess(_testConfiguration.GetConnectionString("ChatMayhem Connection") ?? "");
 
             //Act
-            Answer testAnswer = new Answer(10, "Shirt " + DateTime.Now.ToString());
+            Answer testAnswer = new Answer(10, "Shirt " + Guid.NewGuid().ToString());
             int oldPoints = 100;
             answerAccess.CreateAnswer(testAnswer, _questionId);
             int rowsAffected = answerAccess.UpdatePoints(testAnswer, oldPoints, _questionId);

@@ -76,6 +76,7 @@ namespace API.Controllers
         }
 
         [HttpDelete]
+        [Route("{id}")]
         public ActionResult Delete(int id)
         {
             bool deleted = ServiceInjector.GameService.DeleteGame(id);
